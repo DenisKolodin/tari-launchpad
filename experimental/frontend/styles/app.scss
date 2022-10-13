@@ -1,0 +1,46 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.main_scene {
+    height: 100vh;
+    width: 100vw;
+    padding: 0 96px;
+}
+
+.main_scene-content {
+    padding: 60px 0;
+}
+
+.menu {
+    display: flex;
+    flex-direction: row;
+    padding: 8px 12px;
+
+    .menu_item {
+        margin-left: 20px;
+        cursor: pointer;
+
+        &.selected {
+            color: #9330ff;
+        }
+    }
+}
+
+.table {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+
+    .row {
+        margin-top: 5px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
