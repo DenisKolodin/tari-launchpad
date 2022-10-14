@@ -7,6 +7,7 @@ pub static REMOTE_STATE: SharedState<RemoteState> = SharedState::new();
 #[derive(Default, Debug)]
 pub struct RemoteState {
     pub state: LaunchpadState,
+    pub loaded: bool,
 }
 
 impl State for RemoteState {
