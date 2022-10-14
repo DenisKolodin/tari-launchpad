@@ -2,9 +2,12 @@ use anyhow::Error;
 use yew::Html;
 
 use super::context::Context;
+use super::subscribe::FromDelta;
+use crate::states::local_state::LocalState;
+use crate::states::remote_state::RemoteState;
 
 pub trait Widget: Sized + 'static {
-    type Msg: Send;
+    type Msg: FromDelta<LocalState> + FromDelta<RemoteState> + Send;
 
     fn create(ctx: &mut Context<Self>) -> Self;
 

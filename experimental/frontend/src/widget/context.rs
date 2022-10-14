@@ -1,4 +1,9 @@
-use derive_more::Deref;
+use crate::states::local_state::LocalState;
+use crate::states::local_state::LOCAL_STATE;
+use crate::states::remote_state::RemoteState;
+use crate::states::remote_state::REMOTE_STATE;
+use crate::widget::subscribe::ConnectedState;
+use derive_more::{Deref, DerefMut};
 use yew::{html::Scope, Callback, Context as YewContext};
 
 use super::{
@@ -9,7 +14,7 @@ use super::{
 
 /// The scope that extends [`Scope`] to have extra
 /// methods to construct special callbacks for the `Widget`.
-#[derive(Deref)]
+#[derive(Deref, DerefMut)]
 pub struct PodScope<W: Widget> {
     scope: Scope<Pod<W>>,
 }
@@ -22,7 +27,7 @@ impl<W: Widget> Clone for PodScope<W> {
     }
 }
 
-impl<W: Widget> Context<W> {
+impl<W: Widget> PodScope<W> {
     pub fn connect<T>(&mut self, state: &SharedState<T>) -> Connected<T>
     where
         T: State,
@@ -31,24 +36,6 @@ impl<W: Widget> Context<W> {
         state.register(self)
     }
 
-    pub fn should_redraw(&self) -> bool {
-        self.redraw
-    }
-
-    pub fn no_redraw(&mut self) {
-        self.redraw = false;
-    }
-
-    pub fn redraw(&mut self) {
-        self.redraw = true;
-    }
-
-    pub fn link(&self) -> &PodScope<W> {
-        &self.scope
-    }
-}
-
-impl<W: Widget> PodScope<W> {
     pub fn callback<F, IN>(&self, f: F) -> Callback<IN>
     where
         F: Fn(IN) -> W::Msg,
@@ -64,19 +51,55 @@ impl<W: Widget> PodScope<W> {
     }
 }
 
-#[derive(Deref)]
+#[derive(Deref, DerefMut)]
 pub struct Context<W: Widget> {
     redraw: bool,
     #[deref]
-    scope: PodScope<W>,
+    #[deref_mut]
+    pod_scope: PodScope<W>,
+    local_state: Connected<LocalState>,
+    remote_state: Connected<RemoteState>,
 }
 
 impl<W: Widget> Context<W> {
     pub(super) fn new(ctx: &YewContext<Pod<W>>) -> Self {
         let scope = ctx.link().clone();
+        let mut pod_scope = PodScope { scope };
+        let local_state = pod_scope.connect(&LOCAL_STATE);
+        let remote_state = pod_scope.connect(&REMOTE_STATE);
         Self {
             redraw: false,
-            scope: PodScope { scope },
+            pod_scope,
+            local_state,
+            remote_state,
         }
     }
+}
+
+impl<W: Widget> Context<W> {
+    pub fn should_redraw(&self) -> bool {
+        self.redraw
+    }
+
+    pub fn no_redraw(&mut self) {
+        self.redraw = false;
+    }
+
+    pub fn redraw(&mut self) {
+        self.redraw = true;
+    }
+
+    pub fn local(&self) -> ConnectedState<'_, LocalState> {
+        self.local_state.get()
+    }
+
+    pub fn remote(&self) -> ConnectedState<'_, RemoteState> {
+        self.remote_state.get()
+    }
+
+    /*
+    pub fn link(&self) -> &PodScope<W> {
+        &self.pod_scope
+    }
+    */
 }

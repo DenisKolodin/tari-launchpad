@@ -3,7 +3,7 @@ use tari_launchpad_protocol::launchpad::Reaction;
 use yew::{html, Html};
 
 use crate::{
-    scenes::{MainView, HeaderView},
+    scenes::MainView,
     states::{
         local_state::{LocalState, LocalStateDelta, ViewMode, LOCAL_STATE},
         remote_state::RemoteState,
@@ -11,7 +11,7 @@ use crate::{
     widget::{Connected, Context, FromDelta, Widget, Pod},
 };
 
-pub struct App {}
+pub struct HeaderView {}
 
 #[derive(Clone)]
 pub enum Msg {
@@ -30,7 +30,7 @@ impl FromDelta<RemoteState> for Msg {
     }
 }
 
-impl Widget for App {
+impl Widget for HeaderView {
     type Msg = Msg;
 
     fn create(_ctx: &mut Context<Self>) -> Self {
@@ -48,12 +48,7 @@ impl Widget for App {
     fn view_opt(&self, ctx: &Context<Self>) -> Option<Html> {
         Some(html! {
             <div data-tauri-drag-region="">
-                // TODO: Render a global header
-                <Pod<HeaderView> />
-                <Pod<MainView> />
-                // TODO: Render `ExpertView`
-                // TODO: Render `Settings`
-                // TODO: Render `Modal`
+            { "HEADER" }
             </div>
         })
     }

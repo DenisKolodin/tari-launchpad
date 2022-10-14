@@ -36,6 +36,7 @@ pub struct LocalState {
     pub scene: Scene,
     pub view_mode: ViewMode,
     pub show_logs_for: Option<TaskId>,
+    pub expert_view: bool,
 }
 
 impl State for LocalState {
@@ -49,6 +50,9 @@ impl State for LocalState {
             LocalStateDelta::SetViewMode(view_mode) => {
                 self.view_mode = view_mode;
             },
+            LocalStateDelta::ShowExpertView(flag) => {
+                self.expert_view = flag;
+            }
             LocalStateDelta::ShowLogs(task_id) => {
                 self.show_logs_for = Some(task_id);
             },
@@ -64,6 +68,9 @@ impl State for LocalState {
 pub enum LocalStateDelta {
     SetScene(Scene),
     SetViewMode(ViewMode),
+
+    ShowExpertView(bool),
+
     ShowLogs(TaskId),
     HideLogs,
 }

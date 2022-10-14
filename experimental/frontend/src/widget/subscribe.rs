@@ -9,7 +9,7 @@ use once_cell::sync::Lazy;
 use slab::Slab;
 use yew::Callback;
 
-use crate::widget::{context::PodScope, pod::Msg, Context, Widget};
+use crate::widget::{context::PodScope, pod::Msg, Widget};
 
 #[derive(Deref)]
 pub struct SharedState<T: State> {
@@ -143,10 +143,10 @@ impl<T: State> SharedStateExtern<T> {
         })
     }
 
-    pub(super) fn register<W: Widget>(&self, ctx: &mut Context<W>) -> Connected<T>
+    pub(super) fn register<W: Widget>(&self, ctx: &PodScope<W>) -> Connected<T>
     where W::Msg: FromDelta<T> {
         let mut inner = self.inner.write().unwrap();
-        let listener = Connector::spawn_for(ctx.link());
+        let listener = Connector::spawn_for(ctx);
         let idx = inner.listeners.insert(listener);
         Connected {
             shared_state: self.clone(),
