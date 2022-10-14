@@ -1,0 +1,47 @@
+.header_view {
+    background-color: rgb(250, 250, 250);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    padding: 0 16px;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.control_buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+
+    button {
+        padding: 3px;
+        height: 14px;
+        width: 14px;
+        border-width: 1px;
+        border-style: solid;
+        box-shadow: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        &.close {
+            background: #ED695E;
+            border-color: #D24F43;
+        }
+
+        svg {
+            opacity: 0;
+        }
+    }
+
+    &:hover {
+        svg {
+            opacity: 1 !important;
+        }
+    }
+}

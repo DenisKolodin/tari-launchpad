@@ -94,7 +94,9 @@ where M: FromDelta<T> + Send
 }
 
 pub trait FromDelta<T: State>: Sized {
-    fn from_delta(delta: &T::Delta) -> Option<Self>;
+    fn from_delta(_delta: &T::Delta) -> Option<Self> {
+        None
+    }
 }
 
 pub trait State: Default + 'static {
