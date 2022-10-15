@@ -1,14 +1,14 @@
 {
+  "package": {
+    "productName": "tari-launchpad",
+    "version": "0.1.0"
+  },
   "build": {
     "beforeBuildCommand": "",
     "beforeDevCommand": "",
     "devPath": "../frontend/dist",
     "distDir": "../frontend/dist",
     "withGlobalTauri": true
-  },
-  "package": {
-    "productName": "tari-launchpad",
-    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
@@ -55,11 +55,15 @@
     },
     "windows": [
       {
-        "fullscreen": false,
-        "height": 600,
-        "resizable": true,
         "title": "Tari Launchpad",
-        "width": 800
+        "width": 1200,
+        "minWidth": 1200,
+        "height": 800,
+        "minHeight": 796,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": false,
+        "transparent": true
       }
     ]
   }

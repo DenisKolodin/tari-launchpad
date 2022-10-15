@@ -3,12 +3,12 @@ use tari_launchpad_protocol::launchpad::Reaction;
 use yew::{html, Html};
 
 use crate::{
-    scenes::{MainView, HeaderView},
+    scenes::{HeaderView, MainView},
     states::{
         local_state::{LocalState, LocalStateDelta, ViewMode, LOCAL_STATE},
         remote_state::RemoteState,
     },
-    widget::{Connected, Context, FromDelta, Widget, Pod},
+    widget::{Connected, Context, FromDelta, Pod, Widget},
 };
 
 pub struct App {}
@@ -47,7 +47,7 @@ impl Widget for App {
 
     fn view_opt(&self, ctx: &Context<Self>) -> Option<Html> {
         Some(html! {
-            <div data-tauri-drag-region="">
+            <div class="app_view" data-tauri-drag-region="">
                 // TODO: Render a global header
                 <Pod<HeaderView> />
                 <Pod<MainView> />

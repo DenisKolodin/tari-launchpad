@@ -52,7 +52,7 @@ impl State for LocalState {
             },
             LocalStateDelta::ShowExpertView(flag) => {
                 self.expert_view = flag;
-            }
+            },
             LocalStateDelta::ShowLogs(task_id) => {
                 self.show_logs_for = Some(task_id);
             },

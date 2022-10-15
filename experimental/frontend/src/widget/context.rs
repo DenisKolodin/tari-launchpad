@@ -1,8 +1,3 @@
-use crate::states::local_state::LocalState;
-use crate::states::local_state::LOCAL_STATE;
-use crate::states::remote_state::RemoteState;
-use crate::states::remote_state::REMOTE_STATE;
-use crate::widget::subscribe::ConnectedState;
 use derive_more::{Deref, DerefMut};
 use yew::{html::Scope, Callback, Context as YewContext};
 
@@ -10,6 +5,13 @@ use super::{
     base::Widget,
     pod::{Msg, Pod},
     subscribe::{Connected, FromDelta, SharedState, State},
+};
+use crate::{
+    states::{
+        local_state::{LocalState, LOCAL_STATE},
+        remote_state::{RemoteState, REMOTE_STATE},
+    },
+    widget::subscribe::ConnectedState,
 };
 
 /// The scope that extends [`Scope`] to have extra
@@ -97,9 +99,7 @@ impl<W: Widget> Context<W> {
         self.remote_state.get()
     }
 
-    /*
-    pub fn link(&self) -> &PodScope<W> {
-        &self.pod_scope
-    }
-    */
+    // pub fn link(&self) -> &PodScope<W> {
+    // &self.pod_scope
+    // }
 }

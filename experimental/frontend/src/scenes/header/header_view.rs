@@ -9,14 +9,13 @@ use crate::{
         local_state::{LocalState, LocalStateDelta, ViewMode, LOCAL_STATE},
         remote_state::RemoteState,
     },
-    widget::{Connected, Context, FromDelta, Widget, Pod},
+    widget::{Connected, Context, FromDelta, Pod, Widget},
 };
 
 pub struct HeaderView {}
 
 #[derive(Clone)]
-pub enum Msg {
-}
+pub enum Msg {}
 
 impl FromDelta<LocalState> for Msg {}
 

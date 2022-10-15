@@ -1,10 +1,8 @@
 use anyhow::Error;
 use yew::Html;
 
-use super::context::Context;
-use super::subscribe::FromDelta;
-use crate::states::local_state::LocalState;
-use crate::states::remote_state::RemoteState;
+use super::{context::Context, subscribe::FromDelta};
+use crate::states::{local_state::LocalState, remote_state::RemoteState};
 
 pub trait Widget: Sized + 'static {
     type Msg: FromDelta<LocalState> + FromDelta<RemoteState> + Send;

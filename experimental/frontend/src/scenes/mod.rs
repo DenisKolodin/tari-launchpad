@@ -1,10 +1,10 @@
 mod app;
 mod expert;
-mod main;
-mod settings;
 mod header;
 mod icons;
+mod main;
+mod settings;
 
 pub use app::App;
-pub use main::MainView;
 pub use header::HeaderView;
+pub use main::MainView;

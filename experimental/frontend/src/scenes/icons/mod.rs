@@ -1,2 +1,2 @@
-pub mod logo;
 pub mod close;
+pub mod logo;

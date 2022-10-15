@@ -46,7 +46,7 @@ impl Widget for MainView {
 
     fn view_opt(&self, ctx: &Context<Self>) -> Option<Html> {
         Some(html! {
-            <div data-tauri-drag-region="">{ "main-view" }</div>
+            <div class="main_view" data-tauri-drag-region="">{ "main-view" }</div>
         })
     }
 }

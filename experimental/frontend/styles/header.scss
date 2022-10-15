@@ -12,13 +12,13 @@
     border-top-right-radius: 10px;
 }
 
-.control_buttons {
+.header_view .control_buttons {
     display: flex;
     flex-direction: row;
     gap: 8px;
 
     button {
-        padding: 3px;
+        padding: 0;
         height: 14px;
         width: 14px;
         border-width: 1px;
@@ -27,15 +27,37 @@
         border-radius: 50%;
         display: flex;
         align-items: center;
+        justify-content: center;
         cursor: pointer;
+
+        svg {
+            opacity: 0;
+        }
 
         &.close {
             background: #ED695E;
             border-color: #D24F43;
+
+            svg {
+                color: #D24F43;
+            }
         }
 
-        svg {
-            opacity: 0;
+        &.minimize {
+            background: #F6BD50;
+            border-color: #D8A040;
+
+            svg {
+                color: #D8A040;
+            }
+        }
+
+        &.maximize {
+            background: #61C354;
+            border-color: #51A73E;
+            svg {
+                color: #51A73E;
+            }
         }
     }
 
