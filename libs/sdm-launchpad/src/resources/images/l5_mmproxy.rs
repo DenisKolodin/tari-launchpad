@@ -29,10 +29,11 @@ use tari_sdm::{
     image::{Args, Envs, ManagedContainer, Networks},
 };
 
-use super::DEFAULT_REGISTRY;
+use super::{Monerod, TariBaseNode, TariWallet, XMRig, DEFAULT_REGISTRY};
 use crate::resources::{
     config::{ConnectionSettings, LaunchpadConfig, LaunchpadProtocol},
     networks::LocalNet,
+    volumes::SharedVolume,
 };
 
 #[derive(Debug, Default)]
@@ -47,7 +48,14 @@ impl ManagedTask for MmProxy {
     }
 
     fn deps() -> Vec<TaskId> {
-        vec![LocalNet::id()]
+        vec![
+            TariBaseNode::id(),
+            TariWallet::id(),
+            LocalNet::id(),
+            SharedVolume::id(),
+            Monerod::id(),
+            XMRig::id(),
+        ]
     }
 }
 

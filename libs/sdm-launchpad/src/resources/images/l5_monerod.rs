@@ -26,10 +26,11 @@ use tari_sdm::{
     image::{Args, Envs, ManagedContainer, Networks},
 };
 
-use super::DEFAULT_REGISTRY;
+use super::{TariBaseNode, TariWallet, DEFAULT_REGISTRY};
 use crate::resources::{
     config::{ConnectionSettings, LaunchpadConfig, LaunchpadProtocol},
     networks::LocalNet,
+    volumes::SharedVolume,
 };
 
 #[derive(Debug, Default)]
@@ -43,7 +44,7 @@ impl ManagedTask for Monerod {
     }
 
     fn deps() -> Vec<TaskId> {
-        vec![LocalNet::id()]
+        vec![TariBaseNode::id(), TariWallet::id(), LocalNet::id(), SharedVolume::id()]
     }
 }
 
