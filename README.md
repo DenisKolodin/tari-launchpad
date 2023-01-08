@@ -7,10 +7,10 @@ a.k.a. _Tari one-click miner_.
 1. Rust and cargo (https://www.rust-lang.org/tools/install).
 2. NodeJs (v16.0 or higher) and Yarn (v 1.22 or higher).
 3. Tauri CLI (`cargo install tauri-cli`). _Optional_.
-4. [Docker](https://docs.docker.com/get-docker/) is not _strictly_ a pre-requisite, since the launchpad on-boarding 
+4. [Docker](https://docs.docker.com/get-docker/) is not _strictly_ a pre-requisite, since the launchpad on-boarding
    flow will install it for you, but you will need docker eventually, so putting it here.
 5. Install the front-end dependencies
-   ```text  
+   ```text
    $ yarn
    $ cd gui-react
    $ yarn
@@ -29,11 +29,11 @@ $ yarn run tauri dev
 
 ### Debugging
 The console relays debug messages from the launchpad backend (a Rust application).
-The front-end is a standard ReactJs application wrapped inside a [Tauri](https://tauri.studio) desktop application. 
+The front-end is a standard ReactJs application wrapped inside a [Tauri](https://tauri.studio) desktop application.
 You can open a standard browser console in the front-end to debug front-end issues.
 
 
-**Tip:** If you receive the following error 
+**Tip:** If you receive the following error
 `Unable to create base node...` there was a problem packaging the assets for the app.
 
 ## Building a production release
@@ -49,15 +49,15 @@ $ yarn run tauri build
 
 ## Viewing logs and configuration files
 
-You can use the bundled Grafana environment that is packaged with launchpad to view log files. Or you can use your 
+You can use the bundled Grafana environment that is packaged with launchpad to view log files. Or you can use your
 favorite text editor instead.
 
-Logs and configuration files are stored in 
+Logs and configuration files are stored in
 * MacOs: `~/Library/Caches/tari/tmp/{network}/{app}/log`,
 * Linux: `~/.cache/tari/tmp/{network}/{app}/log`,
 * Windows: `???`
 
-You can edit the log configuration, `{network}/config/log4rs.yml` to change the log level, output etc. Changes are 
+You can edit the log configuration, `{network}/config/log4rs.yml` to change the log level, output etc. Changes are
 picked up on the fly and take effect within 30s.
 
 ##  Miscellaneous notes
@@ -111,19 +111,25 @@ of blockchain data, you can use something like this to extract it to the host fi
 
 ## Building custom docker images
 
-The docker images for the base node, wallet etc. are designed to handle the broadest set of chipsets and 
-architectures. For this reason, they not be optimal for _your_ system. You can build custom images for launchpad 
+The docker images for the base node, wallet etc. are designed to handle the broadest set of chipsets and
+architectures. For this reason, they not be optimal for _your_ system. You can build custom images for launchpad
 using the `build_images.sh` script in this folder.
+
+The script uses `buildx` tool for building images. It comes with docker. To activate it run the command:
+
+```sh
+docker buildx install
+```
 
 Refer to that script for further details and build options.
 
-There are a set of files in this folder that offer a convenient way of setting the environment up for some common 
+There are a set of files in this folder that offer a convenient way of setting the environment up for some common
 configurations.
 
 run `source {env_config}.env` to set up the environment. Currently, the presets are:
 
-* `local-performance-amd64.env`: For building local images with Intel/AMD and AVX-2 chipset support (about 2x 
+* `local-performance-amd64.env`: For building local images with Intel/AMD and AVX-2 chipset support (about 2x
   speedup on crypto operations)
 * `local-performance-arm64.env`: For building local images for Apple M-series CPUs.
-* `hosted-dual.env`: Replicates the CI enviroment. Builds safe multi-arch images and pushes them to the docker repo 
-  (requires a write access token). 
+* `hosted-dual.env`: Replicates the CI enviroment. Builds safe multi-arch images and pushes them to the docker repo
+  (requires a write access token).

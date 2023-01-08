@@ -4,6 +4,7 @@ members = [
     "libs/*",
     "backend",
     "cli",
+    "ui/*",
 ]
 # default-members = [ "backend" ]
 
