@@ -1,5 +1,5 @@
-use super::actor::Actor;
 use super::action::Do;
+use super::actor::Actor;
 use super::context::ActorContext;
 use anyhow::Error;
 use async_trait::async_trait;

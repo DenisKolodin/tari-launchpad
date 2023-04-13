@@ -1,9 +1,8 @@
-use tact::actors::{Actor, ActorContext, Do};
 use anyhow::Error;
 use async_trait::async_trait;
+use tact::actors::{Actor, ActorContext, Do};
 
-pub struct Supervisor {
-}
+pub struct Supervisor {}
 
 #[async_trait]
 impl Actor for Supervisor {

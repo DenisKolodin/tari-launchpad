@@ -1,6 +1,6 @@
+use super::action::Do;
 use super::actor::Actor;
 use super::handler::Envelope;
-use super::action::Do;
 use thiserror::Error;
 use tokio::sync::mpsc;
 
