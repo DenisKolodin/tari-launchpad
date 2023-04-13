@@ -1,4 +1,5 @@
-use super::handler::{Actor, Envelope, OnEvent};
+use super::actor::Actor;
+use super::handler::{Envelope, OnEvent};
 use thiserror::Error;
 use tokio::sync::mpsc;
 
@@ -6,12 +7,24 @@ use tokio::sync::mpsc;
 #[error("Can't send an event to an actor")]
 pub struct SendError;
 
-#[derive(Debug, Clone)]
 pub struct Address<A: Actor> {
     tx: mpsc::UnboundedSender<Envelope<A>>,
 }
 
+impl<A: Actor> Clone for Address<A> {
+    fn clone(&self) -> Self {
+        Self {
+            tx: self.tx.clone(),
+        }
+    }
+}
+
 impl<A: Actor> Address<A> {
+    pub(super) fn new() -> (Self, mpsc::UnboundedReceiver<Envelope<A>>) {
+        let (tx, rx) = mpsc::unbounded_channel();
+        (Self { tx }, rx)
+    }
+
     pub fn send<E>(&self, event: E) -> Result<(), SendError>
     where
         A: OnEvent<E>,

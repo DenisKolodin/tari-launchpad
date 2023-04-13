@@ -1,8 +1,7 @@
+use super::actor::Actor;
 use super::context::ActorContext;
 use anyhow::Error;
 use async_trait::async_trait;
-
-pub trait Actor: Send + Sized {}
 
 #[async_trait]
 pub trait OnEvent<E>: Actor {
