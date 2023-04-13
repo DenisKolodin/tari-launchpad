@@ -1,5 +1,5 @@
 use super::actor::Actor;
-use super::handler::{Envelope, OnEvent};
+use super::handler::{Envelope, Do};
 use thiserror::Error;
 use tokio::sync::mpsc;
 
@@ -27,7 +27,7 @@ impl<A: Actor> Address<A> {
 
     pub fn send<E>(&self, event: E) -> Result<(), SendError>
     where
-        A: OnEvent<E>,
+        A: Do<E>,
         E: Send + 'static,
     {
         let envelope = Envelope::from_event(event);

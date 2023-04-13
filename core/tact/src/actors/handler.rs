@@ -4,7 +4,7 @@ use anyhow::Error;
 use async_trait::async_trait;
 
 #[async_trait]
-pub trait OnEvent<E>: Actor {
+pub trait Do<E>: Actor {
     async fn handle(&mut self, event: E, ctx: &mut ActorContext<Self>) -> Result<(), Error>;
 }
 
@@ -19,7 +19,7 @@ impl<A: Actor> Envelope<A> {
 
     pub fn from_event<E>(event: E) -> Self
     where
-        A: OnEvent<E>,
+        A: Do<E>,
         E: Send + 'static,
     {
         let handler = HandlerImpl { event };
@@ -40,7 +40,7 @@ struct HandlerImpl<E> {
 }
 
 #[async_trait]
-impl<A: OnEvent<E>, E: Send> Handler<A> for HandlerImpl<E> {
+impl<A: Do<E>, E: Send> Handler<A> for HandlerImpl<E> {
     async fn handle(
         self: Box<Self>,
         actor: &mut A,
