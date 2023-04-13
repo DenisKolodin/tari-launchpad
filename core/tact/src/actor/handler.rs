@@ -14,6 +14,10 @@ pub struct Envelope<A: Actor> {
 }
 
 impl<A: Actor> Envelope<A> {
+    pub(crate) fn into_handler(self) -> Box<dyn Handler<A>> {
+        self.handler
+    }
+
     pub fn from_event<E>(event: E) -> Self
     where
         A: OnEvent<E>,
@@ -27,7 +31,7 @@ impl<A: Actor> Envelope<A> {
 }
 
 #[async_trait]
-trait Handler<A: Actor>: Send {
+pub(crate) trait Handler<A: Actor>: Send {
     async fn handle(self: Box<Self>, actor: &mut A, ctx: &mut ActorContext<A>)
         -> Result<(), Error>;
 }
