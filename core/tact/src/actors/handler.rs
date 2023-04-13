@@ -1,12 +1,8 @@
 use super::actor::Actor;
+use super::action::Do;
 use super::context::ActorContext;
 use anyhow::Error;
 use async_trait::async_trait;
-
-#[async_trait]
-pub trait Do<E>: Actor {
-    async fn handle(&mut self, event: E, ctx: &mut ActorContext<Self>) -> Result<(), Error>;
-}
 
 pub struct Envelope<A: Actor> {
     handler: Box<dyn Handler<A>>,

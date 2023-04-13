@@ -281,6 +281,9 @@ version = "0.1.0"
 name = "tari-lp-engine"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "async-trait",
+ "log",
  "tact",
 ]
 

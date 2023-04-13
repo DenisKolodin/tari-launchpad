@@ -6,3 +6,5 @@ mod handler;
 mod runtime;
 
 pub use actor::Actor;
+pub use action::Do;
+pub use context::ActorContext;

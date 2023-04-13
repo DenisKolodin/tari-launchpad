@@ -1,6 +1,6 @@
 use super::actor::Actor;
 use super::address::{Address, SendError};
-use super::handler::Do;
+use super::action::Do;
 
 pub struct ActorContext<A: Actor> {
     address: Address<A>,

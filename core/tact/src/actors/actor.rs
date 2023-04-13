@@ -1,13 +1,16 @@
 use super::address::Address;
+use super::context::ActorContext;
 use super::runtime::ActorRuntime;
-use super::handler::Do;
-use super::action::Init;
+use anyhow::Error;
+use async_trait::async_trait;
 
+#[async_trait]
 pub trait Actor: Send + Sized + 'static {
-    fn start(self) -> Address<Self>
-    where
-        Self: Do<Init>,
-    {
+    async fn initialize(&mut self, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        Ok(())
+    }
+
+    fn start(self) -> Address<Self> {
         let runtime = ActorRuntime::new(self);
         let address = runtime.context().address().clone();
         tokio::spawn(runtime.entyrpoint());

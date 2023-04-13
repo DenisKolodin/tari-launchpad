@@ -1,8 +1,7 @@
 use super::actor::Actor;
-use super::action::Init;
 use super::address::Address;
 use super::context::ActorContext;
-use super::handler::{Envelope, Do};
+use super::handler::Envelope;
 use tokio::sync::mpsc;
 
 pub(super) struct ActorRuntime<A: Actor> {
@@ -11,7 +10,7 @@ pub(super) struct ActorRuntime<A: Actor> {
     context: ActorContext<A>,
 }
 
-impl<A: Do<Init>> ActorRuntime<A> {
+impl<A: Actor> ActorRuntime<A> {
     pub fn new(actor: A) -> Self {
         let (addr, rx) = Address::new();
         let context = ActorContext::new(addr);
@@ -19,7 +18,7 @@ impl<A: Do<Init>> ActorRuntime<A> {
     }
 
     pub async fn entyrpoint(mut self) {
-        let res = self.context.address().send(Init);
+        let res = self.actor.initialize(&mut self.context).await;
         if let Err(err) = res {
             log::error!("Actor can't be initialized: {err}");
         }
