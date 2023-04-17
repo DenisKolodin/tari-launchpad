@@ -3,6 +3,7 @@ use super::address::SendError;
 use super::handler::Envelope;
 use tokio::sync::{mpsc, watch};
 
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ActorState {
     Active,
     Finished,

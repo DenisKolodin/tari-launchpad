@@ -47,4 +47,15 @@ impl<A: Actor> Address<A> {
     {
         self.send(Interrupt)
     }
+
+    pub async fn join(&mut self) -> Result<(), SendError> {
+        loop {
+            let state = self.rx_state.borrow_and_update().clone();
+            if state == ActorState::Finished {
+                break;
+            }
+            self.rx_state.changed().await.map_err(|_| SendError)?;
+        }
+        Ok(())
+    }
 }
