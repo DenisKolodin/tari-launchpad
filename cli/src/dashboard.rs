@@ -30,14 +30,14 @@ impl Dashboard {
 
 #[async_trait]
 impl Actor for Dashboard {
-    async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    async fn initialize(&mut self, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         enable_raw_mode()?;
         let mut stdout = std::io::stdout();
         execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
         Ok(())
     }
 
-    async fn finalize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    async fn finalize(&mut self, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         disable_raw_mode()?;
         let mut terminal = self
             .terminal
@@ -55,7 +55,7 @@ impl Actor for Dashboard {
 
 #[async_trait]
 impl Do<Interrupt> for Dashboard {
-    async fn handle(&mut self, _: Interrupt, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    async fn handle(&mut self, _: Interrupt, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         Ok(())
     }
 }
