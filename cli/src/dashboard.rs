@@ -6,7 +6,7 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use std::io::Stdout;
-use tact::actors::{Actor, ActorContext};
+use tact::actors::{Actor, ActorContext, Do, Interrupt};
 use thiserror::Error;
 use tui::{backend::CrosstermBackend, Terminal};
 
@@ -49,6 +49,13 @@ impl Actor for Dashboard {
             DisableMouseCapture
         )?;
         terminal.show_cursor()?;
+        Ok(())
+    }
+}
+
+#[async_trait]
+impl Do<Interrupt> for Dashboard {
+    async fn handle(&mut self, _: Interrupt, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         Ok(())
     }
 }

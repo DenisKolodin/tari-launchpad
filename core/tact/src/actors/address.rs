@@ -1,4 +1,4 @@
-use super::action::Do;
+use super::action::{Do, Interrupt};
 use super::actor::Actor;
 use super::handler::Envelope;
 use thiserror::Error;
@@ -33,5 +33,12 @@ impl<A: Actor> Address<A> {
     {
         let envelope = Envelope::from_event(event);
         self.tx.send(envelope).map_err(|_| SendError)
+    }
+
+    pub fn interrupt(&mut self) -> Result<(), SendError>
+    where
+        A: Do<Interrupt>,
+    {
+        self.send(Interrupt)
     }
 }

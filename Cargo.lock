@@ -350,6 +350,7 @@ dependencies = [
  "crossterm 0.26.1",
  "tact",
  "thiserror",
+ "tokio",
  "tui",
 ]
 
