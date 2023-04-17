@@ -34,5 +34,7 @@ impl<A: Actor> ActorContext<A> {
         self.address.send(action)
     }
 
-    pub fn shutdown(&mut self) {}
+    pub fn shutdown(&mut self) {
+        self.joint.close();
+    }
 }

@@ -29,4 +29,8 @@ impl<A: Actor> AddressJoint<A> {
     pub fn update_state(&mut self, state: ActorState) -> Result<(), SendError> {
         self.tx_state.send(state).map_err(|_| SendError)
     }
+
+    pub fn close(&mut self) {
+        self.rx_event.close();
+    }
 }
