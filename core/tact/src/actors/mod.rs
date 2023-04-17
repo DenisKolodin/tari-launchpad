@@ -3,6 +3,7 @@ mod actor;
 mod address;
 mod context;
 mod handler;
+mod joint;
 mod runtime;
 
 pub use action::{Do, Interrupt};
