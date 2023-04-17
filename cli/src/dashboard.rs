@@ -1,12 +1,12 @@
 use anyhow::Error;
 use async_trait::async_trait;
 use crossterm::{
-    event::{DisableMouseCapture, EnableMouseCapture},
+    event::{DisableMouseCapture, EnableMouseCapture, Event as TermEvent, KeyCode},
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use std::io::Stdout;
-use tact::actors::{Actor, ActorContext, Do, Interrupt};
+use tact::actors::{Actor, ActorContext, Do};
 use thiserror::Error;
 use tui::{backend::CrosstermBackend, Terminal};
 
@@ -30,10 +30,17 @@ impl Dashboard {
 
 #[async_trait]
 impl Actor for Dashboard {
-    async fn initialize(&mut self, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         enable_raw_mode()?;
         let mut stdout = std::io::stdout();
         execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+        let addr = ctx.address().clone();
+        std::thread::spawn(move || -> Result<(), Error> {
+            loop {
+                let event = crossterm::event::read()?;
+                addr.send(event)?;
+            }
+        });
         Ok(())
     }
 
@@ -54,8 +61,17 @@ impl Actor for Dashboard {
 }
 
 #[async_trait]
-impl Do<Interrupt> for Dashboard {
-    async fn handle(&mut self, _: Interrupt, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+impl Do<TermEvent> for Dashboard {
+    async fn handle(
+        &mut self,
+        event: TermEvent,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Error> {
+        if let TermEvent::Key(key) = event {
+            if let KeyCode::Char('q') = key.code {
+                ctx.shutdown();
+            }
+        }
         Ok(())
     }
 }

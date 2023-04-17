@@ -1,7 +1,7 @@
 use super::action::{Do, Interrupt};
 use super::actor::Actor;
 use super::handler::Envelope;
-use super::joint::{ActorState, AddressJoint};
+use super::joint::ActorState;
 use thiserror::Error;
 use tokio::sync::{mpsc, watch};
 
@@ -24,12 +24,11 @@ impl<A: Actor> Clone for Address<A> {
 }
 
 impl<A: Actor> Address<A> {
-    pub(super) fn new() -> (Self, AddressJoint<A>) {
-        let (tx_event, rx_event) = mpsc::unbounded_channel();
-        let (tx_state, rx_state) = watch::channel(ActorState::Active);
-        let joint = AddressJoint::new(rx_event, tx_state);
-        let addr = Self { tx_event, rx_state };
-        (addr, joint)
+    pub(super) fn new(
+        tx_event: mpsc::UnboundedSender<Envelope<A>>,
+        rx_state: watch::Receiver<ActorState>,
+    ) -> Self {
+        Self { tx_event, rx_state }
     }
 
     pub fn send<E>(&self, event: E) -> Result<(), SendError>
