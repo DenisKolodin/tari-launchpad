@@ -25,8 +25,10 @@ impl EventHandle {
         let handle = std::thread::spawn({
             let interrupted = interrupted.clone();
             move || -> Result<(), Error> {
-                while interrupted.load(Ordering::Relaxed) {
-                    if poll(Duration::from_secs(1))? {
+                while !interrupted.load(Ordering::Relaxed) {
+                    let duration = Duration::from_millis(200);
+                    let has_event = poll(duration)?;
+                    if has_event {
                         let event = read()?;
                         addr.send(TermEvent::Event(event))?;
                     }

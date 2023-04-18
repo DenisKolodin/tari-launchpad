@@ -49,6 +49,9 @@ impl Actor for Dashboard {
         enable_raw_mode()?;
         let mut stdout = std::io::stdout();
         execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+        let backend = CrosstermBackend::new(stdout);
+        let terminal = Terminal::new(backend)?;
+        self.terminal = Some(terminal);
         let addr = ctx.address().clone();
         let handle = EventHandle::new(addr);
         self.event_handle = Some(handle);
