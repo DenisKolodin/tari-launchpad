@@ -6,9 +6,19 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use std::io::Stdout;
+use std::thread::JoinHandle;
+use std::time::Duration;
+use strum::{Display, EnumCount, EnumIter, FromRepr, IntoEnumIterator};
 use tact::actors::{Actor, ActorContext, Do};
 use thiserror::Error;
-use tui::{backend::CrosstermBackend, Terminal};
+use tui::{
+    backend::CrosstermBackend,
+    layout::{Constraint, Direction, Layout, Rect},
+    style::{Color, Modifier, Style},
+    text::{Span, Spans},
+    widgets::{Block, Borders, Tabs},
+    Frame, Terminal,
+};
 
 type Term = Terminal<CrosstermBackend<Stdout>>;
 
@@ -20,11 +30,15 @@ pub enum DashboardError {
 
 pub struct Dashboard {
     terminal: Option<Term>,
+    events_thread: Option<JoinHandle<Result<(), Error>>>,
 }
 
 impl Dashboard {
     pub fn new() -> Self {
-        Self { terminal: None }
+        Self {
+            terminal: None,
+            events_thread: None,
+        }
     }
 }
 
@@ -35,12 +49,15 @@ impl Actor for Dashboard {
         let mut stdout = std::io::stdout();
         execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
         let addr = ctx.address().clone();
-        std::thread::spawn(move || -> Result<(), Error> {
+        let handle = std::thread::spawn(move || -> Result<(), Error> {
             loop {
-                let event = crossterm::event::read()?;
-                addr.send(event)?;
+                if crossterm::event::poll(Duration::from_secs(1))? {
+                    let event = crossterm::event::read()?;
+                    addr.send(event)?;
+                }
             }
         });
+        self.events_thread = Some(handle);
         Ok(())
     }
 
@@ -72,6 +89,62 @@ impl Do<TermEvent> for Dashboard {
                 ctx.shutdown();
             }
         }
+        ctx.do_next(Redraw)?;
         Ok(())
+    }
+}
+
+struct Redraw;
+
+#[async_trait]
+impl Do<Redraw> for Dashboard {
+    async fn handle(&mut self, _event: Redraw, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        let terminal = self
+            .terminal
+            .as_mut()
+            .ok_or_else(|| DashboardError::NoTerminal)?;
+        terminal.draw(|f| {
+            let mut view = View { f };
+            view.render();
+        })?;
+        Ok(())
+    }
+}
+
+#[derive(Debug, EnumCount, EnumIter, FromRepr, Clone, Copy, Display)]
+pub enum Tab {
+    Containers,
+    Wallet,
+}
+
+struct View<'a, 'b> {
+    f: &'a mut Frame<'b, CrosstermBackend<Stdout>>,
+}
+
+impl<'a, 'b> View<'a, 'b> {
+    fn render(&mut self) {
+        let _rect = self.render_tabs();
+    }
+
+    fn render_tabs(&mut self) -> Rect {
+        let main_chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([Constraint::Length(3), Constraint::Min(0)].as_ref())
+            .split(self.f.size());
+
+        let titles = Tab::iter()
+            .map(|s| Spans::from(vec![Span::raw(s.to_string())]))
+            .collect();
+        let tabs = Tabs::new(titles)
+            .block(Block::default().borders(Borders::ALL).title("Tabs"))
+            //.select(self.dashboard_state.selected_tab as usize)
+            .style(Style::default().fg(Color::Cyan))
+            .highlight_style(
+                Style::default()
+                    .add_modifier(Modifier::BOLD)
+                    .bg(Color::Black),
+            );
+        self.f.render_widget(tabs, main_chunks[0]);
+        main_chunks[1]
     }
 }
