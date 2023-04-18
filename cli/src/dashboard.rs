@@ -1,13 +1,12 @@
+use crate::events::{EventHandle, TermEvent};
 use anyhow::Error;
 use async_trait::async_trait;
 use crossterm::{
-    event::{DisableMouseCapture, EnableMouseCapture, Event as TermEvent, KeyCode},
+    event::{DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use std::io::Stdout;
-use std::thread::JoinHandle;
-use std::time::Duration;
 use strum::{Display, EnumCount, EnumIter, FromRepr, IntoEnumIterator};
 use tact::actors::{Actor, ActorContext, Do};
 use thiserror::Error;
@@ -26,18 +25,20 @@ type Term = Terminal<CrosstermBackend<Stdout>>;
 pub enum DashboardError {
     #[error("Terminal is not connected")]
     NoTerminal,
+    #[error("Events thread is not started")]
+    NoEvents,
 }
 
 pub struct Dashboard {
     terminal: Option<Term>,
-    events_thread: Option<JoinHandle<Result<(), Error>>>,
+    event_handle: Option<EventHandle>,
 }
 
 impl Dashboard {
     pub fn new() -> Self {
         Self {
             terminal: None,
-            events_thread: None,
+            event_handle: None,
         }
     }
 }
@@ -49,15 +50,8 @@ impl Actor for Dashboard {
         let mut stdout = std::io::stdout();
         execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
         let addr = ctx.address().clone();
-        let handle = std::thread::spawn(move || -> Result<(), Error> {
-            loop {
-                if crossterm::event::poll(Duration::from_secs(1))? {
-                    let event = crossterm::event::read()?;
-                    addr.send(event)?;
-                }
-            }
-        });
-        self.events_thread = Some(handle);
+        let handle = EventHandle::new(addr);
+        self.event_handle = Some(handle);
         Ok(())
     }
 
@@ -84,12 +78,22 @@ impl Do<TermEvent> for Dashboard {
         event: TermEvent,
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Error> {
-        if let TermEvent::Key(key) = event {
-            if let KeyCode::Char('q') = key.code {
+        match event {
+            TermEvent::Event(event) => {
+                if let Event::Key(key) = event {
+                    if let KeyCode::Char('q') = key.code {
+                        self.event_handle
+                            .as_mut()
+                            .ok_or_else(|| DashboardError::NoEvents)?
+                            .interrupt();
+                    }
+                }
+                ctx.do_next(Redraw)?;
+            }
+            TermEvent::End => {
                 ctx.shutdown();
             }
         }
-        ctx.do_next(Redraw)?;
         Ok(())
     }
 }
@@ -98,7 +102,7 @@ struct Redraw;
 
 #[async_trait]
 impl Do<Redraw> for Dashboard {
-    async fn handle(&mut self, _event: Redraw, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    async fn handle(&mut self, _event: Redraw, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         let terminal = self
             .terminal
             .as_mut()
