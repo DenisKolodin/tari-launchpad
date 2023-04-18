@@ -55,6 +55,7 @@ impl Actor for Dashboard {
         let addr = ctx.address().clone();
         let handle = EventHandle::new(addr);
         self.event_handle = Some(handle);
+        ctx.do_next(Redraw)?;
         Ok(())
     }
 
