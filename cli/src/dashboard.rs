@@ -15,7 +15,7 @@ use tui::{
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Span, Spans},
-    widgets::{Block, Borders, Tabs},
+    widgets::{Block, Borders, Tabs, Widget},
     Frame, Terminal,
 };
 
