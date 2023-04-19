@@ -1,4 +1,4 @@
-use crate::component::Component;
+use crate::component::{Component, ComponentContext};
 use crossterm::event::KeyCode;
 use std::io::Stdout;
 use strum::{Display, EnumCount, EnumIter, FromRepr, IntoEnumIterator};
@@ -17,25 +17,39 @@ pub enum AppTab {
     Wallet,
 }
 
-pub struct AppTabs {
-    tab: AppTab,
+pub struct AppTabs<T> {
+    selected_tab: T,
 }
 
-impl Component for AppTabs {
-    fn update(&mut self, key: KeyCode) {}
-    fn render<'f>(&self, rect: Rect, f: &mut Frame<'f, CrosstermBackend<Stdout>>) {
-        let titles = AppTab::iter()
+impl<T> AppTabs<T> {}
+
+impl<T> Component for AppTabs<T>
+where
+    T: IntoEnumIterator + Copy + Into<usize> + ToString,
+{
+    fn update(&mut self, key: KeyCode) {
+        match key {
+            KeyCode::Up | KeyCode::Char('k') => {}
+            KeyCode::Down | KeyCode::Char('j') => {}
+            KeyCode::Left | KeyCode::Char('h') => {}
+            KeyCode::Right | KeyCode::Char('l') => {}
+            _ => {}
+        }
+    }
+
+    fn render<'a>(&self, ctx: &mut ComponentContext<'a>) {
+        let titles = T::iter()
             .map(|s| Spans::from(vec![Span::raw(s.to_string())]))
             .collect();
         let tabs = Tabs::new(titles)
             .block(Block::default().borders(Borders::ALL).title("Tabs"))
-            //.select(self.dashboard_state.selected_tab as usize)
+            .select(self.selected_tab.into())
             .style(Style::default().fg(Color::Cyan))
             .highlight_style(
                 Style::default()
                     .add_modifier(Modifier::BOLD)
                     .bg(Color::Black),
             );
-        f.render_widget(tabs, rect);
+        ctx.render(tabs);
     }
 }
