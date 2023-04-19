@@ -1,3 +1,4 @@
+pub mod main_view;
 pub mod tabs;
 
 use crossterm::event::KeyCode;
