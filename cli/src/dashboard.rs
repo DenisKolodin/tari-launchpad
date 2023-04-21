@@ -1,3 +1,4 @@
+use crate::component::{main_view::MainView, Component};
 use crate::events::{EventHandle, TermEvent};
 use anyhow::Error;
 use async_trait::async_trait;
@@ -32,6 +33,7 @@ pub enum DashboardError {
 pub struct Dashboard {
     terminal: Option<Term>,
     event_handle: Option<EventHandle>,
+    main_view: MainView,
 }
 
 impl Dashboard {
@@ -39,6 +41,7 @@ impl Dashboard {
         Self {
             terminal: None,
             event_handle: None,
+            main_view: MainView::new(),
         }
     }
 }
@@ -112,47 +115,8 @@ impl Do<Redraw> for Dashboard {
             .as_mut()
             .ok_or_else(|| DashboardError::NoTerminal)?;
         terminal.draw(|f| {
-            let mut view = View { f };
-            view.render();
+            self.main_view.draw(f, f.size());
         })?;
         Ok(())
-    }
-}
-
-#[derive(Debug, EnumCount, EnumIter, FromRepr, Clone, Copy, Display)]
-pub enum Tab {
-    Containers,
-    Wallet,
-}
-
-struct View<'a, 'b> {
-    f: &'a mut Frame<'b, CrosstermBackend<Stdout>>,
-}
-
-impl<'a, 'b> View<'a, 'b> {
-    fn render(&mut self) {
-        let _rect = self.render_tabs();
-    }
-
-    fn render_tabs(&mut self) -> Rect {
-        let main_chunks = Layout::default()
-            .direction(Direction::Vertical)
-            .constraints([Constraint::Length(3), Constraint::Min(0)].as_ref())
-            .split(self.f.size());
-
-        let titles = Tab::iter()
-            .map(|s| Spans::from(vec![Span::raw(s.to_string())]))
-            .collect();
-        let tabs = Tabs::new(titles)
-            .block(Block::default().borders(Borders::ALL).title("Tabs"))
-            //.select(self.dashboard_state.selected_tab as usize)
-            .style(Style::default().fg(Color::Cyan))
-            .highlight_style(
-                Style::default()
-                    .add_modifier(Modifier::BOLD)
-                    .bg(Color::Black),
-            );
-        self.f.render_widget(tabs, main_chunks[0]);
-        main_chunks[1]
     }
 }
