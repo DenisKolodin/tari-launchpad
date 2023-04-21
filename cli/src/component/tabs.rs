@@ -31,6 +31,10 @@ impl<T> AppTabs<T> {
     pub fn new(selected_tab: T) -> Self {
         Self { selected_tab }
     }
+
+    pub fn selected(&self) -> &T {
+        &self.selected_tab
+    }
 }
 
 impl<T> Input for AppTabs<T> {

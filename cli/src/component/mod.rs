@@ -1,3 +1,4 @@
+pub mod containers_scene;
 pub mod main_view;
 pub mod tabs;
 
