@@ -1,5 +1,5 @@
 use crate::component::tabs::{AppTab, AppTabs};
-use crate::component::{Component, Outcome};
+use crate::component::{Component, Input, Move};
 use crossterm::event::KeyCode;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
@@ -17,12 +17,14 @@ impl MainView {
     }
 }
 
-impl<B: Backend> Component<B> for MainView {
-    fn update(&mut self, key: KeyCode) -> Option<Outcome> {
-        // self.tabs.update(key);
+impl Input for MainView {
+    fn on_input(&mut self, key: KeyCode) -> Option<Move> {
+        self.tabs.on_input(key);
         None
     }
+}
 
+impl<B: Backend> Component<B> for MainView {
     fn draw(&self, f: &mut Frame<B>, rect: Rect) {
         let main_chunks = Layout::default()
             .direction(Direction::Vertical)

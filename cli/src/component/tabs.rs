@@ -1,4 +1,4 @@
-use crate::component::{Component, Outcome};
+use crate::component::{Component, Input, Move};
 use crossterm::event::KeyCode;
 use std::io::Stdout;
 use strum::{Display, EnumCount, EnumIter, FromRepr, IntoEnumIterator};
@@ -33,14 +33,8 @@ impl<T> AppTabs<T> {
     }
 }
 
-impl<T> AppTabs<T> {}
-
-impl<B, T> Component<B> for AppTabs<T>
-where
-    B: Backend,
-    T: IntoEnumIterator + Copy + Into<usize> + ToString,
-{
-    fn update(&mut self, key: KeyCode) -> Option<Outcome> {
+impl<T> Input for AppTabs<T> {
+    fn on_input(&mut self, key: KeyCode) -> Option<Move> {
         match key {
             KeyCode::Up | KeyCode::Char('k') => {}
             KeyCode::Down | KeyCode::Char('j') => {}
@@ -50,7 +44,13 @@ where
         }
         None
     }
+}
 
+impl<B, T> Component<B> for AppTabs<T>
+where
+    B: Backend,
+    T: IntoEnumIterator + Copy + Into<usize> + ToString,
+{
     fn draw(&self, f: &mut Frame<B>, rect: Rect) {
         let titles = T::iter()
             .map(|s| Spans::from(vec![Span::raw(s.to_string())]))

@@ -1,4 +1,4 @@
-use crate::component::{main_view::MainView, Component};
+use crate::component::{main_view::MainView, Component, Input};
 use crate::events::{EventHandle, TermEvent};
 use anyhow::Error;
 use async_trait::async_trait;
@@ -94,6 +94,7 @@ impl Do<TermEvent> for Dashboard {
                             .ok_or_else(|| DashboardError::NoEvents)?
                             .interrupt();
                     }
+                    self.main_view.on_input(key.code);
                 }
                 ctx.do_next(Redraw)?;
             }

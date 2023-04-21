@@ -8,14 +8,19 @@ use tui::layout::Rect;
 use tui::widgets::Widget;
 use tui::Frame;
 
-pub enum Outcome {
+pub trait Component<B: Backend> {
+    /// A context reference a mutable to modify the frame.
+    fn draw(&self, f: &mut Frame<B>, rect: Rect);
+}
+
+pub enum Move {
     Out,
+    Up,
+    Down,
     Next,
     Prev,
 }
 
-pub trait Component<B: Backend> {
-    fn update(&mut self, key: KeyCode) -> Option<Outcome>;
-    /// A context reference a mutable to modify the frame.
-    fn draw(&self, f: &mut Frame<B>, rect: Rect);
+pub trait Input {
+    fn on_input(&mut self, key: KeyCode) -> Option<Move>;
 }
