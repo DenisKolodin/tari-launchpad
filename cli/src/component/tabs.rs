@@ -17,6 +17,12 @@ pub enum AppTab {
     Wallet,
 }
 
+impl From<AppTab> for usize {
+    fn from(tab: AppTab) -> Self {
+        tab as Self
+    }
+}
+
 pub struct AppTabs<T> {
     selected_tab: T,
 }
@@ -37,7 +43,7 @@ where
         }
     }
 
-    fn render<'a>(&self, ctx: &mut ComponentContext<'a>) {
+    fn render<'a>(&self, rect: Rect, ctx: &mut ComponentContext<'a>) {
         let titles = T::iter()
             .map(|s| Spans::from(vec![Span::raw(s.to_string())]))
             .collect();

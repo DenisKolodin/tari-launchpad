@@ -10,7 +10,8 @@ use tui::Frame;
 
 pub trait Component {
     fn update(&mut self, key: KeyCode);
-    fn render<'a>(&self, ctx: &mut ComponentContext<'a>);
+    /// A context reference a mutable to modify the frame.
+    fn render<'a>(&self, rect: Rect, ctx: &mut ComponentContext<'a>);
 }
 
 pub struct ComponentContext<'a> {
