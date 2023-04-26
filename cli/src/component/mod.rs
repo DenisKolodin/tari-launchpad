@@ -1,12 +1,11 @@
 pub mod containers_scene;
+pub mod elements;
 pub mod main_view;
 pub mod tabs;
 
 use crossterm::event::KeyCode;
-use std::io::Stdout;
 use tui::backend::Backend;
 use tui::layout::Rect;
-use tui::widgets::Widget;
 use tui::Frame;
 
 pub trait Component<B: Backend> {

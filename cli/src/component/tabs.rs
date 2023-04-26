@@ -1,6 +1,5 @@
-use crate::component::{Component, Input, Move};
+use crate::component::{elements::block_with_title, Component, Input, Move};
 use crossterm::event::KeyCode;
-use std::io::Stdout;
 use strum::{Display, EnumCount, EnumIter, FromRepr, IntoEnumIterator};
 use tui::{
     backend::Backend,
@@ -59,15 +58,12 @@ where
         let titles = T::iter()
             .map(|s| Spans::from(vec![Span::raw(s.to_string())]))
             .collect();
+        let block = block_with_title("Tabs");
         let tabs = Tabs::new(titles)
-            .block(Block::default().borders(Borders::ALL).title("Tabs"))
+            .block(block)
             .select(self.selected_tab.into())
-            .style(Style::default().fg(Color::Cyan))
-            .highlight_style(
-                Style::default()
-                    .add_modifier(Modifier::BOLD)
-                    .bg(Color::Black),
-            );
+            .style(Style::default().fg(Color::White))
+            .highlight_style(Style::default().fg(Color::Magenta));
         f.render_widget(tabs, rect);
     }
 }

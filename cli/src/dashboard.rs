@@ -8,17 +8,9 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use std::io::Stdout;
-use strum::{Display, EnumCount, EnumIter, FromRepr, IntoEnumIterator};
 use tact::actors::{Actor, ActorContext, Do};
 use thiserror::Error;
-use tui::{
-    backend::CrosstermBackend,
-    layout::{Constraint, Direction, Layout, Rect},
-    style::{Color, Modifier, Style},
-    text::{Span, Spans},
-    widgets::{Block, Borders, Tabs, Widget},
-    Frame, Terminal,
-};
+use tui::{backend::CrosstermBackend, Terminal};
 
 type Term = Terminal<CrosstermBackend<Stdout>>;
 
