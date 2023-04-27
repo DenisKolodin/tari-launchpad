@@ -1,6 +1,7 @@
-pub mod containers_scene;
 pub mod elements;
 pub mod main_view;
+mod mode;
+mod scene;
 pub mod tabs;
 
 use crossterm::event::KeyCode;
