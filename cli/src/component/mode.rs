@@ -7,12 +7,32 @@ use tui::style::{Color, Modifier, Style};
 use tui::text::{Span, Spans, Text};
 use tui::widgets::{Block, Borders, Paragraph};
 
+pub enum Mode {
+    Normal,
+    Expert,
+    Settings,
+}
+
 /// A selector to switch between `Normal`, `Expert`, and `Settings`.
-pub struct ModeSelector {}
+pub struct ModeSelector {
+    expert: bool,
+    settings: bool,
+}
 
 impl ModeSelector {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            expert: false,
+            settings: false,
+        }
+    }
+
+    pub fn selected(&self) -> Mode {
+        match (self.expert, self.settings) {
+            (_, true) => Mode::Settings,
+            (true, false) => Mode::Expert,
+            (false, false) => Mode::Normal,
+        }
     }
 }
 
