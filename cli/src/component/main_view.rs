@@ -1,4 +1,4 @@
-use crate::component::mode::ModeSelector;
+use crate::component::header::Header;
 use crate::component::scene;
 use crate::component::tabs::{AppTab, AppTabs};
 use crate::component::{Component, Focus, Input};
@@ -9,7 +9,7 @@ use tui::Frame;
 
 pub struct MainView {
     tabs: AppTabs<AppTab>,
-    mode_selector: ModeSelector,
+    header: Header,
     containers_scene: scene::Containers,
     wallet_scene: scene::Wallet,
 }
@@ -18,7 +18,7 @@ impl MainView {
     pub fn new() -> Self {
         Self {
             tabs: AppTabs::new(),
-            mode_selector: ModeSelector::new(),
+            header: Header::new(),
             containers_scene: scene::Containers::new(),
             wallet_scene: scene::Wallet::new(),
         }
@@ -43,18 +43,18 @@ impl<B: Backend> Component<B> for MainView {
             Constraint::Length(3),
             Constraint::Min(0),
         ];
-        let main_chunks = Layout::default()
+        let chunks = Layout::default()
             .direction(Direction::Vertical)
             .constraints(constraints)
             .split(rect);
-        self.mode_selector.draw(f, main_chunks[0]);
-        self.tabs.draw(f, main_chunks[1]);
+        self.header.draw(f, chunks[0]);
+        self.tabs.draw(f, chunks[1]);
         match self.tabs.selected() {
             Some(AppTab::Containers) => {
-                self.containers_scene.draw(f, main_chunks[2]);
+                self.containers_scene.draw(f, chunks[2]);
             }
             Some(AppTab::Wallet) => {
-                self.wallet_scene.draw(f, main_chunks[2]);
+                self.wallet_scene.draw(f, chunks[2]);
             }
             None => {}
         }

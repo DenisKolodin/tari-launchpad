@@ -1,4 +1,4 @@
-use crate::component::{main_view::MainView, Component, Input};
+use crate::component::{Component, Input, MainView};
 use crate::events::{EventHandle, TermEvent};
 use anyhow::Error;
 use async_trait::async_trait;

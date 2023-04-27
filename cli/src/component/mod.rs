@@ -1,8 +1,12 @@
-pub mod elements;
-pub mod main_view;
+mod elements;
+mod header;
+mod logo;
+mod main_view;
 mod mode;
 mod scene;
-pub mod tabs;
+mod tabs;
+
+pub use main_view::MainView;
 
 use crossterm::event::KeyCode;
 use tui::backend::Backend;
