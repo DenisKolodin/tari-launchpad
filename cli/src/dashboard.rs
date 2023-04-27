@@ -86,7 +86,7 @@ impl Do<TermEvent> for Dashboard {
                             .ok_or_else(|| DashboardError::NoEvents)?
                             .interrupt();
                     }
-                    self.main_view.on_input(key.code);
+                    self.main_view.on_input(key);
                 }
                 ctx.do_next(Redraw)?;
             }

@@ -2,7 +2,7 @@ use crate::component::elements::block_with_title;
 use crate::component::logo::Logo;
 use crate::component::mode::ModeSelector;
 use crate::component::{Component, Focus, Frame, Input};
-use crossterm::event::KeyCode;
+use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::widgets::{Block, Borders};
@@ -22,7 +22,7 @@ impl Header {
 }
 
 impl Input for Header {
-    fn on_input(&mut self, key: KeyCode) -> Option<Focus> {
+    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
         None
     }
 }

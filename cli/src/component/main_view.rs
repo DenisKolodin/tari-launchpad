@@ -2,7 +2,7 @@ use crate::component::header::Header;
 use crate::component::scene;
 use crate::component::tabs::{AppTab, AppTabs};
 use crate::component::{Component, Focus, Input};
-use crossterm::event::KeyCode;
+use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::Frame;
@@ -26,7 +26,7 @@ impl MainView {
 }
 
 impl Input for MainView {
-    fn on_input(&mut self, key: KeyCode) -> Option<Focus> {
+    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
         self.tabs.on_input(key);
         match self.tabs.selected()? {
             AppTab::Containers => {}

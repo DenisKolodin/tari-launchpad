@@ -8,7 +8,7 @@ mod tabs;
 
 pub use main_view::MainView;
 
-use crossterm::event::KeyCode;
+use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::Rect;
 use tui::Frame;
@@ -30,5 +30,5 @@ pub enum Focus {
 }
 
 pub trait Input {
-    fn on_input(&mut self, key: KeyCode) -> Option<Focus>;
+    fn on_input(&mut self, key: KeyEvent) -> Option<Focus>;
 }

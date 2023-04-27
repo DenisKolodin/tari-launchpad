@@ -1,6 +1,6 @@
 use crate::component::elements::block_with_title;
 use crate::component::{Component, Focus, Frame, Input};
-use crossterm::event::KeyCode;
+use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::Rect;
 use tui::widgets::{Block, Borders};
@@ -14,7 +14,7 @@ impl Wallet {
 }
 
 impl Input for Wallet {
-    fn on_input(&mut self, key: KeyCode) -> Option<Focus> {
+    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
         None
     }
 }

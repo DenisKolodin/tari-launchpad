@@ -1,5 +1,5 @@
 use crate::component::{elements::block_with_title, Component, Focus, Input};
-use crossterm::event::KeyCode;
+use crossterm::event::{KeyCode, KeyEvent};
 use strum::{Display, EnumCount, EnumIter, FromRepr, IntoEnumIterator};
 use tui::{
     backend::Backend,
@@ -66,9 +66,9 @@ impl<T> AppTabs<T> {
 }
 
 impl<T> Input for AppTabs<T> {
-    fn on_input(&mut self, key: KeyCode) -> Option<Focus> {
+    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
         let mut move_to = None;
-        match key {
+        match key.code {
             KeyCode::Up | KeyCode::Char('k') => {
                 move_to = Some(Focus::Up);
             }

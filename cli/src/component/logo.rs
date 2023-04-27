@@ -1,5 +1,5 @@
 use crate::component::{Component, Focus, Frame, Input};
-use crossterm::event::KeyCode;
+use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::{Alignment, Rect};
 use tui::style::{Color, Modifier, Style};
@@ -15,7 +15,7 @@ impl Logo {
 }
 
 impl Input for Logo {
-    fn on_input(&mut self, key: KeyCode) -> Option<Focus> {
+    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
         None
     }
 }
