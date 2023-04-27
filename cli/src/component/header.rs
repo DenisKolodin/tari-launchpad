@@ -23,6 +23,8 @@ impl Header {
 
 impl Input for Header {
     fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
+        self.logo.on_input(key);
+        self.mode_selector.on_input(key);
         None
     }
 }

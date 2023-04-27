@@ -8,8 +8,8 @@ use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::Frame;
 
 pub struct MainView {
-    tabs: AppTabs<AppTab>,
     header: Header,
+    tabs: AppTabs<AppTab>,
     containers_scene: scene::Containers,
     wallet_scene: scene::Wallet,
 }
@@ -17,8 +17,8 @@ pub struct MainView {
 impl MainView {
     pub fn new() -> Self {
         Self {
-            tabs: AppTabs::new(),
             header: Header::new(),
+            tabs: AppTabs::new(),
             containers_scene: scene::Containers::new(),
             wallet_scene: scene::Wallet::new(),
         }
@@ -27,6 +27,7 @@ impl MainView {
 
 impl Input for MainView {
     fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
+        self.header.on_input(key);
         self.tabs.on_input(key);
         match self.tabs.selected()? {
             AppTab::Containers => {}
