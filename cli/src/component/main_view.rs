@@ -1,6 +1,6 @@
 use crate::component::containers_scene::ContainersScene;
 use crate::component::tabs::{AppTab, AppTabs};
-use crate::component::{Component, Input, Move};
+use crate::component::{Component, Focus, Input};
 use crossterm::event::KeyCode;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
@@ -14,16 +14,16 @@ pub struct MainView {
 impl MainView {
     pub fn new() -> Self {
         Self {
-            tabs: AppTabs::new(AppTab::Containers),
+            tabs: AppTabs::new(),
             containers_scene: ContainersScene::new(),
         }
     }
 }
 
 impl Input for MainView {
-    fn on_input(&mut self, key: KeyCode) -> Option<Move> {
+    fn on_input(&mut self, key: KeyCode) -> Option<Focus> {
         self.tabs.on_input(key);
-        match self.tabs.selected() {
+        match self.tabs.selected()? {
             AppTab::Containers => {}
             AppTab::Wallet => {}
         }
@@ -39,10 +39,11 @@ impl<B: Backend> Component<B> for MainView {
             .split(rect);
         self.tabs.draw(f, main_chunks[0]);
         match self.tabs.selected() {
-            AppTab::Containers => {
+            Some(AppTab::Containers) => {
                 self.containers_scene.draw(f, main_chunks[1]);
             }
-            AppTab::Wallet => {}
+            Some(AppTab::Wallet) => {}
+            None => {}
         }
     }
 }

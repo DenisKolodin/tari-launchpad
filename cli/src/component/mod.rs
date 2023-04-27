@@ -13,7 +13,10 @@ pub trait Component<B: Backend> {
     fn draw(&self, f: &mut Frame<B>, rect: Rect);
 }
 
-pub enum Move {
+pub enum Focus {
+    /// Entering into a component.
+    In,
+    /// Exiting out of a component.
     Out,
     Up,
     Down,
@@ -22,5 +25,5 @@ pub enum Move {
 }
 
 pub trait Input {
-    fn on_input(&mut self, key: KeyCode) -> Option<Move>;
+    fn on_input(&mut self, key: KeyCode) -> Option<Focus>;
 }
