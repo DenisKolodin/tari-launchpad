@@ -1,4 +1,5 @@
 use crate::component::{Component, Frame};
+use crate::state::LaunchpadState;
 use tui::backend::Backend;
 use tui::layout::{Alignment, Rect};
 use tui::style::{Color, Modifier, Style};
@@ -14,6 +15,8 @@ impl Logo {
 }
 
 impl<B: Backend> Component<B> for Logo {
+    type State = LaunchpadState;
+
     fn draw(&self, f: &mut Frame<B>, rect: Rect) {
         let bold = Style::default()
             .fg(Color::White)

@@ -17,6 +17,8 @@ use tui::layout::Rect;
 use tui::Frame;
 
 pub trait Component<B: Backend> {
+    type State;
+
     /// A context reference a mutable to modify the frame.
     fn draw(&self, f: &mut Frame<B>, rect: Rect);
 }

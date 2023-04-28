@@ -1,5 +1,6 @@
 use crate::component::elements::block_with_title;
 use crate::component::{Component, Focus, Frame, Input};
+use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::Rect;
@@ -19,6 +20,8 @@ impl Input for Containers {
 }
 
 impl<B: Backend> Component<B> for Containers {
+    type State = LaunchpadState;
+
     fn draw(&self, f: &mut Frame<B>, rect: Rect) {
         let block = block_with_title(Some("Containers"));
         f.render_widget(block, rect);

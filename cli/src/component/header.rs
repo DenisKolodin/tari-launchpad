@@ -1,6 +1,7 @@
 use crate::component::logo::Logo;
 use crate::component::mode::ModeSelector;
 use crate::component::{Component, Focus, Frame, Input};
+use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
@@ -27,6 +28,8 @@ impl Input for Header {
 }
 
 impl<B: Backend> Component<B> for Header {
+    type State = LaunchpadState;
+
     fn draw(&self, f: &mut Frame<B>, rect: Rect) {
         let constraints = [Constraint::Percentage(40), Constraint::Percentage(60)];
         let chunks = Layout::default()

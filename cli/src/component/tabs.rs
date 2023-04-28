@@ -1,4 +1,5 @@
 use crate::component::{elements::block_with_title, Component, Focus, Input};
+use crate::state::LaunchpadState;
 use crossterm::event::{KeyCode, KeyEvent};
 use strum::IntoEnumIterator;
 use tui::{
@@ -84,6 +85,8 @@ where
     B: Backend,
     T: IntoEnumIterator + Copy + ToString,
 {
+    type State = LaunchpadState;
+
     fn draw(&self, f: &mut Frame<B>, rect: Rect) {
         let tag_style = Style::default().fg(Color::Rgb(4, 209, 144));
         let titles = self
