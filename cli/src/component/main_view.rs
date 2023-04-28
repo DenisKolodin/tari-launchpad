@@ -36,13 +36,17 @@ impl MainView {
 impl Input for MainView {
     fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
         self.header.on_input(key);
-        /*
-        self.tabs.on_input(key);
-        match self.tabs.selected()? {
-            AppTab::Containers => {}
-            AppTab::Wallet => {}
+        match self.header.mode_selector.selected() {
+            Mode::Normal => {
+                self.normal_tabs.on_input(key);
+            }
+            Mode::Expert => {
+                self.expert_tabs.on_input(key);
+            }
+            Mode::Settings => {
+                self.settings_tabs.on_input(key);
+            }
         }
-        */
         None
     }
 }
