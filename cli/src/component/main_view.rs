@@ -1,6 +1,5 @@
 use crate::component::expert::ExpertTabs;
-use crate::component::header::Header;
-use crate::component::mode::Mode;
+use crate::component::header::{mode::Mode, Header};
 use crate::component::normal::NormalTabs;
 use crate::component::scene;
 use crate::component::settings::SettingsTabs;

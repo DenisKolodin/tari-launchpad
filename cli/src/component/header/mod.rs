@@ -1,8 +1,11 @@
-use crate::component::logo::Logo;
-use crate::component::mode::ModeSelector;
+pub mod logo;
+pub mod mode;
+
 use crate::component::{Component, Focus, Frame, Input};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
+use logo::Logo;
+use mode::ModeSelector;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 
