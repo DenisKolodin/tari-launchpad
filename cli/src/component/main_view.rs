@@ -55,7 +55,7 @@ impl Input for MainView {
 impl<B: Backend> Component<B> for MainView {
     type State = LaunchpadState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let constraints = [
             Constraint::Length(1),
             Constraint::Length(3),
@@ -65,29 +65,17 @@ impl<B: Backend> Component<B> for MainView {
             .direction(Direction::Vertical)
             .constraints(constraints)
             .split(rect);
-        self.header.draw(f, chunks[0]);
+        self.header.draw(f, chunks[0], state);
         match self.header.mode_selector.selected() {
             Mode::Normal => {
-                self.normal_tabs.draw(f, chunks[1]);
+                self.normal_tabs.draw(f, chunks[1], state);
             }
             Mode::Expert => {
-                self.expert_tabs.draw(f, chunks[1]);
+                self.expert_tabs.draw(f, chunks[1], state);
             }
             Mode::Settings => {
-                self.settings_tabs.draw(f, chunks[1]);
+                self.settings_tabs.draw(f, chunks[1], state);
             }
         }
-        // self.tabs.draw(f, chunks[1]);
-        /*
-        match self.tabs.selected() {
-            Some(AppTab::Containers) => {
-                self.containers_scene.draw(f, chunks[2]);
-            }
-            Some(AppTab::Wallet) => {
-                self.wallet_scene.draw(f, chunks[2]);
-            }
-            None => {}
-        }
-        */
     }
 }

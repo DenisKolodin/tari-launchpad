@@ -30,13 +30,13 @@ impl Input for Header {
 impl<B: Backend> Component<B> for Header {
     type State = LaunchpadState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let constraints = [Constraint::Percentage(40), Constraint::Percentage(60)];
         let chunks = Layout::default()
             .direction(Direction::Horizontal)
             .constraints(constraints)
             .split(rect);
-        self.logo.draw(f, chunks[0]);
-        self.mode_selector.draw(f, chunks[1]);
+        self.logo.draw(f, chunks[0], state);
+        self.mode_selector.draw(f, chunks[1], state);
     }
 }

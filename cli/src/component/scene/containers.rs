@@ -22,7 +22,7 @@ impl Input for Containers {
 impl<B: Backend> Component<B> for Containers {
     type State = LaunchpadState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let block = block_with_title(Some("Containers"));
         f.render_widget(block, rect);
     }

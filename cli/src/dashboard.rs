@@ -1,5 +1,6 @@
 use crate::component::{Component, Input, MainView};
 use crate::events::{EventHandle, TermEvent};
+use crate::state::LaunchpadState;
 use anyhow::Error;
 use async_trait::async_trait;
 use crossterm::{
@@ -26,6 +27,8 @@ pub struct Dashboard {
     terminal: Option<Term>,
     event_handle: Option<EventHandle>,
     main_view: MainView,
+    // TODO: Get the state from a bus
+    state: LaunchpadState,
 }
 
 impl Dashboard {
@@ -34,6 +37,7 @@ impl Dashboard {
             terminal: None,
             event_handle: None,
             main_view: MainView::new(),
+            state: LaunchpadState {},
         }
     }
 }
@@ -108,7 +112,7 @@ impl Do<Redraw> for Dashboard {
             .as_mut()
             .ok_or_else(|| DashboardError::NoTerminal)?;
         terminal.draw(|f| {
-            self.main_view.draw(f, f.size());
+            self.main_view.draw(f, f.size(), &self.state);
         })?;
         Ok(())
     }

@@ -63,7 +63,7 @@ impl Input for ModeSelector {
 impl<B: Backend> Component<B> for ModeSelector {
     type State = LaunchpadState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let not_selected = Style::default().fg(Color::White);
         let selected = Style::default().fg(Color::Magenta);
         let bold = Style::default()

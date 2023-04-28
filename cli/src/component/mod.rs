@@ -20,7 +20,7 @@ pub trait Component<B: Backend> {
     type State;
 
     /// A context reference a mutable to modify the frame.
-    fn draw(&self, f: &mut Frame<B>, rect: Rect);
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State);
 }
 
 pub enum Focus {
