@@ -1,22 +1,15 @@
-use crate::component::{Component, Focus, Frame, Input};
-use crossterm::event::KeyEvent;
+use crate::component::{Component, Frame};
 use tui::backend::Backend;
 use tui::layout::{Alignment, Rect};
 use tui::style::{Color, Modifier, Style};
 use tui::text::{Span, Spans};
-use tui::widgets::{Block, Borders, Paragraph};
+use tui::widgets::Paragraph;
 
 pub struct Logo {}
 
 impl Logo {
     pub fn new() -> Self {
         Self {}
-    }
-}
-
-impl Input for Logo {
-    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
-        None
     }
 }
 

@@ -1,11 +1,9 @@
-use crate::component::elements::block_with_title;
 use crate::component::logo::Logo;
 use crate::component::mode::ModeSelector;
 use crate::component::{Component, Focus, Frame, Input};
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
-use tui::widgets::{Block, Borders};
 
 pub struct Header {
     pub logo: Logo,
@@ -23,7 +21,6 @@ impl Header {
 
 impl Input for Header {
     fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
-        self.logo.on_input(key);
         self.mode_selector.on_input(key);
         None
     }

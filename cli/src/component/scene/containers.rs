@@ -3,7 +3,6 @@ use crate::component::{Component, Focus, Frame, Input};
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::Rect;
-use tui::widgets::{Block, Borders};
 
 pub struct Containers {}
 
@@ -21,7 +20,7 @@ impl Input for Containers {
 
 impl<B: Backend> Component<B> for Containers {
     fn draw(&self, f: &mut Frame<B>, rect: Rect) {
-        let block = block_with_title("Containers");
+        let block = block_with_title(Some("Containers"));
         f.render_widget(block, rect);
     }
 }

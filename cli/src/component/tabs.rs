@@ -1,20 +1,14 @@
 use crate::component::{elements::block_with_title, Component, Focus, Input};
 use crossterm::event::{KeyCode, KeyEvent};
-use strum::{Display, EnumCount, EnumIter, FromRepr, IntoEnumIterator};
+use strum::IntoEnumIterator;
 use tui::{
     backend::Backend,
     layout::Rect,
-    style::{Color, Modifier, Style},
+    style::{Color, Style},
     text::{Span, Spans},
-    widgets::{Block, Borders, Tabs},
+    widgets::Tabs,
     Frame,
 };
-
-#[derive(Debug, EnumCount, EnumIter, FromRepr, Clone, Copy, Display)]
-pub enum AppTab {
-    Containers,
-    Wallet,
-}
 
 pub struct AppTabs<T> {
     selected: usize,
@@ -91,12 +85,18 @@ where
     T: IntoEnumIterator + Copy + ToString,
 {
     fn draw(&self, f: &mut Frame<B>, rect: Rect) {
+        let tag_style = Style::default().fg(Color::Rgb(4, 209, 144));
         let titles = self
             .items
             .iter()
-            .map(|s| Spans::from(vec![Span::raw(s.to_string())]))
+            .map(|s| {
+                Spans::from(vec![
+                    Span::raw(s.to_string()),
+                    // Span::styled(" (running)", tag_style),
+                ])
+            })
             .collect();
-        let block = block_with_title("Tabs");
+        let block = block_with_title(None);
         let tabs = Tabs::new(titles)
             .block(block)
             .select(self.selected)

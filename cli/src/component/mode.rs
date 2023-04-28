@@ -1,12 +1,11 @@
-use crate::component::elements::block_with_title;
 use crate::component::{Component, Focus, Frame, Input};
 use crossterm::event::KeyModifiers;
 use crossterm::event::{KeyCode, KeyEvent};
 use tui::backend::Backend;
 use tui::layout::{Alignment, Rect};
 use tui::style::{Color, Modifier, Style};
-use tui::text::{Span, Spans, Text};
-use tui::widgets::{Block, Borders, Paragraph};
+use tui::text::{Span, Spans};
+use tui::widgets::Paragraph;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Mode {

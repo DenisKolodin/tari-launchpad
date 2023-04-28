@@ -4,7 +4,7 @@ use crate::component::mode::Mode;
 use crate::component::normal::NormalTabs;
 use crate::component::scene;
 use crate::component::settings::SettingsTabs;
-use crate::component::tabs::{AppTab, AppTabs};
+use crate::component::tabs::AppTabs;
 use crate::component::{Component, Focus, Input};
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
