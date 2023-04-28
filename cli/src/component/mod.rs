@@ -1,9 +1,12 @@
 mod elements;
+mod expert;
 mod header;
 mod logo;
 mod main_view;
 mod mode;
+mod normal;
 mod scene;
+mod settings;
 mod tabs;
 
 pub use main_view::MainView;

@@ -16,12 +16,6 @@ pub enum AppTab {
     Wallet,
 }
 
-impl From<AppTab> for usize {
-    fn from(tab: AppTab) -> Self {
-        tab as Self
-    }
-}
-
 pub struct AppTabs<T> {
     selected: usize,
     items: Vec<T>,
@@ -94,7 +88,7 @@ impl<T> Input for AppTabs<T> {
 impl<B, T> Component<B> for AppTabs<T>
 where
     B: Backend,
-    T: IntoEnumIterator + Copy + Into<usize> + ToString,
+    T: IntoEnumIterator + Copy + ToString,
 {
     fn draw(&self, f: &mut Frame<B>, rect: Rect) {
         let titles = self

@@ -8,8 +8,8 @@ use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::widgets::{Block, Borders};
 
 pub struct Header {
-    logo: Logo,
-    mode_selector: ModeSelector,
+    pub logo: Logo,
+    pub mode_selector: ModeSelector,
 }
 
 impl Header {
