@@ -29,8 +29,10 @@ where
 }
 
 impl<T> AppTabs<T> {
-    pub fn selected(&self) -> Option<&T> {
-        self.items.get(self.selected)
+    pub fn selected(&self) -> &T {
+        self.items
+            .get(self.selected)
+            .expect("the selected tab is out of the range (empty tabs list)")
     }
 
     fn next(&mut self) -> bool {

@@ -49,6 +49,12 @@ impl<B: Backend> Component<B> for NormalScene {
             .constraints(constraints)
             .split(rect);
         self.normal_tabs.draw(f, chunks[0], state);
-        self.mining_scene.draw(f, chunks[1], state);
+        match self.normal_tabs.selected() {
+            NormalTabs::Mining => {
+                self.mining_scene.draw(f, chunks[1], state);
+            }
+            NormalTabs::BaseNode => {}
+            NormalTabs::Wallet => {}
+        }
     }
 }
