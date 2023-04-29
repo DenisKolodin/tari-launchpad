@@ -1,6 +1,6 @@
 use crate::component::expert::ExpertTabs;
 use crate::component::header::{mode::Mode, Header};
-use crate::component::normal::NormalTabs;
+use crate::component::normal::{NormalScene, NormalTabs};
 use crate::component::scene;
 use crate::component::settings::SettingsTabs;
 use crate::component::tabs::AppTabs;
@@ -14,6 +14,7 @@ use tui::Frame;
 pub struct MainView {
     header: Header,
     normal_tabs: AppTabs<NormalTabs>,
+    normal_scene: NormalScene,
     expert_tabs: AppTabs<ExpertTabs>,
     settings_tabs: AppTabs<SettingsTabs>,
     containers_scene: scene::Containers,
@@ -25,6 +26,7 @@ impl MainView {
         Self {
             header: Header::new(),
             normal_tabs: AppTabs::new(),
+            normal_scene: NormalScene::new(),
             expert_tabs: AppTabs::new(),
             settings_tabs: AppTabs::new(),
             containers_scene: scene::Containers::new(),
@@ -68,6 +70,7 @@ impl<B: Backend> Component<B> for MainView {
         match self.header.mode_selector.selected() {
             Mode::Normal => {
                 self.normal_tabs.draw(f, chunks[1], state);
+                self.normal_scene.draw(f, chunks[2], state);
             }
             Mode::Expert => {
                 self.expert_tabs.draw(f, chunks[1], state);

@@ -4,6 +4,7 @@ use crate::component::elements::block_with_title;
 use crate::component::{Component, Focus, Frame, Input};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
+use mining::MiningScene;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
@@ -16,11 +17,15 @@ pub enum NormalTabs {
     Wallet,
 }
 
-pub struct NormalScene {}
+pub struct NormalScene {
+    mining_scene: MiningScene,
+}
 
 impl NormalScene {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            mining_scene: MiningScene::new(),
+        }
     }
 }
 
@@ -39,7 +44,6 @@ impl<B: Backend> Component<B> for NormalScene {
             .direction(Direction::Vertical)
             .constraints(constraints)
             .split(rect);
-        let block = block_with_title(None);
-        f.render_widget(block, rect);
+        self.mining_scene.draw(f, chunks[1], state);
     }
 }
