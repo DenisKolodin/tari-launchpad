@@ -1,10 +1,9 @@
-use crate::component::elements::block_with_title;
 use crate::component::{Component, Focus, Frame, Input};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
-use strum::{Display, EnumCount, EnumIter, FromRepr};
+
 use tui::backend::Backend;
-use tui::layout::{Alignment, Constraint, Direction, Layout, Rect};
+use tui::layout::{Alignment, Rect};
 use tui::text::{Span, Spans};
 use tui::widgets::Paragraph;
 
@@ -17,7 +16,7 @@ impl MiningTip {
 }
 
 impl Input for MiningTip {
-    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
+    fn on_input(&mut self, _key: KeyEvent) -> Option<Focus> {
         None
     }
 }
@@ -25,7 +24,7 @@ impl Input for MiningTip {
 impl<B: Backend> Component<B> for MiningTip {
     type State = LaunchpadState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
         let mining = false; // TODO: Get it from the state
         let text = if mining {
             "Awesome! Tari Mining is on."

@@ -14,7 +14,7 @@ impl Wallet {
 }
 
 impl Input for Wallet {
-    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
+    fn on_input(&mut self, _key: KeyEvent) -> Option<Focus> {
         None
     }
 }
@@ -22,7 +22,7 @@ impl Input for Wallet {
 impl<B: Backend> Component<B> for Wallet {
     type State = LaunchpadState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
         let block = block_with_title(Some("Wallet"));
         f.render_widget(block, rect);
     }

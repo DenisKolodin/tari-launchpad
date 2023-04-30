@@ -89,8 +89,8 @@ where
 {
     type State = LaunchpadState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
-        let tag_style = Style::default().fg(Color::Rgb(4, 209, 144));
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
+        let _tag_style = Style::default().fg(Color::Rgb(4, 209, 144));
         let titles = self
             .items
             .iter()

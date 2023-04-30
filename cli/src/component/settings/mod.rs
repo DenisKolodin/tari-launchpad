@@ -1,4 +1,3 @@
-use crate::component::elements::block_with_title;
 use crate::component::tabs::AppTabs;
 use crate::component::{Component, Focus, Frame, Input};
 use crate::state::LaunchpadState;

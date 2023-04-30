@@ -3,7 +3,7 @@ use crate::component::header::{mode::Mode, Header};
 use crate::component::normal::NormalScene;
 use crate::component::scene;
 use crate::component::settings::SettingsScene;
-use crate::component::tabs::AppTabs;
+
 use crate::component::{Component, Focus, Input};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;

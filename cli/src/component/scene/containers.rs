@@ -14,7 +14,7 @@ impl Containers {
 }
 
 impl Input for Containers {
-    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
+    fn on_input(&mut self, _key: KeyEvent) -> Option<Focus> {
         None
     }
 }
@@ -22,7 +22,7 @@ impl Input for Containers {
 impl<B: Backend> Component<B> for Containers {
     type State = LaunchpadState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
         let block = block_with_title(Some("Containers"));
         f.render_widget(block, rect);
     }

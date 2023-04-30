@@ -17,7 +17,7 @@ impl Logo {
 impl<B: Backend> Component<B> for Logo {
     type State = LaunchpadState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
         let bold = Style::default()
             .fg(Color::White)
             .add_modifier(Modifier::BOLD);

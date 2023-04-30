@@ -1,10 +1,9 @@
 mod tip;
 
-use crate::component::elements::block_with_title;
 use crate::component::{Component, Focus, Frame, Input};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
-use strum::{Display, EnumCount, EnumIter, FromRepr};
+
 use tip::MiningTip;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
@@ -22,7 +21,7 @@ impl MiningScene {
 }
 
 impl Input for MiningScene {
-    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
+    fn on_input(&mut self, _key: KeyEvent) -> Option<Focus> {
         None
     }
 }
