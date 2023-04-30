@@ -8,19 +8,11 @@ use tui::style::{Color, Style};
 use tui::text::{Span, Spans};
 use tui::widgets::Paragraph;
 
-struct TariMiningGetter;
-
 pub trait StatusGetter {
     fn get_status(&self, state: &LaunchpadState) -> (&str, Color);
 }
 
-impl StatusGetter for () {
-    fn get_status(&self, state: &LaunchpadState) -> (&str, Color) {
-        ("(running)", Color::Green)
-    }
-}
-
-pub struct StatusBadge<G = ()> {
+pub struct StatusBadge<G> {
     getter: G,
 }
 

@@ -1,11 +1,12 @@
 use crate::component::elements::{block_with_title, logo};
 use crate::component::normal::mining::chrono_button::ChronoButton;
-use crate::component::normal::mining::status_badge::StatusBadge;
+use crate::component::normal::mining::status_badge::{StatusBadge, StatusGetter};
 use crate::component::{Component, Focus, Frame, Input};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
+use tui::style::Color;
 
 const LOGO: &str = r#"
 ╔╦╗┌─┐┬─┐┌─┐┌─┐┌┬┐  ╔╦╗┬┌┐┌┬┌┐┌┌─┐
@@ -13,15 +14,27 @@ const LOGO: &str = r#"
 ╩ ╩└─┘┴└─└─┘└─┘─┴┘  ╩ ╩┴┘└┘┴┘└┘└─┘
 "#;
 
+struct MergedMiningGetter;
+
+impl StatusGetter for MergedMiningGetter {
+    fn get_status(&self, state: &LaunchpadState) -> (&str, Color) {
+        if state.is_merged_mining_active() {
+            ("(Running)", Color::Green)
+        } else {
+            ("(Ready to set)", Color::Cyan)
+        }
+    }
+}
+
 pub struct MergedMiningWidget {
-    status_badge: StatusBadge,
+    status_badge: StatusBadge<MergedMiningGetter>,
     button: ChronoButton,
 }
 
 impl MergedMiningWidget {
     pub fn new() -> Self {
         Self {
-            status_badge: StatusBadge::new(()),
+            status_badge: StatusBadge::new(MergedMiningGetter),
             button: ChronoButton::new(),
         }
     }
