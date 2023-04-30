@@ -1,4 +1,5 @@
 use crate::component::elements::{block_with_title, logo};
+use crate::component::normal::mining::amount::{AmountGetter, AmountIndicator};
 use crate::component::normal::mining::chrono_button::ChronoButton;
 use crate::component::normal::mining::status_badge::{StatusBadge, StatusGetter};
 use crate::component::{Component, Focus, Frame, Input};
@@ -26,8 +27,26 @@ impl StatusGetter for MergedMiningGetter {
     }
 }
 
+struct XtrGetter;
+
+impl AmountGetter for XtrGetter {
+    fn get_amount(&self, state: &LaunchpadState) -> (u64, &str) {
+        (45_000, "XTR")
+    }
+}
+
+struct XmrGetter;
+
+impl AmountGetter for XmrGetter {
+    fn get_amount(&self, state: &LaunchpadState) -> (u64, &str) {
+        (3, "XMR")
+    }
+}
+
 pub struct MergedMiningWidget {
     status_badge: StatusBadge<MergedMiningGetter>,
+    tari_amount: AmountIndicator<XtrGetter>,
+    monero_amount: AmountIndicator<XmrGetter>,
     button: ChronoButton,
 }
 
@@ -35,6 +54,8 @@ impl MergedMiningWidget {
     pub fn new() -> Self {
         Self {
             status_badge: StatusBadge::new(MergedMiningGetter),
+            tari_amount: AmountIndicator::new(XtrGetter),
+            monero_amount: AmountIndicator::new(XmrGetter),
             button: ChronoButton::new(),
         }
     }
@@ -58,6 +79,8 @@ impl<B: Backend> Component<B> for MergedMiningWidget {
             Constraint::Length(1),
             Constraint::Length(3),
             // Constraint::Percentage(50),
+            Constraint::Length(1),
+            Constraint::Length(1),
             Constraint::Min(0),
             Constraint::Length(1),
         ];
@@ -70,6 +93,9 @@ impl<B: Backend> Component<B> for MergedMiningWidget {
         let logo = logo(LOGO);
         f.render_widget(logo, v_chunks[1]);
 
-        self.button.draw(f, v_chunks[3], state);
+        self.tari_amount.draw(f, v_chunks[2], state);
+        self.monero_amount.draw(f, v_chunks[3], state);
+
+        self.button.draw(f, v_chunks[5], state);
     }
 }
