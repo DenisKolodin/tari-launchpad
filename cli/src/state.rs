@@ -8,9 +8,11 @@ pub struct LaunchpadState {
 impl LaunchpadState {
     pub fn new() -> Self {
         let tari_mining = TariMiningInfo {
+            is_active: true,
             tari_amount: 123_456.into(),
         };
         let merged_mining = MergedMiningInfo {
+            is_active: false,
             tari_amount: 45_000.into(),
             monero_amount: Decimal::new(35, 1),
         };
@@ -22,26 +24,12 @@ impl LaunchpadState {
 }
 
 pub struct TariMiningInfo {
+    pub is_active: bool,
     pub tari_amount: Decimal,
-}
-
-impl TariMiningInfo {
-    pub fn is_mining_active(&self) -> bool {
-        true
-    }
-
-    pub fn tari_mining_tari_amount(&self) -> Decimal {
-        123_456.into()
-    }
 }
 
 pub struct MergedMiningInfo {
+    pub is_active: bool,
     pub tari_amount: Decimal,
     pub monero_amount: Decimal,
-}
-
-impl MergedMiningInfo {
-    pub fn is_mining_active(&self) -> bool {
-        false
-    }
 }
