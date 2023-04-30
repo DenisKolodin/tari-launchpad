@@ -5,6 +5,7 @@ use crate::component::normal::mining::status_badge::{StatusBadge, StatusGetter};
 use crate::component::{Component, Focus, Frame, Input};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
+use rust_decimal::Decimal;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::Color;
@@ -32,8 +33,8 @@ impl StatusGetter for TariMiningGetter {
 struct XtrGetter;
 
 impl AmountGetter for XtrGetter {
-    fn get_amount(&self, state: &LaunchpadState) -> (u64, &str) {
-        (123_456, "XTR")
+    fn get_amount(&self, state: &LaunchpadState) -> (Decimal, &str) {
+        (123_456.into(), "XTR")
     }
 }
 
