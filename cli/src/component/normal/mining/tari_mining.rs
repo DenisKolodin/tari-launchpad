@@ -9,8 +9,6 @@ use rust_decimal::Decimal;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::Color;
-use tui::text::Text;
-use tui::widgets::Paragraph;
 
 const LOGO: &str = r#"
 ╔╦╗┌─┐┬─┐┬  ╔╦╗┬┌┐┌┬┌┐┌┌─┐

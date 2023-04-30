@@ -1,6 +1,5 @@
-use tui::layout::Alignment;
 use tui::style::{Color, Modifier, Style};
-use tui::text::{Span, Spans, Text};
+use tui::text::Span;
 use tui::widgets::{Block, Borders, Paragraph};
 
 pub fn block_with_title(title: Option<&str>) -> Block<'_> {

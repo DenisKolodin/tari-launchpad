@@ -1,7 +1,7 @@
 use crate::component::{Component, Focus, Frame, Input};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
-use std::marker::PhantomData;
+
 use tui::backend::Backend;
 use tui::layout::{Alignment, Rect};
 use tui::style::{Color, Style};

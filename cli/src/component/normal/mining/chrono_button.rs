@@ -1,9 +1,8 @@
-use crate::component::elements::block_with_title;
 use crate::component::{Component, Focus, Frame, Input};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
-use tui::layout::{Alignment, Constraint, Direction, Layout, Rect};
+use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
 use tui::text::{Span, Spans};
 use tui::widgets::{Block, Paragraph};
