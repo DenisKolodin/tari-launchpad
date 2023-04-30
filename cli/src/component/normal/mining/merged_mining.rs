@@ -32,7 +32,8 @@ struct XtrGetter;
 
 impl AmountGetter for XtrGetter {
     fn get_amount(&self, state: &LaunchpadState) -> (Decimal, &str) {
-        (45_000.into(), "XTR")
+        let amount = state.merged_mining.tari_amount;
+        (amount, "XTR")
     }
 }
 
@@ -40,7 +41,8 @@ struct XmrGetter;
 
 impl AmountGetter for XmrGetter {
     fn get_amount(&self, state: &LaunchpadState) -> (Decimal, &str) {
-        (Decimal::new(35, 1), "XMR")
+        let amount = state.merged_mining.monero_amount;
+        (amount, "XMR")
     }
 }
 

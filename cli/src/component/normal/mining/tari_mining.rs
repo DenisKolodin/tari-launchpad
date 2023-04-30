@@ -34,7 +34,8 @@ struct XtrGetter;
 
 impl AmountGetter for XtrGetter {
     fn get_amount(&self, state: &LaunchpadState) -> (Decimal, &str) {
-        (123_456.into(), "XTR")
+        let amount = state.tari_mining.tari_amount;
+        (amount, "XTR")
     }
 }
 

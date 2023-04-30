@@ -10,7 +10,10 @@ impl LaunchpadState {
         let tari_mining = TariMiningInfo {
             tari_amount: 123_456.into(),
         };
-        let merged_mining = MergedMiningInfo {};
+        let merged_mining = MergedMiningInfo {
+            tari_amount: 45_000.into(),
+            monero_amount: Decimal::new(35, 1),
+        };
         Self {
             tari_mining,
             merged_mining,
@@ -19,7 +22,7 @@ impl LaunchpadState {
 }
 
 pub struct TariMiningInfo {
-    tari_amount: Decimal,
+    pub tari_amount: Decimal,
 }
 
 impl TariMiningInfo {
@@ -32,7 +35,10 @@ impl TariMiningInfo {
     }
 }
 
-pub struct MergedMiningInfo {}
+pub struct MergedMiningInfo {
+    pub tari_amount: Decimal,
+    pub monero_amount: Decimal,
+}
 
 impl MergedMiningInfo {
     pub fn is_mining_active(&self) -> bool {
