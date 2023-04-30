@@ -1,6 +1,7 @@
+use tui::layout::Alignment;
 use tui::style::{Color, Modifier, Style};
-use tui::text::Span;
-use tui::widgets::{Block, Borders};
+use tui::text::{Span, Spans, Text};
+use tui::widgets::{Block, Borders, Paragraph};
 
 pub fn block_with_title(title: Option<&str>) -> Block<'_> {
     let block = Block::default().borders(Borders::ALL);
@@ -14,4 +15,9 @@ pub fn block_with_title(title: Option<&str>) -> Block<'_> {
     } else {
         block
     }
+}
+
+pub fn logo(logo: &str) -> Paragraph<'_> {
+    let text = Text::from(logo.trim_start_matches(char::is_whitespace));
+    Paragraph::new(text)
 }
