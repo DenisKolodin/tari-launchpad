@@ -23,7 +23,7 @@ pub struct TariMiningWidget {
 impl TariMiningWidget {
     pub fn new() -> Self {
         Self {
-            status_badge: StatusBadge::new(),
+            status_badge: StatusBadge::new(()),
             button: ChronoButton::new(),
         }
     }
