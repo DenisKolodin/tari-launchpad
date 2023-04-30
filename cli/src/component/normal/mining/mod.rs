@@ -1,3 +1,4 @@
+mod chrono_button;
 mod merged_mining;
 mod status_badge;
 mod tari_mining;

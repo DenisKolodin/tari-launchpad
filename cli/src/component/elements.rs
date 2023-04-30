@@ -18,6 +18,6 @@ pub fn block_with_title(title: Option<&str>) -> Block<'_> {
 }
 
 pub fn logo(logo: &str) -> Paragraph<'_> {
-    let text = Text::from(logo.trim_start_matches(char::is_whitespace));
+    let text = logo.trim_start_matches(char::is_whitespace);
     Paragraph::new(text)
 }

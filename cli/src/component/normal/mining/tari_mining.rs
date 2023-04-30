@@ -1,4 +1,5 @@
 use crate::component::elements::{block_with_title, logo};
+use crate::component::normal::mining::chrono_button::ChronoButton;
 use crate::component::normal::mining::status_badge::StatusBadge;
 use crate::component::{Component, Focus, Frame, Input};
 use crate::state::LaunchpadState;
@@ -16,12 +17,14 @@ const LOGO: &str = r#"
 
 pub struct TariMiningWidget {
     status_badge: StatusBadge,
+    button: ChronoButton,
 }
 
 impl TariMiningWidget {
     pub fn new() -> Self {
         Self {
             status_badge: StatusBadge::new(),
+            button: ChronoButton::new(),
         }
     }
 }
@@ -45,13 +48,17 @@ impl<B: Backend> Component<B> for TariMiningWidget {
             Constraint::Length(3),
             // Constraint::Percentage(50),
             Constraint::Min(0),
+            Constraint::Length(1),
         ];
         let v_chunks = Layout::default()
             .direction(Direction::Vertical)
             .constraints(constraints)
             .split(inner_rect);
         self.status_badge.draw(f, v_chunks[0], state);
+
         let logo = logo(LOGO);
         f.render_widget(logo, v_chunks[1]);
+
+        self.button.draw(f, v_chunks[3], state);
     }
 }
