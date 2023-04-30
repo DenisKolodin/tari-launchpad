@@ -20,7 +20,7 @@ struct MergedMiningGetter;
 
 impl StatusGetter for MergedMiningGetter {
     fn get_status(&self, state: &LaunchpadState) -> (&str, Color) {
-        if state.is_merged_mining_active() {
+        if state.merged_mining.is_mining_active() {
             ("(Running)", Color::Green)
         } else {
             ("(Ready to set)", Color::Cyan)

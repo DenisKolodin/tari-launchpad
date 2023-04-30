@@ -22,7 +22,7 @@ struct TariMiningGetter;
 
 impl StatusGetter for TariMiningGetter {
     fn get_status(&self, state: &LaunchpadState) -> (&str, Color) {
-        if state.is_tari_mining_active() {
+        if state.tari_mining.is_mining_active() {
             ("(Running)", Color::Green)
         } else {
             ("(Ready to set)", Color::Cyan)

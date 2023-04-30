@@ -37,7 +37,7 @@ impl Dashboard {
             terminal: None,
             event_handle: None,
             main_view: MainView::new(),
-            state: LaunchpadState {},
+            state: LaunchpadState::new(),
         }
     }
 }
