@@ -1,6 +1,6 @@
 use crate::component::tabs::AppTabs;
 use crate::component::{Component, ComponentEvent, Frame, Input};
-use crate::state::AppState;
+use crate::state::{AppState, FocusOn};
 use crossterm::event::KeyEvent;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
@@ -23,7 +23,7 @@ pub struct SettingsScene {
 impl SettingsScene {
     pub fn new() -> Self {
         Self {
-            settings_tabs: AppTabs::new(),
+            settings_tabs: AppTabs::new(FocusOn::Root),
         }
     }
 }

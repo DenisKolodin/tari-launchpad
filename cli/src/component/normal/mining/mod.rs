@@ -32,12 +32,6 @@ impl MiningScene {
 
 impl Input for MiningScene {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
-        match event {
-            ComponentEvent::Focus => {
-                state.focus_on(FocusOn::TariMining);
-            }
-            _ => {}
-        }
         if state.focus_on == FocusOn::TariMining {
             if let ComponentEvent::Key(key) = event {
                 match key.code {

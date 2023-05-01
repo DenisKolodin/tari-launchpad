@@ -13,6 +13,7 @@ use tui::{
 
 pub struct AppTabs<T> {
     focus_on: FocusOn,
+    focus_to: FocusOn,
     selected: usize,
     items: Vec<T>,
 }
@@ -21,9 +22,10 @@ impl<T> AppTabs<T>
 where
     T: IntoEnumIterator,
 {
-    pub fn new() -> Self {
+    pub fn new(focus_to: FocusOn) -> Self {
         Self {
             focus_on: FocusOn::Root,
+            focus_to,
             selected: 0,
             items: T::iter().collect(),
         }
@@ -60,13 +62,17 @@ impl<T> AppTabs<T> {
 
 impl<T> Input for AppTabs<T> {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
-        if let ComponentEvent::Key(key) = event {
-            match key.code {
-                KeyCode::Up | KeyCode::Char('k') => {}
-                KeyCode::Down | KeyCode::Char('j') => {}
-                KeyCode::Left | KeyCode::Char('h') => if !self.prev() {},
-                KeyCode::Right | KeyCode::Char('l') => if !self.next() {},
-                _ => {}
+        if state.focus_on == self.focus_on {
+            if let ComponentEvent::Key(key) = event {
+                match key.code {
+                    KeyCode::Up | KeyCode::Char('k') => {}
+                    KeyCode::Down | KeyCode::Char('j') => {
+                        state.focus_on(self.focus_to);
+                    }
+                    KeyCode::Left | KeyCode::Char('h') => if !self.prev() {},
+                    KeyCode::Right | KeyCode::Char('l') => if !self.next() {},
+                    _ => {}
+                }
             }
         }
     }

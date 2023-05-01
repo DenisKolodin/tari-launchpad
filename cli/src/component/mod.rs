@@ -25,13 +25,8 @@ pub trait Component<B: Backend> {
 #[derive(Debug, Clone, Copy)]
 pub enum ComponentEvent {
     Key(KeyEvent),
-    Focus,
 }
 
 pub trait Input {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState);
-
-    fn focus(&mut self, state: &mut AppState) {
-        self.on_event(ComponentEvent::Focus, state);
-    }
 }

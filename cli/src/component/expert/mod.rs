@@ -1,6 +1,6 @@
 use crate::component::tabs::AppTabs;
 use crate::component::{Component, ComponentEvent, Frame, Input};
-use crate::state::AppState;
+use crate::state::{AppState, FocusOn};
 use crossterm::event::KeyEvent;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
@@ -20,7 +20,7 @@ pub struct ExpertScene {
 impl ExpertScene {
     pub fn new() -> Self {
         Self {
-            expert_tabs: AppTabs::new(),
+            expert_tabs: AppTabs::new(FocusOn::Root),
         }
     }
 }
