@@ -71,8 +71,20 @@ pub struct TariMiningInfo {
     pub tari_amount: Decimal,
 }
 
+impl TariMiningInfo {
+    pub fn toggle(&mut self) {
+        self.is_active = !self.is_active;
+    }
+}
+
 pub struct MergedMiningInfo {
     pub is_active: bool,
     pub tari_amount: Decimal,
     pub monero_amount: Decimal,
+}
+
+impl MergedMiningInfo {
+    pub fn toggle(&mut self) {
+        self.is_active = !self.is_active;
+    }
 }

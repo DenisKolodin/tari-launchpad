@@ -74,6 +74,9 @@ impl Input for MergedMiningWidget {
                 Pass::Up | Pass::Leave => {
                     state.focus_on(Focus::Root);
                 }
+                Pass::Enter => {
+                    state.merged_mining.toggle();
+                }
                 _ => {}
             }
         }
