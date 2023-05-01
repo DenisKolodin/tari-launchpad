@@ -1,5 +1,5 @@
 use crate::component::{elements::block_with_title, Component, ComponentEvent, Input};
-use crate::state::{AppState, FocusOn};
+use crate::state::{AppState, Focus};
 use crossterm::event::{KeyCode, KeyEvent};
 use strum::IntoEnumIterator;
 use tui::{
@@ -12,8 +12,8 @@ use tui::{
 };
 
 pub struct AppTabs<T> {
-    focus_on: FocusOn,
-    focus_to: FocusOn,
+    focus_on: Focus,
+    focus_to: Focus,
     selected: usize,
     items: Vec<T>,
 }
@@ -22,9 +22,9 @@ impl<T> AppTabs<T>
 where
     T: IntoEnumIterator,
 {
-    pub fn new(focus_to: FocusOn) -> Self {
+    pub fn new(focus_to: Focus) -> Self {
         Self {
-            focus_on: FocusOn::Root,
+            focus_on: Focus::Root,
             focus_to,
             selected: 0,
             items: T::iter().collect(),
@@ -63,16 +63,15 @@ impl<T> AppTabs<T> {
 impl<T> Input for AppTabs<T> {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         if state.focus_on == self.focus_on {
-            if let ComponentEvent::Key(key) = event {
-                match key.code {
-                    KeyCode::Up | KeyCode::Char('k') => {}
-                    KeyCode::Down | KeyCode::Char('j') => {
-                        state.focus_on(self.focus_to);
-                    }
-                    KeyCode::Left | KeyCode::Char('h') => if !self.prev() {},
-                    KeyCode::Right | KeyCode::Char('l') => if !self.next() {},
-                    _ => {}
+            let ComponentEvent(key) = event;
+            match key.code {
+                KeyCode::Up | KeyCode::Char('k') => {}
+                KeyCode::Down | KeyCode::Char('j') => {
+                    state.focus_on(self.focus_to);
                 }
+                KeyCode::Left | KeyCode::Char('h') => if !self.prev() {},
+                KeyCode::Right | KeyCode::Char('l') => if !self.next() {},
+                _ => {}
             }
         }
     }

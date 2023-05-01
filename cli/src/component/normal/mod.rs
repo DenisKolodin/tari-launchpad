@@ -2,7 +2,7 @@ mod mining;
 
 use crate::component::tabs::AppTabs;
 use crate::component::{Component, ComponentEvent, Frame, Input};
-use crate::state::{AppState, FocusOn};
+use crate::state::{AppState, Focus};
 use crossterm::event::Event;
 use mining::MiningScene;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
@@ -25,7 +25,7 @@ pub struct NormalScene {
 impl NormalScene {
     pub fn new() -> Self {
         Self {
-            normal_tabs: AppTabs::new(FocusOn::TariMining),
+            normal_tabs: AppTabs::new(Focus::TariMining),
             mining_scene: MiningScene::new(),
         }
     }

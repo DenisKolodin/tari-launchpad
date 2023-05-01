@@ -90,8 +90,7 @@ impl Do<TermEvent> for Dashboard {
                             .ok_or_else(|| DashboardError::NoEvents)?
                             .interrupt();
                     }
-                    let event = ComponentEvent::Key(key);
-                    self.main_view.on_event(event, &mut self.state);
+                    self.main_view.on_event(key.into(), &mut self.state);
                     let changed = self.state.process_events();
                     if changed {
                         ctx.do_next(Redraw)?;

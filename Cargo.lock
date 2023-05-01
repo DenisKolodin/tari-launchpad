@@ -679,6 +679,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "crossterm 0.26.1",
+ "derive_more",
  "rust_decimal",
  "strum",
  "tact",

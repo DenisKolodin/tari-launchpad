@@ -40,7 +40,7 @@ impl ModeSelector {
 
 impl Input for ModeSelector {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
-        if let ComponentEvent::Key(key) = event {
+        if let ComponentEvent(key) = event {
             if key.modifiers.contains(KeyModifiers::CONTROL) {
                 match key.code {
                     KeyCode::Char('n') => {
