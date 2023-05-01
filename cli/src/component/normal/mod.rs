@@ -1,7 +1,7 @@
 mod mining;
 
 use crate::component::tabs::AppTabs;
-use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
+use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 use crossterm::event::Event;
 use mining::MiningScene;
@@ -32,16 +32,9 @@ impl NormalScene {
 }
 
 impl Input for NormalScene {
-    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         let focus = self.normal_tabs.on_event(event, state);
         self.mining_scene.on_event(event, state);
-        match focus {
-            Some(MoveFocus::Down) => {
-                let focus = self.mining_scene.focus(state);
-            }
-            _ => {}
-        }
-        None
     }
 }
 

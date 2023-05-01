@@ -1,4 +1,4 @@
-use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
+use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
@@ -15,9 +15,7 @@ impl MiningTip {
 }
 
 impl Input for MiningTip {
-    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
-        None
-    }
+    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) {}
 }
 
 impl<B: Backend> Component<B> for MiningTip {

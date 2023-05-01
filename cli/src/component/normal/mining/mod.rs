@@ -5,7 +5,7 @@ mod status_badge;
 mod tari_mining;
 mod tip;
 
-use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
+use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::{AppState, FocusOn};
 use crossterm::event::{KeyCode, KeyEvent};
 use merged_mining::MergedMiningWidget;
@@ -31,7 +31,7 @@ impl MiningScene {
 }
 
 impl Input for MiningScene {
-    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         match event {
             ComponentEvent::Focus => {
                 state.focus_on(FocusOn::TariMining);
@@ -48,7 +48,6 @@ impl Input for MiningScene {
                 }
             }
         }
-        None
     }
 }
 

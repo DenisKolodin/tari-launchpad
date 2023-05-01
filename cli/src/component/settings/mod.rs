@@ -1,5 +1,5 @@
 use crate::component::tabs::AppTabs;
-use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
+use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
@@ -29,9 +29,8 @@ impl SettingsScene {
 }
 
 impl Input for SettingsScene {
-    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         self.settings_tabs.on_event(event, state);
-        None
     }
 }
 

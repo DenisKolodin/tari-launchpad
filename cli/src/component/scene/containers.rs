@@ -1,5 +1,5 @@
 use crate::component::elements::block_with_title;
-use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
+use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
@@ -14,9 +14,7 @@ impl Containers {
 }
 
 impl Input for Containers {
-    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
-        None
-    }
+    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) {}
 }
 
 impl<B: Backend> Component<B> for Containers {

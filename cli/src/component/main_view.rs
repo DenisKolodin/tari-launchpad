@@ -4,7 +4,7 @@ use crate::component::normal::NormalScene;
 use crate::component::scene;
 use crate::component::settings::SettingsScene;
 
-use crate::component::{Component, ComponentEvent, Input, MoveFocus};
+use crate::component::{Component, ComponentEvent, Input};
 use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
@@ -34,7 +34,7 @@ impl MainView {
 }
 
 impl Input for MainView {
-    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         self.header.on_event(event, state);
         match self.header.mode_selector.selected() {
             Mode::Normal => {
@@ -47,7 +47,6 @@ impl Input for MainView {
                 self.settings_scene.on_event(event, state);
             }
         }
-        None
     }
 }
 

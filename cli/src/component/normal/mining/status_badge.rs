@@ -1,4 +1,4 @@
-use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
+use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 use crossterm::event::KeyEvent;
 
@@ -23,9 +23,7 @@ impl<G> StatusBadge<G> {
 }
 
 impl<G> Input for StatusBadge<G> {
-    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
-        None
-    }
+    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) {}
 }
 
 impl<B: Backend, G> Component<B> for StatusBadge<G>

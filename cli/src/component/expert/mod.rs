@@ -1,5 +1,5 @@
 use crate::component::tabs::AppTabs;
-use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
+use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
@@ -26,9 +26,8 @@ impl ExpertScene {
 }
 
 impl Input for ExpertScene {
-    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         self.expert_tabs.on_event(event, state);
-        None
     }
 }
 

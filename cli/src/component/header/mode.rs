@@ -1,4 +1,4 @@
-use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
+use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 use crossterm::event::KeyModifiers;
 use crossterm::event::{KeyCode, KeyEvent};
@@ -39,7 +39,7 @@ impl ModeSelector {
 }
 
 impl Input for ModeSelector {
-    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         if let ComponentEvent::Key(key) = event {
             if key.modifiers.contains(KeyModifiers::CONTROL) {
                 match key.code {
@@ -58,7 +58,6 @@ impl Input for ModeSelector {
                 }
             }
         }
-        None
     }
 }
 
