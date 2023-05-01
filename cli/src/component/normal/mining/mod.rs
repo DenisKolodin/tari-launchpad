@@ -6,7 +6,7 @@ mod tari_mining;
 mod tip;
 
 use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use merged_mining::MergedMiningWidget;
 use tari_mining::TariMiningWidget;
@@ -37,7 +37,7 @@ impl Input for MiningScene {
 }
 
 impl<B: Backend> Component<B> for MiningScene {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let constraints = [

@@ -3,7 +3,7 @@ use crate::component::normal::mining::amount::{AmountGetter, AmountIndicator};
 use crate::component::normal::mining::chrono_button::ChronoButton;
 use crate::component::normal::mining::status_badge::{StatusBadge, StatusGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use rust_decimal::Decimal;
 use tui::backend::Backend;
@@ -19,7 +19,7 @@ const LOGO: &str = r#"
 struct TariMiningGetter;
 
 impl StatusGetter for TariMiningGetter {
-    fn get_status(&self, state: &LaunchpadState) -> (&str, Color) {
+    fn get_status(&self, state: &AppState) -> (&str, Color) {
         if state.tari_mining.is_active {
             ("(Running)", Color::Green)
         } else {
@@ -31,7 +31,7 @@ impl StatusGetter for TariMiningGetter {
 struct XtrGetter;
 
 impl AmountGetter for XtrGetter {
-    fn get_amount(&self, state: &LaunchpadState) -> (Decimal, &str) {
+    fn get_amount(&self, state: &AppState) -> (Decimal, &str) {
         let amount = state.tari_mining.tari_amount;
         (amount, "XTR")
     }
@@ -60,7 +60,7 @@ impl Input for TariMiningWidget {
 }
 
 impl<B: Backend> Component<B> for TariMiningWidget {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let block = block_with_title(Some("Tari Mining"));

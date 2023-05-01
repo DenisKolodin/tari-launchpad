@@ -1,5 +1,5 @@
 use crate::component::{elements::block_with_title, Component, ComponentEvent, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::{KeyCode, KeyEvent};
 use strum::IntoEnumIterator;
 use tui::{
@@ -89,7 +89,7 @@ where
     B: Backend,
     T: IntoEnumIterator + Copy + ToString,
 {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
         let _tag_style = Style::default().fg(Color::Rgb(4, 209, 144));

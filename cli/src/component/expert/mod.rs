@@ -1,6 +1,6 @@
 use crate::component::tabs::AppTabs;
 use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
@@ -33,7 +33,7 @@ impl Input for ExpertScene {
 }
 
 impl<B: Backend> Component<B> for ExpertScene {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let constraints = [Constraint::Length(3), Constraint::Min(0)];

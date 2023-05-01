@@ -1,6 +1,6 @@
 use crate::component::{Component, ComponentEvent, Input, MainView};
 use crate::events::{EventHandle, TermEvent};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use anyhow::Error;
 use async_trait::async_trait;
 use crossterm::{
@@ -28,7 +28,7 @@ pub struct Dashboard {
     event_handle: Option<EventHandle>,
     main_view: MainView,
     // TODO: Get the state from a bus
-    state: LaunchpadState,
+    state: AppState,
 }
 
 impl Dashboard {
@@ -37,7 +37,7 @@ impl Dashboard {
             terminal: None,
             event_handle: None,
             main_view: MainView::new(),
-            state: LaunchpadState::new(),
+            state: AppState::new(),
         }
     }
 }

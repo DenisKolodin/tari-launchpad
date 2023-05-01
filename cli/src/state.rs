@@ -1,11 +1,11 @@
 use rust_decimal::Decimal;
 
-pub struct LaunchpadState {
+pub struct AppState {
     pub tari_mining: TariMiningInfo,
     pub merged_mining: MergedMiningInfo,
 }
 
-impl LaunchpadState {
+impl AppState {
     pub fn new() -> Self {
         let tari_mining = TariMiningInfo {
             is_active: true,

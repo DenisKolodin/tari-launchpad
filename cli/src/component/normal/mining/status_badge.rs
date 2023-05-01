@@ -1,5 +1,5 @@
 use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::KeyEvent;
 
 use tui::backend::Backend;
@@ -9,7 +9,7 @@ use tui::text::{Span, Spans};
 use tui::widgets::Paragraph;
 
 pub trait StatusGetter {
-    fn get_status(&self, state: &LaunchpadState) -> (&str, Color);
+    fn get_status(&self, state: &AppState) -> (&str, Color);
 }
 
 pub struct StatusBadge<G> {
@@ -32,7 +32,7 @@ impl<B: Backend, G> Component<B> for StatusBadge<G>
 where
     G: StatusGetter,
 {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let (text, color) = self.getter.get_status(state);

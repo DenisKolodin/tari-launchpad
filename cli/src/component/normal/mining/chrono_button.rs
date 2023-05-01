@@ -1,5 +1,5 @@
 use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
@@ -23,7 +23,7 @@ impl Input for ChronoButton {
 }
 
 impl<B: Backend> Component<B> for ChronoButton {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
         let constraints = [Constraint::Length(1), Constraint::Min(0)];

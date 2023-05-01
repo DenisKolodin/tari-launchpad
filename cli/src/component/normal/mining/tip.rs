@@ -1,5 +1,5 @@
 use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::{Alignment, Rect};
@@ -21,7 +21,7 @@ impl Input for MiningTip {
 }
 
 impl<B: Backend> Component<B> for MiningTip {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
         let mining = false; // TODO: Get it from the state

@@ -1,5 +1,5 @@
 use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use rust_decimal::Decimal;
 use tui::backend::Backend;
@@ -9,7 +9,7 @@ use tui::text::{Span, Spans};
 use tui::widgets::Paragraph;
 
 pub trait AmountGetter {
-    fn get_amount(&self, state: &LaunchpadState) -> (Decimal, &str);
+    fn get_amount(&self, state: &AppState) -> (Decimal, &str);
 }
 
 pub struct AmountIndicator<G> {
@@ -32,7 +32,7 @@ impl<B: Backend, G> Component<B> for AmountIndicator<G>
 where
     G: AmountGetter,
 {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let (amount, curr) = self.getter.get_amount(state);

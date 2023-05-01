@@ -5,7 +5,7 @@ use crate::component::scene;
 use crate::component::settings::SettingsScene;
 
 use crate::component::{Component, ComponentEvent, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
@@ -52,7 +52,7 @@ impl Input for MainView {
 }
 
 impl<B: Backend> Component<B> for MainView {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let constraints = [Constraint::Length(1), Constraint::Min(0)];

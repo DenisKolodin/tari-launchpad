@@ -2,7 +2,7 @@ pub mod logo;
 pub mod mode;
 
 use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use logo::Logo;
 use mode::ModeSelector;
@@ -31,7 +31,7 @@ impl Input for Header {
 }
 
 impl<B: Backend> Component<B> for Header {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let constraints = [Constraint::Percentage(40), Constraint::Percentage(60)];

@@ -1,5 +1,5 @@
 use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::KeyModifiers;
 use crossterm::event::{KeyCode, KeyEvent};
 use tui::backend::Backend;
@@ -63,7 +63,7 @@ impl Input for ModeSelector {
 }
 
 impl<B: Backend> Component<B> for ModeSelector {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
         let not_selected = Style::default().fg(Color::White);

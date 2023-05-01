@@ -2,7 +2,7 @@ mod mining;
 
 use crate::component::tabs::AppTabs;
 use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
-use crate::state::LaunchpadState;
+use crate::state::AppState;
 use crossterm::event::Event;
 use mining::MiningScene;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
@@ -39,7 +39,7 @@ impl Input for NormalScene {
 }
 
 impl<B: Backend> Component<B> for NormalScene {
-    type State = LaunchpadState;
+    type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let constraints = [Constraint::Length(3), Constraint::Min(0)];
