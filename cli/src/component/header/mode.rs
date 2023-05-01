@@ -39,7 +39,7 @@ impl ModeSelector {
 }
 
 impl Input for ModeSelector {
-    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
         if let ComponentEvent::Key(key) = event {
             if key.modifiers.contains(KeyModifiers::CONTROL) {
                 match key.code {

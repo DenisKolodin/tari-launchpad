@@ -91,7 +91,7 @@ impl Do<TermEvent> for Dashboard {
                             .interrupt();
                     }
                     let event = ComponentEvent::Key(key);
-                    self.main_view.on_event(event);
+                    self.main_view.on_event(event, &mut self.state);
                     let changed = self.state.process_events();
                     if changed {
                         ctx.do_next(Redraw)?;

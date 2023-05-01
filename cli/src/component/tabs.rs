@@ -57,7 +57,7 @@ impl<T> AppTabs<T> {
 }
 
 impl<T> Input for AppTabs<T> {
-    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
         let mut move_to = None;
         if let ComponentEvent::Key(key) = event {
             match key.code {

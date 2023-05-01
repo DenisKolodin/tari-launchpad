@@ -17,7 +17,7 @@ impl ChronoButton {
 }
 
 impl Input for ChronoButton {
-    fn on_event(&mut self, _event: ComponentEvent) -> Option<MoveFocus> {
+    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
         None
     }
 }

@@ -24,8 +24,8 @@ impl Header {
 }
 
 impl Input for Header {
-    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
-        self.mode_selector.on_event(event);
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+        self.mode_selector.on_event(event, state);
         None
     }
 }

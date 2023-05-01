@@ -32,8 +32,8 @@ impl NormalScene {
 }
 
 impl Input for NormalScene {
-    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
-        self.normal_tabs.on_event(event);
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+        self.normal_tabs.on_event(event, state);
         None
     }
 }

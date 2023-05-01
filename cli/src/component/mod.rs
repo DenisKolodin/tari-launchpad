@@ -9,6 +9,7 @@ mod tabs;
 
 pub use main_view::MainView;
 
+use crate::state::AppState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
 use tui::layout::Rect;
@@ -39,5 +40,5 @@ pub enum ComponentEvent {
 }
 
 pub trait Input {
-    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus>;
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus>;
 }

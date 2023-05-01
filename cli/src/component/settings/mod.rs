@@ -29,8 +29,8 @@ impl SettingsScene {
 }
 
 impl Input for SettingsScene {
-    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
-        self.settings_tabs.on_event(event);
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+        self.settings_tabs.on_event(event, state);
         None
     }
 }

@@ -26,8 +26,8 @@ impl ExpertScene {
 }
 
 impl Input for ExpertScene {
-    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
-        self.expert_tabs.on_event(event);
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+        self.expert_tabs.on_event(event, state);
         None
     }
 }

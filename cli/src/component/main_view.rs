@@ -34,17 +34,17 @@ impl MainView {
 }
 
 impl Input for MainView {
-    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
-        self.header.on_event(event);
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+        self.header.on_event(event, state);
         match self.header.mode_selector.selected() {
             Mode::Normal => {
-                self.normal_scene.on_event(event);
+                self.normal_scene.on_event(event, state);
             }
             Mode::Expert => {
-                self.expert_scene.on_event(event);
+                self.expert_scene.on_event(event, state);
             }
             Mode::Settings => {
-                self.settings_scene.on_event(event);
+                self.settings_scene.on_event(event, state);
             }
         }
         None

@@ -65,7 +65,7 @@ impl MergedMiningWidget {
 }
 
 impl Input for MergedMiningWidget {
-    fn on_event(&mut self, _event: ComponentEvent) -> Option<MoveFocus> {
+    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
         None
     }
 }

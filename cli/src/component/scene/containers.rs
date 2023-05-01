@@ -14,7 +14,7 @@ impl Containers {
 }
 
 impl Input for Containers {
-    fn on_event(&mut self, _event: ComponentEvent) -> Option<MoveFocus> {
+    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
         None
     }
 }
