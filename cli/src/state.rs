@@ -1,8 +1,27 @@
 use rust_decimal::Decimal;
+use std::collections::VecDeque;
+
+pub enum FocusOn {
+    Root,
+    TariMining,
+    MergedMining,
+}
+
+impl Default for FocusOn {
+    fn default() -> Self {
+        Self::Root
+    }
+}
+
+pub enum AppEvent {
+    SetFocus(FocusOn),
+}
 
 pub struct AppState {
+    pub focus_on: FocusOn,
     pub tari_mining: TariMiningInfo,
     pub merged_mining: MergedMiningInfo,
+    pub events_queue: VecDeque<AppEvent>,
 }
 
 impl AppState {
@@ -17,8 +36,30 @@ impl AppState {
             monero_amount: Decimal::new(35, 1),
         };
         Self {
+            focus_on: FocusOn::default(),
             tari_mining,
             merged_mining,
+            events_queue: VecDeque::new(),
+        }
+    }
+
+    pub fn focus_on(&mut self, value: FocusOn) {
+        let event = AppEvent::SetFocus(value);
+        self.events_queue.push_front(event);
+    }
+
+    pub fn process_events(&mut self) -> bool {
+        if self.events_queue.is_empty() {
+            false
+        } else {
+            for event in self.events_queue.drain(..) {
+                match event {
+                    AppEvent::SetFocus(value) => {
+                        self.focus_on = value;
+                    }
+                }
+            }
+            true
         }
     }
 }

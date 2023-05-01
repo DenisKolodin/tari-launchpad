@@ -92,6 +92,10 @@ impl Do<TermEvent> for Dashboard {
                     }
                     let event = ComponentEvent::Key(key);
                     self.main_view.on_event(event);
+                    let changed = self.state.process_events();
+                    if changed {
+                        ctx.do_next(Redraw)?;
+                    }
                 }
                 ctx.do_next(Redraw)?;
             }
