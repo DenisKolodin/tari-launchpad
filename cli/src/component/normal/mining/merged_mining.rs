@@ -68,10 +68,10 @@ impl Input for MergedMiningWidget {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         if state.focus_on == Focus::MergedMining {
             match event.pass() {
-                Pass::Left => {
+                Pass::Left | Pass::Next => {
                     state.focus_on(Focus::TariMining);
                 }
-                Pass::Up | Pass::Out => {
+                Pass::Up | Pass::Leave => {
                     state.focus_on(Focus::Root);
                 }
                 _ => {}

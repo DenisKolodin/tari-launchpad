@@ -57,10 +57,10 @@ impl Input for TariMiningWidget {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         if state.focus_on == Focus::TariMining {
             match event.pass() {
-                Pass::Right => {
+                Pass::Right | Pass::Next => {
                     state.focus_on(Focus::MergedMining);
                 }
-                Pass::Up | Pass::Out => {
+                Pass::Up | Pass::Leave => {
                     state.focus_on(Focus::Root);
                 }
                 _ => {}
