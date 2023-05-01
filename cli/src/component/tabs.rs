@@ -39,23 +39,21 @@ impl<T> AppTabs<T> {
             .expect("the selected tab is out of the range (empty tabs list)")
     }
 
-    fn next(&mut self) -> bool {
+    fn next(&mut self) {
         let index = self.selected + 1;
         if self.items.get(index).is_some() {
             self.selected = index;
-            true
         } else {
-            false
+            self.selected = 0;
         }
     }
 
-    fn prev(&mut self) -> bool {
+    fn prev(&mut self) {
         if self.selected > 0 {
             let index = self.selected - 1;
             self.selected = index;
-            true
         } else {
-            false
+            self.selected = self.items.len() - 1;
         }
     }
 }
@@ -64,6 +62,12 @@ impl<T> Input for AppTabs<T> {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         if state.focus_on == self.focus_on {
             match event.pass() {
+                Pass::Next | Pass::Right => {
+                    self.next();
+                }
+                Pass::Left => {
+                    self.prev();
+                }
                 Pass::Down | Pass::Enter => {
                     state.focus_on(self.focus_to);
                 }
