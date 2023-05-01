@@ -1,7 +1,7 @@
 pub mod logo;
 pub mod mode;
 
-use crate::component::{Component, Focus, Frame, Input};
+use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
 use logo::Logo;
@@ -24,8 +24,8 @@ impl Header {
 }
 
 impl Input for Header {
-    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
-        self.mode_selector.on_input(key);
+    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
+        self.mode_selector.on_event(event);
         None
     }
 }

@@ -5,7 +5,7 @@ mod status_badge;
 mod tari_mining;
 mod tip;
 
-use crate::component::{Component, Focus, Frame, Input};
+use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
 use merged_mining::MergedMiningWidget;
@@ -31,7 +31,7 @@ impl MiningScene {
 }
 
 impl Input for MiningScene {
-    fn on_input(&mut self, _key: KeyEvent) -> Option<Focus> {
+    fn on_event(&mut self, _event: ComponentEvent) -> Option<MoveFocus> {
         None
     }
 }

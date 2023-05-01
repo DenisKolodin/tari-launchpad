@@ -1,4 +1,4 @@
-use crate::component::{Component, Focus, Frame, Input};
+use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
 
@@ -23,7 +23,7 @@ impl<G> StatusBadge<G> {
 }
 
 impl<G> Input for StatusBadge<G> {
-    fn on_input(&mut self, _key: KeyEvent) -> Option<Focus> {
+    fn on_event(&mut self, _event: ComponentEvent) -> Option<MoveFocus> {
         None
     }
 }

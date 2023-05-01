@@ -4,7 +4,7 @@ use crate::component::normal::NormalScene;
 use crate::component::scene;
 use crate::component::settings::SettingsScene;
 
-use crate::component::{Component, Focus, Input};
+use crate::component::{Component, ComponentEvent, Input, MoveFocus};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
@@ -34,17 +34,17 @@ impl MainView {
 }
 
 impl Input for MainView {
-    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
-        self.header.on_input(key);
+    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
+        self.header.on_event(event);
         match self.header.mode_selector.selected() {
             Mode::Normal => {
-                self.normal_scene.on_input(key);
+                self.normal_scene.on_event(event);
             }
             Mode::Expert => {
-                self.expert_scene.on_input(key);
+                self.expert_scene.on_event(event);
             }
             Mode::Settings => {
-                self.settings_scene.on_input(key);
+                self.settings_scene.on_event(event);
             }
         }
         None

@@ -1,4 +1,4 @@
-use crate::component::{Component, Input, MainView};
+use crate::component::{Component, ComponentEvent, Input, MainView};
 use crate::events::{EventHandle, TermEvent};
 use crate::state::LaunchpadState;
 use anyhow::Error;
@@ -90,7 +90,8 @@ impl Do<TermEvent> for Dashboard {
                             .ok_or_else(|| DashboardError::NoEvents)?
                             .interrupt();
                     }
-                    self.main_view.on_input(key);
+                    let event = ComponentEvent::Key(key);
+                    self.main_view.on_event(event);
                 }
                 ctx.do_next(Redraw)?;
             }

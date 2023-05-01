@@ -1,4 +1,4 @@
-use crate::component::{Component, Focus, Frame, Input};
+use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyModifiers;
 use crossterm::event::{KeyCode, KeyEvent};
@@ -39,21 +39,23 @@ impl ModeSelector {
 }
 
 impl Input for ModeSelector {
-    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
-        if key.modifiers.contains(KeyModifiers::CONTROL) {
-            match key.code {
-                KeyCode::Char('n') => {
-                    self.expert = false;
-                    self.settings = false;
+    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
+        if let ComponentEvent::Key(key) = event {
+            if key.modifiers.contains(KeyModifiers::CONTROL) {
+                match key.code {
+                    KeyCode::Char('n') => {
+                        self.expert = false;
+                        self.settings = false;
+                    }
+                    KeyCode::Char('e') => {
+                        self.expert = !self.expert;
+                        self.settings = false;
+                    }
+                    KeyCode::Char('s') => {
+                        self.settings = !self.settings;
+                    }
+                    _ => {}
                 }
-                KeyCode::Char('e') => {
-                    self.expert = !self.expert;
-                    self.settings = false;
-                }
-                KeyCode::Char('s') => {
-                    self.settings = !self.settings;
-                }
-                _ => {}
             }
         }
         None

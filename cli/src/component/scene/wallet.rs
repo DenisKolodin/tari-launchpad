@@ -1,5 +1,5 @@
 use crate::component::elements::block_with_title;
-use crate::component::{Component, Focus, Frame, Input};
+use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
 use crate::state::LaunchpadState;
 use crossterm::event::KeyEvent;
 use tui::backend::Backend;
@@ -14,7 +14,7 @@ impl Wallet {
 }
 
 impl Input for Wallet {
-    fn on_input(&mut self, _key: KeyEvent) -> Option<Focus> {
+    fn on_event(&mut self, _event: ComponentEvent) -> Option<MoveFocus> {
         None
     }
 }

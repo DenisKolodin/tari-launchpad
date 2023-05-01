@@ -1,9 +1,9 @@
 mod mining;
 
 use crate::component::tabs::AppTabs;
-use crate::component::{Component, Focus, Frame, Input};
+use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
 use crate::state::LaunchpadState;
-use crossterm::event::KeyEvent;
+use crossterm::event::Event;
 use mining::MiningScene;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
@@ -32,8 +32,8 @@ impl NormalScene {
 }
 
 impl Input for NormalScene {
-    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
-        self.normal_tabs.on_input(key);
+    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
+        self.normal_tabs.on_event(event);
         None
     }
 }

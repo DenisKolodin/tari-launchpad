@@ -21,7 +21,7 @@ pub trait Component<B: Backend> {
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State);
 }
 
-pub enum Focus {
+pub enum MoveFocus {
     /// Entering into a component.
     In,
     /// Exiting out of a component.
@@ -32,6 +32,12 @@ pub enum Focus {
     Prev,
 }
 
+#[derive(Debug, Clone, Copy)]
+pub enum ComponentEvent {
+    Key(KeyEvent),
+    Focus,
+}
+
 pub trait Input {
-    fn on_input(&mut self, key: KeyEvent) -> Option<Focus>;
+    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus>;
 }

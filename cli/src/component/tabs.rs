@@ -1,4 +1,4 @@
-use crate::component::{elements::block_with_title, Component, Focus, Input};
+use crate::component::{elements::block_with_title, Component, ComponentEvent, Input, MoveFocus};
 use crate::state::LaunchpadState;
 use crossterm::event::{KeyCode, KeyEvent};
 use strum::IntoEnumIterator;
@@ -57,26 +57,28 @@ impl<T> AppTabs<T> {
 }
 
 impl<T> Input for AppTabs<T> {
-    fn on_input(&mut self, key: KeyEvent) -> Option<Focus> {
+    fn on_event(&mut self, event: ComponentEvent) -> Option<MoveFocus> {
         let mut move_to = None;
-        match key.code {
-            KeyCode::Up | KeyCode::Char('k') => {
-                move_to = Some(Focus::Up);
-            }
-            KeyCode::Down | KeyCode::Char('j') => {
-                move_to = Some(Focus::Down);
-            }
-            KeyCode::Left | KeyCode::Char('h') => {
-                if !self.prev() {
-                    move_to = Some(Focus::Prev);
+        if let ComponentEvent::Key(key) = event {
+            match key.code {
+                KeyCode::Up | KeyCode::Char('k') => {
+                    move_to = Some(MoveFocus::Up);
                 }
-            }
-            KeyCode::Right | KeyCode::Char('l') => {
-                if !self.next() {
-                    move_to = Some(Focus::Next);
+                KeyCode::Down | KeyCode::Char('j') => {
+                    move_to = Some(MoveFocus::Down);
                 }
+                KeyCode::Left | KeyCode::Char('h') => {
+                    if !self.prev() {
+                        move_to = Some(MoveFocus::Prev);
+                    }
+                }
+                KeyCode::Right | KeyCode::Char('l') => {
+                    if !self.next() {
+                        move_to = Some(MoveFocus::Next);
+                    }
+                }
+                _ => {}
             }
-            _ => {}
         }
         move_to
     }
