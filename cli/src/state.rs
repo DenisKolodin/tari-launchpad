@@ -1,6 +1,7 @@
 use rust_decimal::Decimal;
 use std::collections::VecDeque;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum FocusOn {
     Root,
     TariMining,

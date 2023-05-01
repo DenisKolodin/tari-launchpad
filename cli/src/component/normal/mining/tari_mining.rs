@@ -63,7 +63,7 @@ impl<B: Backend> Component<B> for TariMiningWidget {
     type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
-        let block = block_with_title(Some("Tari Mining"));
+        let block = block_with_title(Some("Tari Mining"), false);
         let inner_rect = block.inner(rect);
         f.render_widget(block, rect);
 

@@ -1,5 +1,5 @@
 use crate::component::{elements::block_with_title, Component, ComponentEvent, Input, MoveFocus};
-use crate::state::AppState;
+use crate::state::{AppState, FocusOn};
 use crossterm::event::{KeyCode, KeyEvent};
 use strum::IntoEnumIterator;
 use tui::{
@@ -12,6 +12,7 @@ use tui::{
 };
 
 pub struct AppTabs<T> {
+    focus_on: FocusOn,
     selected: usize,
     items: Vec<T>,
 }
@@ -22,6 +23,7 @@ where
 {
     pub fn new() -> Self {
         Self {
+            focus_on: FocusOn::Root,
             selected: 0,
             items: T::iter().collect(),
         }
@@ -91,7 +93,7 @@ where
 {
     type State = AppState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let _tag_style = Style::default().fg(Color::Rgb(4, 209, 144));
         let titles = self
             .items
@@ -103,7 +105,7 @@ where
                 ])
             })
             .collect();
-        let block = block_with_title(None);
+        let block = block_with_title(None, state.focus_on == self.focus_on);
         let tabs = Tabs::new(titles)
             .block(block)
             .select(self.selected)
