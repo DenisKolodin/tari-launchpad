@@ -3,7 +3,7 @@ use crate::component::normal::mining::amount::{AmountGetter, AmountIndicator};
 use crate::component::normal::mining::chrono_button::ChronoButton;
 use crate::component::normal::mining::status_badge::{StatusBadge, StatusGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, MoveFocus};
-use crate::state::AppState;
+use crate::state::{AppState, FocusOn};
 use crossterm::event::KeyEvent;
 use rust_decimal::Decimal;
 use tui::backend::Backend;
@@ -54,7 +54,7 @@ impl TariMiningWidget {
 }
 
 impl Input for TariMiningWidget {
-    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
         None
     }
 }
@@ -63,7 +63,7 @@ impl<B: Backend> Component<B> for TariMiningWidget {
     type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
-        let block = block_with_title(Some("Tari Mining"), false);
+        let block = block_with_title(Some("Tari Mining"), state.focus_on == FocusOn::TariMining);
         let inner_rect = block.inner(rect);
         f.render_widget(block, rect);
 

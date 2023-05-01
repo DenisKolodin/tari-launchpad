@@ -33,7 +33,14 @@ impl NormalScene {
 
 impl Input for NormalScene {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) -> Option<MoveFocus> {
-        self.normal_tabs.on_event(event, state);
+        let focus = self.normal_tabs.on_event(event, state);
+        self.mining_scene.on_event(event, state);
+        match focus {
+            Some(MoveFocus::Down) => {
+                let focus = self.mining_scene.focus(state);
+            }
+            _ => {}
+        }
         None
     }
 }
