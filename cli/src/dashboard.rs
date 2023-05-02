@@ -9,7 +9,8 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use std::io::Stdout;
-use tact::actors::{Actor, ActorContext, Do};
+use std::time::Duration;
+use tact::actors::{Actor, ActorContext, Do, Timer};
 use thiserror::Error;
 use tui::{backend::CrosstermBackend, Terminal};
 
@@ -29,6 +30,7 @@ pub struct Dashboard {
     main_view: MainView,
     // TODO: Get the state from a bus
     state: AppState,
+    timer: Timer,
 }
 
 impl Dashboard {
@@ -38,6 +40,7 @@ impl Dashboard {
             event_handle: None,
             main_view: MainView::new(),
             state: AppState::new(),
+            timer: Timer::new(),
         }
     }
 }
@@ -45,6 +48,8 @@ impl Dashboard {
 #[async_trait]
 impl Actor for Dashboard {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        let notifier = ctx.notifier(Redraw);
+        self.timer.interval(Duration::from_millis(1_000), notifier);
         enable_raw_mode()?;
         let mut stdout = std::io::stdout();
         execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
@@ -106,6 +111,7 @@ impl Do<TermEvent> for Dashboard {
     }
 }
 
+#[derive(Debug, Clone)]
 struct Redraw;
 
 #[async_trait]

@@ -2,6 +2,7 @@ use super::action::Do;
 use super::actor::Actor;
 use super::address::{Address, SendError};
 use super::joint::{ActorState, AddressJoint};
+use super::recipient::{Notifier, Recipient};
 use tokio::sync::{mpsc, watch};
 
 pub struct ActorContext<A: Actor> {
@@ -20,6 +21,22 @@ impl<A: Actor> ActorContext<A> {
 
     pub fn address(&self) -> &Address<A> {
         &self.address
+    }
+
+    pub fn recipient<M>(&self) -> Recipient<M>
+    where
+        A: Do<M>,
+        M: Send + 'static,
+    {
+        self.address.clone().into()
+    }
+
+    pub fn notifier<M>(&self, msg: M) -> Notifier<M>
+    where
+        A: Do<M>,
+        M: Send + 'static,
+    {
+        (self.address.clone(), msg).into()
     }
 
     pub(crate) fn joint(&mut self) -> &mut AddressJoint<A> {

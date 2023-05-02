@@ -7,7 +7,17 @@ pub struct Timer {
     handle: Option<JoinHandle<()>>,
 }
 
+impl Drop for Timer {
+    fn drop(&mut self) {
+        self.cancel();
+    }
+}
+
 impl Timer {
+    pub fn new() -> Self {
+        Self { handle: None }
+    }
+
     pub fn timeout<M>(&mut self, duration: Duration, notifier: Notifier<M>)
     where
         M: Clone + Send + 'static,
@@ -36,11 +46,5 @@ impl Timer {
         if let Some(handle) = self.handle.take() {
             handle.abort();
         }
-    }
-}
-
-impl Drop for Timer {
-    fn drop(&mut self) {
-        self.cancel();
     }
 }

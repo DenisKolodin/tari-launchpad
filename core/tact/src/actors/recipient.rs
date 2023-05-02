@@ -19,6 +19,18 @@ pub struct Recipient<M> {
     sender: Box<dyn Sender<M>>,
 }
 
+impl<A, M> From<Address<A>> for Recipient<M>
+where
+    A: Do<M>,
+    M: Send + 'static,
+{
+    fn from(address: Address<A>) -> Self {
+        Self {
+            sender: Box::new(address),
+        }
+    }
+}
+
 impl<M> Recipient<M> {
     pub fn send(&self, msg: M) -> Result<(), SendError> {
         self.sender.send(msg)
@@ -28,6 +40,19 @@ impl<M> Recipient<M> {
 pub struct Notifier<M> {
     message: M,
     sender: Box<dyn Sender<M>>,
+}
+
+impl<A, M> From<(Address<A>, M)> for Notifier<M>
+where
+    A: Do<M>,
+    M: Send + 'static,
+{
+    fn from((address, message): (Address<A>, M)) -> Self {
+        Self {
+            message,
+            sender: Box::new(address),
+        }
+    }
 }
 
 impl<M: Clone> Notifier<M> {
