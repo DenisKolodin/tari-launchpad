@@ -50,7 +50,7 @@ where
             let total = total / 60;
             let minutes = total % 60;
             let hours = total / 60;
-            caption = format!("  {:02}:{:02}:{:02} | Pause ", hours, minutes, seconds);
+            caption = format!("  {:02}:{:02}:{:02} | Pause  ", hours, minutes, seconds);
         } else {
             caption = "  Start mining  ".to_string();
         }
