@@ -1,16 +1,20 @@
 use crate::actors::recipient::Notifier;
+use derive_more::From;
 use std::time::Duration;
 use tokio::task::JoinHandle;
 use tokio::time;
 
-pub struct Timer {
-    handle: Option<JoinHandle<()>>,
+#[derive(From)]
+struct DropHandle(JoinHandle<()>);
+
+impl Drop for DropHandle {
+    fn drop(&mut self) {
+        self.0.abort();
+    }
 }
 
-impl Drop for Timer {
-    fn drop(&mut self) {
-        self.cancel();
-    }
+pub struct Timer {
+    handle: Option<DropHandle>,
 }
 
 impl Timer {
@@ -26,7 +30,7 @@ impl Timer {
             time::sleep(duration.into()).await;
             notifier.notify();
         });
-        self.handle = Some(handle);
+        self.handle = Some(handle.into());
     }
 
     pub fn interval<M>(&mut self, duration: Duration, notifier: Notifier<M>)
@@ -39,12 +43,10 @@ impl Timer {
                 notifier.notify();
             }
         });
-        self.handle = Some(handle);
+        self.handle = Some(handle.into());
     }
 
     pub fn cancel(&mut self) {
-        if let Some(handle) = self.handle.take() {
-            handle.abort();
-        }
+        self.handle.take();
     }
 }
