@@ -20,7 +20,7 @@ struct TariMiningGetter;
 
 impl StatusGetter for TariMiningGetter {
     fn get_status(&self, state: &AppState) -> (&str, Color) {
-        if state.tari_mining.is_active {
+        if state.tari_mining.is_active() {
             ("(Running)", Color::Green)
         } else {
             ("(Ready to set)", Color::Cyan)
@@ -30,7 +30,7 @@ impl StatusGetter for TariMiningGetter {
 
 impl ChronoGetter for TariMiningGetter {
     fn get_duration(&self, state: &AppState) -> Option<Duration> {
-        None
+        state.tari_mining.mining_duration()
     }
 }
 

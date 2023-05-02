@@ -29,7 +29,7 @@ pub struct AppState {
 impl AppState {
     pub fn new() -> Self {
         let tari_mining = TariMiningInfo {
-            is_active: true,
+            mining_started: None,
             tari_amount: 123_456.into(),
         };
         let merged_mining = MergedMiningInfo {
@@ -67,13 +67,25 @@ impl AppState {
 }
 
 pub struct TariMiningInfo {
-    pub is_active: bool,
+    pub mining_started: Option<Instant>,
     pub tari_amount: Decimal,
 }
 
 impl TariMiningInfo {
+    pub fn is_active(&self) -> bool {
+        self.mining_started.is_some()
+    }
+
+    pub fn mining_duration(&self) -> Option<Duration> {
+        self.mining_started.as_ref().map(Instant::elapsed)
+    }
+
     pub fn toggle(&mut self) {
-        self.is_active = !self.is_active;
+        if self.mining_started.is_some() {
+            self.mining_started = None;
+        } else {
+            self.mining_started = Some(Instant::now());
+        }
     }
 }
 
