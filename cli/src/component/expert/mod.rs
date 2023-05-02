@@ -1,7 +1,7 @@
 use crate::component::tabs::AppTabs;
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::{AppState, Focus};
-use crossterm::event::KeyEvent;
+
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};

@@ -1,7 +1,7 @@
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
+use crossterm::event::KeyCode;
 use crossterm::event::KeyModifiers;
-use crossterm::event::{KeyCode, KeyEvent};
 use tui::backend::Backend;
 use tui::layout::{Alignment, Rect};
 use tui::style::{Color, Modifier, Style};
@@ -39,23 +39,22 @@ impl ModeSelector {
 }
 
 impl Input for ModeSelector {
-    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
-        if let ComponentEvent(key) = event {
-            if key.modifiers.contains(KeyModifiers::CONTROL) {
-                match key.code {
-                    KeyCode::Char('n') => {
-                        self.expert = false;
-                        self.settings = false;
-                    }
-                    KeyCode::Char('e') => {
-                        self.expert = !self.expert;
-                        self.settings = false;
-                    }
-                    KeyCode::Char('s') => {
-                        self.settings = !self.settings;
-                    }
-                    _ => {}
+    fn on_event(&mut self, event: ComponentEvent, _state: &mut AppState) {
+        let ComponentEvent(key) = event;
+        if key.modifiers.contains(KeyModifiers::CONTROL) {
+            match key.code {
+                KeyCode::Char('n') => {
+                    self.expert = false;
+                    self.settings = false;
                 }
+                KeyCode::Char('e') => {
+                    self.expert = !self.expert;
+                    self.settings = false;
+                }
+                KeyCode::Char('s') => {
+                    self.settings = !self.settings;
+                }
+                _ => {}
             }
         }
     }

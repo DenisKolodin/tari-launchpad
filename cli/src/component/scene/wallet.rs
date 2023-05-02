@@ -1,7 +1,7 @@
 use crate::component::elements::block_with_title;
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
-use crossterm::event::KeyEvent;
+
 use tui::backend::Backend;
 use tui::layout::Rect;
 
@@ -14,7 +14,7 @@ impl Wallet {
 }
 
 impl Input for Wallet {
-    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) {}
+    fn on_event(&mut self, _event: ComponentEvent, _state: &mut AppState) {}
 }
 
 impl<B: Backend> Component<B> for Wallet {

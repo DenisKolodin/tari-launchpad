@@ -1,6 +1,5 @@
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
-use crossterm::event::KeyEvent;
 
 use tui::backend::Backend;
 use tui::layout::{Alignment, Rect};
@@ -23,7 +22,7 @@ impl<G> StatusBadge<G> {
 }
 
 impl<G> Input for StatusBadge<G> {
-    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) {}
+    fn on_event(&mut self, _event: ComponentEvent, _state: &mut AppState) {}
 }
 
 impl<B: Backend, G> Component<B> for StatusBadge<G>

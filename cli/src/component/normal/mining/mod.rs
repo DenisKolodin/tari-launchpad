@@ -5,9 +5,9 @@ mod status_badge;
 mod tari_mining;
 mod tip;
 
-use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
-use crate::state::{AppState, Focus};
-use crossterm::event::{KeyCode, KeyEvent};
+use crate::component::{Component, ComponentEvent, Frame, Input};
+use crate::state::AppState;
+
 use merged_mining::MergedMiningWidget;
 use tari_mining::TariMiningWidget;
 use tip::MiningTip;

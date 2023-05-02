@@ -6,7 +6,7 @@ use crate::component::settings::SettingsScene;
 
 use crate::component::{Component, ComponentEvent, Input};
 use crate::state::AppState;
-use crossterm::event::KeyEvent;
+
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::Frame;

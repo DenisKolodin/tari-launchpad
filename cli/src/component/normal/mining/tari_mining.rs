@@ -1,11 +1,11 @@
 use crate::component::elements::{block_with_title, logo};
 use crate::component::normal::mining::amount::{AmountGetter, AmountIndicator};
-use crate::component::normal::mining::chrono_button::ChronoButton;
+use crate::component::normal::mining::chrono_button::{ChronoButton, ChronoGetter};
 use crate::component::normal::mining::status_badge::{StatusBadge, StatusGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
 use crate::state::{AppState, Focus};
-use crossterm::event::KeyEvent;
 use rust_decimal::Decimal;
+use std::time::Duration;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::Color;
@@ -28,6 +28,12 @@ impl StatusGetter for TariMiningGetter {
     }
 }
 
+impl ChronoGetter for TariMiningGetter {
+    fn get_duration(&self, state: &AppState) -> Option<Duration> {
+        None
+    }
+}
+
 struct XtrGetter;
 
 impl AmountGetter for XtrGetter {
@@ -40,7 +46,7 @@ impl AmountGetter for XtrGetter {
 pub struct TariMiningWidget {
     status_badge: StatusBadge<TariMiningGetter>,
     tari_amount: AmountIndicator<XtrGetter>,
-    button: ChronoButton,
+    button: ChronoButton<TariMiningGetter>,
 }
 
 impl TariMiningWidget {
@@ -48,7 +54,7 @@ impl TariMiningWidget {
         Self {
             status_badge: StatusBadge::new(TariMiningGetter),
             tari_amount: AmountIndicator::new(XtrGetter),
-            button: ChronoButton::new(),
+            button: ChronoButton::new(TariMiningGetter),
         }
     }
 }

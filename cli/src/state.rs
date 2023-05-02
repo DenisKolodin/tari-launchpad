@@ -1,4 +1,3 @@
-use crossterm::event::KeyEvent;
 use rust_decimal::Decimal;
 use std::collections::VecDeque;
 

@@ -1,6 +1,6 @@
 use crate::component::{elements::block_with_title, Component, ComponentEvent, Input, Pass};
 use crate::state::{AppState, Focus};
-use crossterm::event::{KeyCode, KeyEvent};
+
 use strum::IntoEnumIterator;
 use tui::{
     backend::Backend,

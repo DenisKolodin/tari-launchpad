@@ -3,7 +3,7 @@ pub mod mode;
 
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
-use crossterm::event::KeyEvent;
+
 use logo::Logo;
 use mode::ModeSelector;
 use tui::backend::Backend;

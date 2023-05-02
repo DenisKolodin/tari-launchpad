@@ -1,11 +1,11 @@
 use crate::component::elements::{block_with_title, logo};
 use crate::component::normal::mining::amount::{AmountGetter, AmountIndicator};
-use crate::component::normal::mining::chrono_button::ChronoButton;
+use crate::component::normal::mining::chrono_button::{ChronoButton, ChronoGetter};
 use crate::component::normal::mining::status_badge::{StatusBadge, StatusGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
 use crate::state::{AppState, Focus};
-use crossterm::event::KeyEvent;
 use rust_decimal::Decimal;
+use std::time::Duration;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::Color;
@@ -25,6 +25,12 @@ impl StatusGetter for MergedMiningGetter {
         } else {
             ("(Ready to set)", Color::Cyan)
         }
+    }
+}
+
+impl ChronoGetter for MergedMiningGetter {
+    fn get_duration(&self, state: &AppState) -> Option<Duration> {
+        None
     }
 }
 
@@ -50,7 +56,7 @@ pub struct MergedMiningWidget {
     status_badge: StatusBadge<MergedMiningGetter>,
     tari_amount: AmountIndicator<XtrGetter>,
     monero_amount: AmountIndicator<XmrGetter>,
-    button: ChronoButton,
+    button: ChronoButton<MergedMiningGetter>,
 }
 
 impl MergedMiningWidget {
@@ -59,7 +65,7 @@ impl MergedMiningWidget {
             status_badge: StatusBadge::new(MergedMiningGetter),
             tari_amount: AmountIndicator::new(XtrGetter),
             monero_amount: AmountIndicator::new(XmrGetter),
-            button: ChronoButton::new(),
+            button: ChronoButton::new(MergedMiningGetter),
         }
     }
 }

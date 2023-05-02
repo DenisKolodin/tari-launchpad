@@ -1,26 +1,33 @@
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
-use crossterm::event::KeyEvent;
+use std::time::Duration;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
 use tui::text::{Span, Spans};
 use tui::widgets::{Block, Paragraph};
 
-/// A button with a clock.
-pub struct ChronoButton {}
+pub trait ChronoGetter {
+    /// How long the mining is active.
+    fn get_duration(&self, state: &AppState) -> Option<Duration>;
+}
 
-impl ChronoButton {
-    pub fn new() -> Self {
-        Self {}
+/// A button with a clock.
+pub struct ChronoButton<G> {
+    getter: G,
+}
+
+impl<G> ChronoButton<G> {
+    pub fn new(getter: G) -> Self {
+        Self { getter }
     }
 }
 
-impl Input for ChronoButton {
-    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) {}
+impl<G> Input for ChronoButton<G> {
+    fn on_event(&mut self, _event: ComponentEvent, _state: &mut AppState) {}
 }
 
-impl<B: Backend> Component<B> for ChronoButton {
+impl<B: Backend, G> Component<B> for ChronoButton<G> {
     type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {

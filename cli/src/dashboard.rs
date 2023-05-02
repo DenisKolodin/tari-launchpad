@@ -1,4 +1,4 @@
-use crate::component::{Component, ComponentEvent, Input, MainView};
+use crate::component::{Component, Input, MainView};
 use crate::events::{EventHandle, TermEvent};
 use crate::state::AppState;
 use anyhow::Error;

@@ -1,6 +1,6 @@
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
-use crossterm::event::KeyEvent;
+
 use tui::backend::Backend;
 use tui::layout::{Alignment, Rect};
 use tui::text::{Span, Spans};
@@ -15,7 +15,7 @@ impl MiningTip {
 }
 
 impl Input for MiningTip {
-    fn on_event(&mut self, _event: ComponentEvent, state: &mut AppState) {}
+    fn on_event(&mut self, _event: ComponentEvent, _state: &mut AppState) {}
 }
 
 impl<B: Backend> Component<B> for MiningTip {
