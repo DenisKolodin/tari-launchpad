@@ -20,7 +20,7 @@ struct MergedMiningGetter;
 
 impl StatusGetter for MergedMiningGetter {
     fn get_status(&self, state: &AppState) -> (&str, Color) {
-        if state.merged_mining.is_active {
+        if state.merged_mining.is_active() {
             ("(Running)", Color::Green)
         } else {
             ("(Ready to set)", Color::Cyan)
@@ -30,7 +30,7 @@ impl StatusGetter for MergedMiningGetter {
 
 impl ChronoGetter for MergedMiningGetter {
     fn get_duration(&self, state: &AppState) -> Option<Duration> {
-        None
+        state.merged_mining.mining_duration()
     }
 }
 

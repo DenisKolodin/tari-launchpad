@@ -27,10 +27,13 @@ impl<G> Input for ChronoButton<G> {
     fn on_event(&mut self, _event: ComponentEvent, _state: &mut AppState) {}
 }
 
-impl<B: Backend, G> Component<B> for ChronoButton<G> {
+impl<B: Backend, G> Component<B> for ChronoButton<G>
+where
+    G: ChronoGetter,
+{
     type State = AppState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let constraints = [Constraint::Length(1), Constraint::Min(0)];
         let v_chunks = Layout::default()
             .direction(Direction::Vertical)
@@ -40,8 +43,22 @@ impl<B: Backend, G> Component<B> for ChronoButton<G> {
         let inner_rect = block.inner(v_chunks[0]);
         f.render_widget(block, v_chunks[0]);
 
+        let caption;
+        if let Some(dur) = self.getter.get_duration(state) {
+            let total = dur.as_secs();
+            let seconds = total % 60;
+            let total = total / 60;
+            let minutes = total % 60;
+            let hours = total / 60;
+            caption = format!("  {:02}:{:02}:{:02} | Pause ", hours, minutes, seconds);
+        } else {
+            caption = "  Start mining  ".to_string();
+        }
+
         let spans = Spans(vec![Span::styled(
-            "  Set up & start mining  ",
+            // "  Set up & start mining  ",
+            // "  Start mining  ",
+            caption,
             Style::default().bg(Color::Magenta),
         )]);
         let text = vec![spans];

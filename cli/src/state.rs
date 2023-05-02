@@ -1,5 +1,6 @@
 use rust_decimal::Decimal;
 use std::collections::VecDeque;
+use std::time::{Duration, Instant};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Focus {
@@ -32,7 +33,7 @@ impl AppState {
             tari_amount: 123_456.into(),
         };
         let merged_mining = MergedMiningInfo {
-            is_active: false,
+            mining_started: None,
             tari_amount: 45_000.into(),
             monero_amount: Decimal::new(35, 1),
         };
@@ -77,13 +78,25 @@ impl TariMiningInfo {
 }
 
 pub struct MergedMiningInfo {
-    pub is_active: bool,
+    pub mining_started: Option<Instant>,
     pub tari_amount: Decimal,
     pub monero_amount: Decimal,
 }
 
 impl MergedMiningInfo {
+    pub fn is_active(&self) -> bool {
+        self.mining_started.is_some()
+    }
+
+    pub fn mining_duration(&self) -> Option<Duration> {
+        self.mining_started.as_ref().map(Instant::elapsed)
+    }
+
     pub fn toggle(&mut self) {
-        self.is_active = !self.is_active;
+        if self.mining_started.is_some() {
+            self.mining_started = None;
+        } else {
+            self.mining_started = Some(Instant::now());
+        }
     }
 }
