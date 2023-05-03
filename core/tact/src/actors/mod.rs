@@ -4,9 +4,11 @@ mod address;
 mod context;
 mod handler;
 mod joint;
+mod receiver;
 mod recipient;
 mod runtime;
 mod timer;
+mod utils;
 
 pub use action::{Do, Interrupt};
 pub use actor::Actor;

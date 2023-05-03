@@ -1,17 +1,7 @@
 use crate::actors::recipient::Notifier;
-use derive_more::From;
+use crate::actors::utils::DropHandle;
 use std::time::Duration;
-use tokio::task::JoinHandle;
 use tokio::time;
-
-#[derive(From)]
-struct DropHandle(JoinHandle<()>);
-
-impl Drop for DropHandle {
-    fn drop(&mut self) {
-        self.0.abort();
-    }
-}
 
 pub struct Timer {
     handle: Option<DropHandle>,

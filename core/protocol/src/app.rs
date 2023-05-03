@@ -7,4 +7,6 @@ pub struct AppState {
     pub jobs: HashMap<JobId, JobState>,
 }
 
-pub enum AppDelta {}
+pub enum LpDelta {}
+
+pub enum LpAction {}
