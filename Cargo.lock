@@ -674,6 +674,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "tari-lp-bus"
+version = "0.1.0"
+
+[[package]]
 name = "tari-lp-cli"
 version = "0.1.0"
 dependencies = [
