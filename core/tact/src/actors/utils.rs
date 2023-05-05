@@ -1,6 +1,7 @@
 use derive_more::From;
 use tokio::task::JoinHandle;
 
+// TODO: Move to task
 #[derive(From)]
 pub struct DropHandle(JoinHandle<()>);
 
