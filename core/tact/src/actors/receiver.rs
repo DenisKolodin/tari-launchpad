@@ -1,27 +1,23 @@
-use crate::actors::utils::DropHandle;
+use crate::actors::task::Task;
 use crate::actors::Recipient;
 use futures::{Stream, StreamExt};
 
 pub struct Receiver {
-    handle: Option<DropHandle>,
+    task: Task,
 }
 
 impl Receiver {
-    pub fn connect<M, S>(&mut self, stream: S, recipient: Recipient<M>)
+    pub fn connect<M, S>(stream: S, recipient: Recipient<M>) -> Self
     where
         M: Clone + Send + 'static,
         S: Stream<Item = M> + Send + 'static,
     {
-        let handle = tokio::spawn(async move {
+        let task = Task::spawn(async move {
             tokio::pin!(stream);
             while let Some(event) = stream.next().await {
                 recipient.send(event);
             }
         });
-        self.handle = Some(handle.into());
-    }
-
-    pub fn cancel(&mut self) {
-        self.handle.take();
+        Self { task }
     }
 }

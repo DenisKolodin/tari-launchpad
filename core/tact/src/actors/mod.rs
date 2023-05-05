@@ -9,11 +9,11 @@ mod recipient;
 mod runtime;
 mod task;
 mod timer;
-mod utils;
 
 pub use action::{Do, Interrupt};
 pub use actor::Actor;
 pub use address::Address;
 pub use context::ActorContext;
 pub use recipient::{Notifier, Recipient};
-pub use timer::Timer;
+pub use task::Task;
+pub use timer::{Interval, Timeout};

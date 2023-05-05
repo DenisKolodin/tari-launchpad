@@ -1,8 +1,14 @@
-use crate::actors::utils::DropHandle;
 use futures::Future;
+use tokio::task::JoinHandle;
 
 pub struct Task {
-    handle: DropHandle,
+    handle: JoinHandle<()>,
+}
+
+impl Drop for Task {
+    fn drop(&mut self) {
+        self.handle.abort();
+    }
 }
 
 impl Task {
@@ -11,8 +17,6 @@ impl Task {
         T: Future<Output = ()> + Send + 'static,
     {
         let handle = tokio::spawn(fut);
-        Self {
-            handle: DropHandle::from(handle),
-        }
+        Self { handle }
     }
 }

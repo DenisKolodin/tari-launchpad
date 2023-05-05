@@ -1,42 +1,40 @@
 use crate::actors::recipient::Notifier;
-use crate::actors::utils::DropHandle;
+use crate::actors::task::Task;
 use std::time::Duration;
 use tokio::time;
 
-pub struct Timer {
-    handle: Option<DropHandle>,
+pub struct Timeout {
+    task: Task,
 }
 
-impl Timer {
-    pub fn new() -> Self {
-        Self { handle: None }
-    }
-
-    pub fn timeout<M>(&mut self, duration: Duration, notifier: Notifier<M>)
+impl Timeout {
+    pub fn spawn<M>(duration: Duration, notifier: Notifier<M>) -> Self
     where
         M: Clone + Send + 'static,
     {
-        let handle = tokio::spawn(async move {
+        let task = Task::spawn(async move {
             time::sleep(duration.into()).await;
             notifier.notify();
         });
-        self.handle = Some(handle.into());
+        Self { task }
     }
+}
 
-    pub fn interval<M>(&mut self, duration: Duration, notifier: Notifier<M>)
+pub struct Interval {
+    task: Task,
+}
+
+impl Interval {
+    pub fn spawn<M>(duration: Duration, notifier: Notifier<M>) -> Self
     where
         M: Clone + Send + 'static,
     {
-        let handle = tokio::spawn(async move {
+        let task = Task::spawn(async move {
             loop {
                 time::sleep(duration.into()).await;
                 notifier.notify();
             }
         });
-        self.handle = Some(handle.into());
-    }
-
-    pub fn cancel(&mut self) {
-        self.handle.take();
+        Self { task }
     }
 }
