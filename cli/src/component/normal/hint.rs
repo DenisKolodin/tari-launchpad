@@ -6,28 +6,32 @@ use tui::layout::{Alignment, Rect};
 use tui::text::{Span, Spans};
 use tui::widgets::Paragraph;
 
-pub struct HintLine {}
+pub struct HintLine<T> {
+    getter: T,
+}
 
-impl HintLine {
-    pub fn new() -> Self {
-        Self {}
+pub trait HintGetter {
+    fn get_hint(&self, state: &AppState) -> String;
+}
+
+impl<T> HintLine<T> {
+    pub fn new(getter: T) -> Self {
+        Self { getter }
     }
 }
 
-impl Input for HintLine {
+impl<T> Input for HintLine<T> {
     fn on_event(&mut self, _event: ComponentEvent, _state: &mut AppState) {}
 }
 
-impl<B: Backend> Component<B> for HintLine {
+impl<B: Backend, T> Component<B> for HintLine<T>
+where
+    T: HintGetter,
+{
     type State = AppState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
-        let mining = false; // TODO: Get it from the state
-        let text = if mining {
-            "Awesome! Tari Mining is on."
-        } else {
-            "You are one step away from staring mining."
-        };
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
+        let text = self.getter.get_hint(state);
         let spans = Spans(vec![Span::raw(text)]);
         let text = vec![spans];
         let paragraph = Paragraph::new(text).alignment(Alignment::Left);

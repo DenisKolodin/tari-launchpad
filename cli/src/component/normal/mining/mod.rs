@@ -7,14 +7,28 @@ mod tari_mining;
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 
-use super::hint::HintLine;
+use crate::component::normal::hint::{HintGetter, HintLine};
 use merged_mining::MergedMiningWidget;
 use tari_mining::TariMiningWidget;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 
+struct MiningHint;
+
+impl HintGetter for MiningHint {
+    fn get_hint(&self, state: &AppState) -> String {
+        let mining = false;
+        let text = if mining {
+            "Awesome! Tari Mining is on."
+        } else {
+            "You are one step away from staring mining."
+        };
+        text.into()
+    }
+}
+
 pub struct MiningScene {
-    hint: HintLine,
+    hint: HintLine<MiningHint>,
     tari_mining: TariMiningWidget,
     merged_mining: MergedMiningWidget,
 }
@@ -22,7 +36,7 @@ pub struct MiningScene {
 impl MiningScene {
     pub fn new() -> Self {
         Self {
-            hint: HintLine::new(),
+            hint: HintLine::new(MiningHint),
             tari_mining: TariMiningWidget::new(),
             merged_mining: MergedMiningWidget::new(),
         }

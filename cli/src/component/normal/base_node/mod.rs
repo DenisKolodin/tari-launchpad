@@ -1,18 +1,26 @@
+use crate::component::normal::hint::{HintGetter, HintLine};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
 use crate::state::{AppState, Focus};
 
-use super::hint::HintLine;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 
+struct BaseNodeHint;
+
+impl HintGetter for BaseNodeHint {
+    fn get_hint(&self, state: &AppState) -> String {
+        "Base Node is already running!".into()
+    }
+}
+
 pub struct BaseNodeScene {
-    hint: HintLine,
+    hint: HintLine<BaseNodeHint>,
 }
 
 impl BaseNodeScene {
     pub fn new() -> Self {
         Self {
-            hint: HintLine::new(),
+            hint: HintLine::new(BaseNodeHint),
         }
     }
 }
@@ -23,8 +31,7 @@ impl Input for BaseNodeScene {
             Pass::Up | Pass::Leave => {
                 state.focus_on(Focus::Root);
             }
-            _ => {
-            }
+            _ => {}
         }
     }
 }

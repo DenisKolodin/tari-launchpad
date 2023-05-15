@@ -1,13 +1,13 @@
 mod base_node;
-mod mining;
 mod hint;
+mod mining;
 
 use crate::component::tabs::{AppTabs, TabGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::{AppState, Focus};
 
-use mining::MiningScene;
 use base_node::BaseNodeScene;
+use mining::MiningScene;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
@@ -61,8 +61,7 @@ impl Input for NormalScene {
             NormalTabs::BaseNode => {
                 self.base_node_scene.on_event(event, state);
             }
-            _ => {
-            }
+            _ => {}
         }
     }
 }
