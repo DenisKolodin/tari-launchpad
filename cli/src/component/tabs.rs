@@ -74,7 +74,7 @@ impl<T> Input for AppTabs<T> {
                 Pass::Left => {
                     self.prev();
                 }
-                Pass::Down | Pass::Enter => {
+                Pass::Down | Pass::Enter | Pass::Space => {
                     state.focus_on(self.focus_to);
                 }
                 _ => {}

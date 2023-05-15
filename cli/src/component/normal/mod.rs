@@ -1,11 +1,13 @@
 mod base_node;
 mod mining;
+mod hint;
 
 use crate::component::tabs::{AppTabs, TabGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::{AppState, Focus};
 
 use mining::MiningScene;
+use base_node::BaseNodeScene;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
@@ -36,6 +38,7 @@ impl TabGetter for NormalTabs {
 pub struct NormalScene {
     normal_tabs: AppTabs<NormalTabs>,
     mining_scene: MiningScene,
+    base_node_scene: BaseNodeScene,
 }
 
 impl NormalScene {
@@ -43,6 +46,7 @@ impl NormalScene {
         Self {
             normal_tabs: AppTabs::new(Focus::TariMining),
             mining_scene: MiningScene::new(),
+            base_node_scene: BaseNodeScene::new(),
         }
     }
 }
@@ -50,7 +54,16 @@ impl NormalScene {
 impl Input for NormalScene {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         let _focus = self.normal_tabs.on_event(event, state);
-        self.mining_scene.on_event(event, state);
+        match self.normal_tabs.selected() {
+            NormalTabs::Mining => {
+                self.mining_scene.on_event(event, state);
+            }
+            NormalTabs::BaseNode => {
+                self.base_node_scene.on_event(event, state);
+            }
+            _ => {
+            }
+        }
     }
 }
 
@@ -68,7 +81,9 @@ impl<B: Backend> Component<B> for NormalScene {
             NormalTabs::Mining => {
                 self.mining_scene.draw(f, chunks[1], state);
             }
-            NormalTabs::BaseNode => {}
+            NormalTabs::BaseNode => {
+                self.base_node_scene.draw(f, chunks[1], state);
+            }
             NormalTabs::Wallet => {}
         }
     }

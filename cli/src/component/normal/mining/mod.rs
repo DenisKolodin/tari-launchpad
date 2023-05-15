@@ -1,6 +1,5 @@
 mod amount;
 mod chrono_button;
-mod hint;
 mod merged_mining;
 mod status_badge;
 mod tari_mining;
@@ -8,7 +7,7 @@ mod tari_mining;
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 
-use hint::HintLine;
+use super::hint::HintLine;
 use merged_mining::MergedMiningWidget;
 use tari_mining::TariMiningWidget;
 use tui::backend::Backend;
