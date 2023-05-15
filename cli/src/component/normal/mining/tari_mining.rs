@@ -32,6 +32,14 @@ impl ChronoGetter for TariMiningGetter {
     fn get_duration(&self, state: &AppState) -> Option<Duration> {
         state.tari_mining.mining_duration()
     }
+
+    fn get_label(&self, state: &AppState) -> &str {
+        if state.tari_mining.mining_duration().is_some() {
+            "Pause"
+        } else {
+            "Start mining"
+        }
+    }
 }
 
 struct XtrGetter;

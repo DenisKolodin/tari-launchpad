@@ -32,6 +32,14 @@ impl ChronoGetter for MergedMiningGetter {
     fn get_duration(&self, state: &AppState) -> Option<Duration> {
         state.merged_mining.mining_duration()
     }
+
+    fn get_label(&self, state: &AppState) -> &str {
+        if state.merged_mining.mining_duration().is_some() {
+            "Pause"
+        } else {
+            "Start mining"
+        }
+    }
 }
 
 struct XtrGetter;

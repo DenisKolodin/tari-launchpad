@@ -10,6 +10,7 @@ use tui::widgets::{Block, Paragraph};
 pub trait ChronoGetter {
     /// How long the mining is active.
     fn get_duration(&self, state: &AppState) -> Option<Duration>;
+    fn get_label(&self, state: &AppState) -> &str;
 }
 
 /// A button with a clock.
@@ -39,20 +40,21 @@ where
             .direction(Direction::Vertical)
             .constraints(constraints)
             .split(rect);
-        let block = Block::default(); //.style(Style::default().bg(Color::Magenta));
+        let block = Block::default();
         let inner_rect = block.inner(v_chunks[0]);
         f.render_widget(block, v_chunks[0]);
 
         let caption;
+        let label = self.getter.get_label(state);
         if let Some(dur) = self.getter.get_duration(state) {
             let total = dur.as_secs();
             let seconds = total % 60;
             let total = total / 60;
             let minutes = total % 60;
             let hours = total / 60;
-            caption = format!("  {:02}:{:02}:{:02} | Pause  ", hours, minutes, seconds);
+            caption = format!("  {:02}:{:02}:{:02} | {}  ", hours, minutes, seconds, label);
         } else {
-            caption = "  Start mining  ".to_string();
+            caption = format!("  {}  ", label);
         }
 
         let spans = Spans(vec![Span::styled(
