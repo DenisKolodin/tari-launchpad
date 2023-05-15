@@ -1,7 +1,10 @@
+mod base_node;
+
 use crate::component::normal::hint::{HintGetter, HintLine};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
 use crate::state::{AppState, Focus};
 
+use base_node::BaseNodeWidget;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 
@@ -15,12 +18,14 @@ impl HintGetter for BaseNodeHint {
 
 pub struct BaseNodeScene {
     hint: HintLine<BaseNodeHint>,
+    base_node: BaseNodeWidget,
 }
 
 impl BaseNodeScene {
     pub fn new() -> Self {
         Self {
             hint: HintLine::new(BaseNodeHint),
+            base_node: BaseNodeWidget::new(),
         }
     }
 }
@@ -56,7 +61,7 @@ impl<B: Backend> Component<B> for BaseNodeScene {
             .direction(Direction::Horizontal)
             .constraints(constraints)
             .split(v_chunks[1]);
-        // self.tari_mining.draw(f, h_chunks[0], state);
+        self.base_node.draw(f, h_chunks[0], state);
         // self.merged_mining.draw(f, h_chunks[1], state);
     }
 }
