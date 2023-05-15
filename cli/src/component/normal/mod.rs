@@ -1,3 +1,4 @@
+mod base_node;
 mod mining;
 
 use crate::component::tabs::{AppTabs, TabGetter};

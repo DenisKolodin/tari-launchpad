@@ -1,21 +1,21 @@
 mod amount;
 mod chrono_button;
+mod hint;
 mod merged_mining;
 mod status_badge;
 mod tari_mining;
-mod tip;
 
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 
+use hint::HintLine;
 use merged_mining::MergedMiningWidget;
 use tari_mining::TariMiningWidget;
-use tip::MiningTip;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 
 pub struct MiningScene {
-    mining_tip: MiningTip,
+    hint: HintLine,
     tari_mining: TariMiningWidget,
     merged_mining: MergedMiningWidget,
 }
@@ -23,7 +23,7 @@ pub struct MiningScene {
 impl MiningScene {
     pub fn new() -> Self {
         Self {
-            mining_tip: MiningTip::new(),
+            hint: HintLine::new(),
             tari_mining: TariMiningWidget::new(),
             merged_mining: MergedMiningWidget::new(),
         }
@@ -50,7 +50,7 @@ impl<B: Backend> Component<B> for MiningScene {
             .direction(Direction::Vertical)
             .constraints(constraints)
             .split(rect);
-        self.mining_tip.draw(f, v_chunks[0], state);
+        self.hint.draw(f, v_chunks[0], state);
 
         let constraints = [Constraint::Percentage(50), Constraint::Percentage(50)];
         let h_chunks = Layout::default()

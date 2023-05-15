@@ -6,19 +6,19 @@ use tui::layout::{Alignment, Rect};
 use tui::text::{Span, Spans};
 use tui::widgets::Paragraph;
 
-pub struct MiningTip {}
+pub struct HintLine {}
 
-impl MiningTip {
+impl HintLine {
     pub fn new() -> Self {
         Self {}
     }
 }
 
-impl Input for MiningTip {
+impl Input for HintLine {
     fn on_event(&mut self, _event: ComponentEvent, _state: &mut AppState) {}
 }
 
-impl<B: Backend> Component<B> for MiningTip {
+impl<B: Backend> Component<B> for HintLine {
     type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
