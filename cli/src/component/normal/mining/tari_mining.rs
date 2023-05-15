@@ -1,6 +1,6 @@
 use crate::component::elements::{block_with_title, logo};
+use crate::component::normal::chrono_button::{ChronoButton, ChronoGetter};
 use crate::component::normal::mining::amount::{AmountGetter, AmountIndicator};
-use crate::component::normal::mining::chrono_button::{ChronoButton, ChronoGetter};
 use crate::component::normal::mining::status_badge::{StatusBadge, StatusGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
 use crate::state::{AppState, Focus};

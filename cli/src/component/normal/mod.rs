@@ -1,5 +1,6 @@
 mod base_node;
 mod hint;
+mod chrono_button;
 mod mining;
 
 use crate::component::tabs::{AppTabs, TabGetter};
