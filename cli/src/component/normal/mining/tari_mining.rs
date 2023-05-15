@@ -69,7 +69,7 @@ impl Input for TariMiningWidget {
                 Pass::Up | Pass::Leave => {
                     state.focus_on(Focus::Root);
                 }
-                Pass::Enter => {
+                Pass::Enter | Pass::Space => {
                     state.tari_mining.toggle();
                 }
                 _ => {}

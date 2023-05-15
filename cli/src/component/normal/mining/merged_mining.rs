@@ -80,7 +80,7 @@ impl Input for MergedMiningWidget {
                 Pass::Up | Pass::Leave => {
                     state.focus_on(Focus::Root);
                 }
-                Pass::Enter => {
+                Pass::Enter | Pass::Space => {
                     state.merged_mining.toggle();
                 }
                 _ => {}

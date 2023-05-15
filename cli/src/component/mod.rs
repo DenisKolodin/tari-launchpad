@@ -28,8 +28,11 @@ pub enum Pass {
     Down,
     Left,
     Right,
+    // Esc
     Leave,
     Enter,
+    Space,
+    // Tab
     Next,
     None,
 }
@@ -57,6 +60,7 @@ impl ComponentEvent {
             KeyCode::Right | KeyCode::Char('l') => Pass::Right,
             KeyCode::Esc => Pass::Leave,
             KeyCode::Enter => Pass::Enter,
+            KeyCode::Char(' ') => Pass::Space,
             KeyCode::Tab => Pass::Next,
             _ => Pass::None,
         }
