@@ -15,11 +15,12 @@ pub trait TabGetter: IntoEnumIterator + Copy + ToString {
     fn get_badge(&self, _: &AppState) -> Option<(&str, Color)> {
         None
     }
+
+    fn focus_to(&self, _: &AppState) -> Focus;
 }
 
 pub struct AppTabs<T> {
     focus_on: Focus,
-    focus_to: Focus,
     selected: usize,
     items: Vec<T>,
 }
@@ -28,10 +29,9 @@ impl<T> AppTabs<T>
 where
     T: IntoEnumIterator,
 {
-    pub fn new(focus_to: Focus) -> Self {
+    pub fn new() -> Self {
         Self {
             focus_on: Focus::Root,
-            focus_to,
             selected: 0,
             items: T::iter().collect(),
         }
@@ -64,7 +64,10 @@ impl<T> AppTabs<T> {
     }
 }
 
-impl<T> Input for AppTabs<T> {
+impl<T> Input for AppTabs<T>
+where
+    T: TabGetter,
+{
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         if state.focus_on == self.focus_on {
             match event.pass() {
@@ -75,7 +78,8 @@ impl<T> Input for AppTabs<T> {
                     self.prev();
                 }
                 Pass::Down | Pass::Enter | Pass::Space => {
-                    state.focus_on(self.focus_to);
+                    let focus_to = self.selected().focus_to(state);
+                    state.focus_on(focus_to);
                 }
                 _ => {}
             }

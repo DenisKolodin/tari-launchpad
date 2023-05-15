@@ -32,12 +32,7 @@ impl BaseNodeScene {
 
 impl Input for BaseNodeScene {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
-        match event.pass() {
-            Pass::Up | Pass::Leave => {
-                state.focus_on(Focus::Root);
-            }
-            _ => {}
-        }
+        self.base_node.on_event(event, state);
     }
 }
 

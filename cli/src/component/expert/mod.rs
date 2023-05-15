@@ -13,7 +13,11 @@ pub enum ExpertTabs {
     Logs,
 }
 
-impl TabGetter for ExpertTabs {}
+impl TabGetter for ExpertTabs {
+    fn focus_to(&self, _: &AppState) -> Focus {
+        Focus::Root
+    }
+}
 
 pub struct ExpertScene {
     expert_tabs: AppTabs<ExpertTabs>,
@@ -22,7 +26,7 @@ pub struct ExpertScene {
 impl ExpertScene {
     pub fn new() -> Self {
         Self {
-            expert_tabs: AppTabs::new(Focus::Root),
+            expert_tabs: AppTabs::new(),
         }
     }
 }

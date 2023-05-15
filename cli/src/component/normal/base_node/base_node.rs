@@ -1,4 +1,5 @@
 use crate::component::elements::{block_with_title, logo};
+use crate::component::normal::chrono_button::{ChronoButton, ChronoGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
 use crate::state::{AppState, Focus};
 use rust_decimal::Decimal;
@@ -13,23 +14,55 @@ const LOGO: &str = r#"
 ╚═╝┴ ┴└─┘└─┘  ╝╚╝└─┘─┴┘└─┘
 "#;
 
-pub struct BaseNodeWidget {}
+struct BaseNodeGetter;
+
+impl ChronoGetter for BaseNodeGetter {
+    fn get_duration(&self, state: &AppState) -> Option<Duration> {
+        None
+    }
+
+    fn get_label(&self, state: &AppState) -> &str {
+        if false {
+            "Pause"
+        } else {
+            "Start node"
+        }
+    }
+}
+
+pub struct BaseNodeWidget {
+    button: ChronoButton<BaseNodeGetter>,
+}
 
 impl BaseNodeWidget {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            button: ChronoButton::new(BaseNodeGetter),
+        }
     }
 }
 
 impl Input for BaseNodeWidget {
-    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {}
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
+        if state.focus_on == Focus::BaseNode {
+            match event.pass() {
+                Pass::Up | Pass::Leave => {
+                    state.focus_on(Focus::Root);
+                }
+                Pass::Enter | Pass::Space => {
+                    // TODO: Toggle the base node state
+                }
+                _ => {}
+            }
+        }
+    }
 }
 
 impl<B: Backend> Component<B> for BaseNodeWidget {
     type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
-        let block = block_with_title(Some("Tari Mining"), state.focus_on == Focus::BaseNode);
+        let block = block_with_title(Some("Base Node"), state.focus_on == Focus::BaseNode);
         let inner_rect = block.inner(rect);
         f.render_widget(block, rect);
 
@@ -52,6 +85,6 @@ impl<B: Backend> Component<B> for BaseNodeWidget {
 
         // self.tari_amount.draw(f, v_chunks[2], state);
 
-        // self.button.draw(f, v_chunks[4], state);
+        self.button.draw(f, v_chunks[4], state);
     }
 }

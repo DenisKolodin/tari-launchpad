@@ -1,6 +1,6 @@
 mod base_node;
-mod hint;
 mod chrono_button;
+mod hint;
 mod mining;
 
 use crate::component::tabs::{AppTabs, TabGetter};
@@ -34,6 +34,14 @@ impl TabGetter for NormalTabs {
         }
         None
     }
+
+    fn focus_to(&self, _: &AppState) -> Focus {
+        match self {
+            Self::Mining => Focus::TariMining,
+            Self::BaseNode => Focus::BaseNode,
+            Self::Wallet => Focus::Root,
+        }
+    }
 }
 
 pub struct NormalScene {
@@ -45,7 +53,7 @@ pub struct NormalScene {
 impl NormalScene {
     pub fn new() -> Self {
         Self {
-            normal_tabs: AppTabs::new(Focus::TariMining),
+            normal_tabs: AppTabs::new(),
             mining_scene: MiningScene::new(),
             base_node_scene: BaseNodeScene::new(),
         }

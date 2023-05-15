@@ -16,7 +16,11 @@ pub enum SettingsTabs {
     Security,
 }
 
-impl TabGetter for SettingsTabs {}
+impl TabGetter for SettingsTabs {
+    fn focus_to(&self, _: &AppState) -> Focus {
+        Focus::Root
+    }
+}
 
 pub struct SettingsScene {
     settings_tabs: AppTabs<SettingsTabs>,
@@ -25,7 +29,7 @@ pub struct SettingsScene {
 impl SettingsScene {
     pub fn new() -> Self {
         Self {
-            settings_tabs: AppTabs::new(Focus::Root),
+            settings_tabs: AppTabs::new(),
         }
     }
 }
