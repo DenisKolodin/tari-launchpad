@@ -11,6 +11,12 @@ use tui::{
     Frame,
 };
 
+pub trait TabGetter: IntoEnumIterator + Copy + ToString {
+    fn get_badge(&self, _: &AppState) -> Option<(&str, Color)> {
+        None
+    }
+}
+
 pub struct AppTabs<T> {
     focus_on: Focus,
     focus_to: Focus,
@@ -80,20 +86,24 @@ impl<T> Input for AppTabs<T> {
 impl<B, T> Component<B> for AppTabs<T>
 where
     B: Backend,
-    T: IntoEnumIterator + Copy + ToString,
+    T: TabGetter,
 {
     type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
-        let _tag_style = Style::default().fg(Color::Rgb(4, 209, 144));
         let titles = self
             .items
             .iter()
-            .map(|s| {
-                Spans::from(vec![
-                    Span::raw(s.to_string()),
-                    // Span::styled(" (running)", tag_style),
-                ])
+            .map(|item| {
+                //.fg(Color::Rgb(4, 209, 144));
+                let mut spans = vec![Span::raw(item.to_string())];
+                if let Some((tag, color)) = item.get_badge(state) {
+                    let tag_style = Style::default().fg(color);
+                    let text = format!(" {tag}");
+                    let span = Span::styled(text, tag_style);
+                    spans.push(span);
+                }
+                Spans::from(spans)
             })
             .collect();
         let block = block_with_title(None, state.focus_on == self.focus_on);

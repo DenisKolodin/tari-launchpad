@@ -1,4 +1,4 @@
-use crate::component::tabs::AppTabs;
+use crate::component::tabs::{AppTabs, TabGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::{AppState, Focus};
 
@@ -12,6 +12,8 @@ pub enum ExpertTabs {
     Containers,
     Logs,
 }
+
+impl TabGetter for ExpertTabs {}
 
 pub struct ExpertScene {
     expert_tabs: AppTabs<ExpertTabs>,

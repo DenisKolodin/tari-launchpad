@@ -1,4 +1,4 @@
-use crate::component::tabs::AppTabs;
+use crate::component::tabs::{AppTabs, TabGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::{AppState, Focus};
 
@@ -15,6 +15,8 @@ pub enum SettingsTabs {
     Logs,
     Security,
 }
+
+impl TabGetter for SettingsTabs {}
 
 pub struct SettingsScene {
     settings_tabs: AppTabs<SettingsTabs>,

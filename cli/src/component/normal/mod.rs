@@ -1,6 +1,6 @@
 mod mining;
 
-use crate::component::tabs::AppTabs;
+use crate::component::tabs::{AppTabs, TabGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::{AppState, Focus};
 
@@ -8,6 +8,7 @@ use mining::MiningScene;
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
+use tui::style::Color;
 
 #[derive(Debug, EnumCount, EnumIter, FromRepr, Clone, Copy, Display)]
 pub enum NormalTabs {
@@ -15,6 +16,20 @@ pub enum NormalTabs {
     #[strum(serialize = "Base Node")]
     BaseNode,
     Wallet,
+}
+
+impl TabGetter for NormalTabs {
+    fn get_badge(&self, state: &AppState) -> Option<(&str, Color)> {
+        match self {
+            Self::Mining => {
+                if state.merged_mining.is_active() || state.tari_mining.is_active() {
+                    return Some(("(running)", Color::Green));
+                }
+            }
+            _ => {}
+        }
+        None
+    }
 }
 
 pub struct NormalScene {
