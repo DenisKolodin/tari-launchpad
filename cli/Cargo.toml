@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.70"
+anyhow = "1.0.71"
 async-trait = "0.1.68"
 crossterm = "0.26.1"
 derive_more = "0.99.17"
@@ -12,5 +12,5 @@ rust_decimal = "1.29.1"
 strum = { version = "0.24.1", features = ["derive"] }
 tact = { path = "../core/tact" }
 thiserror = "1.0.40"
-tokio = "1.27.0"
+tokio = "1.28.1"
 tui = "0.19.0"

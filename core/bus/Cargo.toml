@@ -5,4 +5,4 @@ edition = "2021"
 
 [dependencies]
 tari-lp-protocol = { path = "../protocol" }
-tokio = "1.28.0"
+tokio = "1.28.1"
