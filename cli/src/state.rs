@@ -4,10 +4,17 @@ use std::time::{Duration, Instant};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Focus {
+    Onboarding,
     Root,
     Mining(MiningFocus),
     BaseNode(BaseNodeFocus),
     Wallet(WalletFocus),
+}
+
+impl Focus {
+    pub fn is_onboarding(&self) -> bool {
+        matches!(self, Self::Onboarding)
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -49,7 +56,7 @@ impl AppState {
             monero_amount: Decimal::new(35, 1),
         };
         Self {
-            focus_on: Focus::Root,
+            focus_on: Focus::Onboarding,
             tari_mining,
             merged_mining,
             events_queue: VecDeque::new(),

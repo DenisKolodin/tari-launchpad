@@ -3,6 +3,7 @@ mod expert;
 mod header;
 mod main_view;
 mod normal;
+mod onboarding;
 mod scene;
 mod settings;
 mod tabs;

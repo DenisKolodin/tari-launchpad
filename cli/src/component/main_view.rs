@@ -1,6 +1,7 @@
 use crate::component::expert::ExpertScene;
 use crate::component::header::{mode::Mode, Header};
 use crate::component::normal::NormalScene;
+use crate::component::onboarding::OnboardingScene;
 use crate::component::scene;
 use crate::component::settings::SettingsScene;
 
@@ -18,6 +19,7 @@ pub struct MainView {
     settings_scene: SettingsScene,
     containers_scene: scene::Containers,
     wallet_scene: scene::Wallet,
+    onboarding_scene: OnboardingScene,
 }
 
 impl MainView {
@@ -29,6 +31,7 @@ impl MainView {
             settings_scene: SettingsScene::new(),
             containers_scene: scene::Containers::new(),
             wallet_scene: scene::Wallet::new(),
+            onboarding_scene: OnboardingScene::new(),
         }
     }
 }
@@ -36,15 +39,19 @@ impl MainView {
 impl Input for MainView {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         self.header.on_event(event, state);
-        match self.header.mode_selector.selected() {
-            Mode::Normal => {
-                self.normal_scene.on_event(event, state);
-            }
-            Mode::Expert => {
-                self.expert_scene.on_event(event, state);
-            }
-            Mode::Settings => {
-                self.settings_scene.on_event(event, state);
+        if state.focus_on.is_onboarding() {
+            self.onboarding_scene.on_event(event, state);
+        } else {
+            match self.header.mode_selector.selected() {
+                Mode::Normal => {
+                    self.normal_scene.on_event(event, state);
+                }
+                Mode::Expert => {
+                    self.expert_scene.on_event(event, state);
+                }
+                Mode::Settings => {
+                    self.settings_scene.on_event(event, state);
+                }
             }
         }
     }
@@ -60,15 +67,19 @@ impl<B: Backend> Component<B> for MainView {
             .constraints(constraints)
             .split(rect);
         self.header.draw(f, chunks[0], state);
-        match self.header.mode_selector.selected() {
-            Mode::Normal => {
-                self.normal_scene.draw(f, chunks[1], state);
-            }
-            Mode::Expert => {
-                self.expert_scene.draw(f, chunks[1], state);
-            }
-            Mode::Settings => {
-                self.settings_scene.draw(f, chunks[1], state);
+        if state.focus_on.is_onboarding() {
+            self.onboarding_scene.draw(f, chunks[1], state);
+        } else {
+            match self.header.mode_selector.selected() {
+                Mode::Normal => {
+                    self.normal_scene.draw(f, chunks[1], state);
+                }
+                Mode::Expert => {
+                    self.expert_scene.draw(f, chunks[1], state);
+                }
+                Mode::Settings => {
+                    self.settings_scene.draw(f, chunks[1], state);
+                }
             }
         }
     }
