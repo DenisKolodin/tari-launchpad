@@ -1,6 +1,6 @@
 use crate::component::{Component, Input, MainView};
 use crate::events::{EventHandle, TermEvent};
-use crate::state::AppState;
+use crate::state::{AppState, StateAction};
 use anyhow::Error;
 use async_trait::async_trait;
 use crossterm::{
@@ -50,7 +50,8 @@ impl Dashboard {
 #[async_trait]
 impl Actor for Dashboard {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
-        self.state = Some(AppState::new());
+        let recipient = ctx.recipient();
+        self.state = Some(AppState::new(recipient));
         let notifier = ctx.notifier(Redraw);
         let interval = Interval::spawn(Duration::from_millis(1_000), notifier);
         self.interval = Some(interval);
@@ -130,6 +131,30 @@ impl Do<Redraw> for Dashboard {
         terminal.draw(|f| {
             self.main_view.draw(f, f.size(), state);
         })?;
+        Ok(())
+    }
+}
+
+#[async_trait]
+impl Do<StateAction> for Dashboard {
+    async fn handle(
+        &mut self,
+        event: StateAction,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Error> {
+        match event {
+            StateAction::Redraw => {
+                /*
+                let state = self.state.as_mut().ok_or_else(|| DashboardError::NoState)?;
+                self.main_view.on_event(KeyEvent::None.into(), state);
+                let changed = state.process_events();
+                if changed {
+                    ctx.do_next(Redraw)?;
+                }
+                */
+                ctx.do_next(Redraw)?;
+            }
+        }
         Ok(())
     }
 }

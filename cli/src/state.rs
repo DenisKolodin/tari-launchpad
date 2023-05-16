@@ -1,6 +1,12 @@
 use rust_decimal::Decimal;
 use std::collections::VecDeque;
 use std::time::{Duration, Instant};
+use tact::actors::Recipient;
+
+#[derive(Debug, Clone)]
+pub enum StateAction {
+    Redraw,
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Focus {
@@ -35,7 +41,6 @@ pub enum WalletFocus {
 
 pub enum AppEvent {
     SetFocus(Focus),
-    Redraw,
 }
 
 pub struct AppState {
@@ -43,10 +48,11 @@ pub struct AppState {
     pub tari_mining: TariMiningInfo,
     pub merged_mining: MergedMiningInfo,
     pub events_queue: VecDeque<AppEvent>,
+    pub recipient: Recipient<StateAction>,
 }
 
 impl AppState {
-    pub fn new() -> Self {
+    pub fn new(recipient: Recipient<StateAction>) -> Self {
         let tari_mining = TariMiningInfo {
             mining_started: None,
             tari_amount: 123_456.into(),
@@ -61,6 +67,7 @@ impl AppState {
             tari_mining,
             merged_mining,
             events_queue: VecDeque::new(),
+            recipient,
         }
     }
 
@@ -70,8 +77,7 @@ impl AppState {
     }
 
     pub fn redraw(&mut self) {
-        let event = AppEvent::Redraw;
-        self.events_queue.push_front(event);
+        self.recipient.send(StateAction::Redraw).ok();
     }
 
     pub fn process_events(&mut self) -> bool {
@@ -83,7 +89,6 @@ impl AppState {
                     AppEvent::SetFocus(value) => {
                         self.focus_on = value;
                     }
-                    AppEvent::Redraw => {}
                 }
             }
             true
