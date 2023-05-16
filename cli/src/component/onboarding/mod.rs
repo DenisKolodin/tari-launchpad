@@ -12,7 +12,7 @@ use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
 use tui::text::{Span, Spans};
-use tui::widgets::Paragraph;
+use tui::widgets::{Gauge, Paragraph};
 
 const MSG_1: &str = "
 Hi! My name is T-Bot. It is a great pleasure and an honor to meet you!
@@ -48,6 +48,12 @@ impl Input for OnboardingScene {
     }
 }
 
+impl OnboardingScene {
+    fn get_progress(&self, state: &AppState) -> u16 {
+        100
+    }
+}
+
 impl<B: Backend> Component<B> for OnboardingScene {
     type State = AppState;
 
@@ -71,7 +77,7 @@ impl<B: Backend> Component<B> for OnboardingScene {
             .constraints(constraints)
             .split(h_chunks[1]);
 
-        let constraints = [Constraint::Min(0), Constraint::Length(3)];
+        let constraints = [Constraint::Min(0), Constraint::Length(1)];
         let view_chunks = Layout::default()
             .direction(Direction::Vertical)
             .constraints(constraints)
@@ -81,13 +87,22 @@ impl<B: Backend> Component<B> for OnboardingScene {
             message.draw(f, view_chunks[0], state);
         }
 
-        let constraints = [Constraint::Min(0), Constraint::Length(5)];
+        let constraints = [
+            Constraint::Min(0),
+            Constraint::Length(5),
+            Constraint::Length(5),
+        ];
         let line_chinks = Layout::default()
             .direction(Direction::Horizontal)
             .constraints(constraints)
             .split(view_chunks[1]);
 
-        let style = Style::default().fg(Color::White); //.bg(Color::Magenta);
+        let gauge = Gauge::default()
+            .label("")
+            .gauge_style(Style::default().fg(Color::Magenta).bg(Color::Reset))
+            .percent(self.get_progress(state));
+        f.render_widget(gauge, line_chinks[0]);
+        let style = Style::default().fg(Color::White);
         let bot_state = if self.wink.is_some() {
             "[o o]"
         } else {
@@ -95,6 +110,6 @@ impl<B: Backend> Component<B> for OnboardingScene {
         };
         let text = vec![Spans::from(Span::styled(bot_state, style))];
         let bot = Paragraph::new(text);
-        f.render_widget(bot, line_chinks[1]);
+        f.render_widget(bot, line_chinks[2]);
     }
 }
