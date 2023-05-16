@@ -2,7 +2,7 @@ mod message;
 
 use crate::component::elements::{block_with_title, logo};
 use crate::component::tabs::{AppTabs, TabGetter};
-use crate::component::{Component, ComponentEvent, Frame, Input};
+use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
 use crate::state::{AppState, BaseNodeFocus, Focus, MiningFocus, WalletFocus};
 
 use message::MessageWidget;
@@ -19,6 +19,14 @@ Hi! My name is T-Bot. It is a great pleasure and an honor to meet you!
 I have no memory of human faces, so if our paths have already crossed in the Aurora app, I’m glad to see you again!
 ";
 
+const MSG_2: &str = "
+I'm kind of like Gandalf, Dumbledore or Obi-Wan Kenobi. You know, the guy who makes sure the novice gets to a certain destination. Spoiler alert: in this saga the guide will survive. Regardless of whether this is your first contact with cryptocurrencies or you are advanced in it, I will stay with you until the Tari Launchpad setup process is successfully completed.
+";
+
+const MSG_3: &str = "
+So let's get started! 🚀 The setup process usually takes 5 to 10 minutes. A duo like you and me should be able to deal with it quickly, right?
+";
+
 pub struct OnboardingScene {
     messages: Vec<MessageWidget>,
     wink: Option<Instant>,
@@ -26,9 +34,11 @@ pub struct OnboardingScene {
 
 impl OnboardingScene {
     pub fn new() -> Self {
-        let message = MessageWidget::new(MSG_1);
+        let msg_1 = MessageWidget::new(MSG_1);
+        let msg_2 = MessageWidget::new(MSG_2);
+        let msg_3 = MessageWidget::new(MSG_3);
         Self {
-            messages: vec![message],
+            messages: vec![msg_1, msg_2, msg_3],
             wink: Some(Instant::now()),
         }
     }
@@ -44,6 +54,13 @@ impl Input for OnboardingScene {
         } else {
             self.wink = Some(Instant::now());
             state.redraw();
+        }
+
+        match event.pass() {
+            Pass::Leave => {
+                state.focus_on(Focus::Root);
+            }
+            _ => {}
         }
     }
 }
