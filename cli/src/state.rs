@@ -13,22 +13,10 @@ pub enum Focus {
     Password,
 }
 
-impl Default for Focus {
-    fn default() -> Self {
-        Self::Root
-    }
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum MiningFocus {
     TariMining,
     MergedMining,
-}
-
-impl Default for MiningFocus {
-    fn default() -> Self {
-        Self::TariMining
-    }
 }
 
 pub enum AppEvent {
@@ -54,7 +42,7 @@ impl AppState {
             monero_amount: Decimal::new(35, 1),
         };
         Self {
-            focus_on: Focus::default(),
+            focus_on: Focus::Root,
             tari_mining,
             merged_mining,
             events_queue: VecDeque::new(),
