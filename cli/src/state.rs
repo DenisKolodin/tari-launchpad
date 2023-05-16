@@ -6,9 +6,7 @@ use std::time::{Duration, Instant};
 pub enum Focus {
     Root,
     Mining(MiningFocus),
-
-    // TODO: Add a level
-    BaseNode,
+    BaseNode(BaseNodeFocus),
 
     Password,
 }
@@ -17,6 +15,11 @@ pub enum Focus {
 pub enum MiningFocus {
     TariMining,
     MergedMining,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum BaseNodeFocus {
+    BaseNode,
 }
 
 pub enum AppEvent {

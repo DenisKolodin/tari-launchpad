@@ -1,7 +1,7 @@
 use crate::component::elements::{block_with_title, logo};
 use crate::component::normal::chrono_button::{ChronoButton, ChronoGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
-use crate::state::{AppState, Focus};
+use crate::state::{AppState, BaseNodeFocus, Focus};
 use rust_decimal::Decimal;
 use std::time::Duration;
 use tui::backend::Backend;
@@ -44,7 +44,7 @@ impl BaseNodeWidget {
 
 impl Input for BaseNodeWidget {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
-        if state.focus_on == Focus::BaseNode {
+        if state.focus_on == Focus::BaseNode(BaseNodeFocus::BaseNode) {
             match event.pass() {
                 Pass::Up | Pass::Leave => {
                     state.focus_on(Focus::Root);
@@ -62,7 +62,10 @@ impl<B: Backend> Component<B> for BaseNodeWidget {
     type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
-        let block = block_with_title(Some("Base Node"), state.focus_on == Focus::BaseNode);
+        let block = block_with_title(
+            Some("Base Node"),
+            state.focus_on == Focus::BaseNode(BaseNodeFocus::BaseNode),
+        );
         let inner_rect = block.inner(rect);
         f.render_widget(block, rect);
 
