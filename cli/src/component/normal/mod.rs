@@ -2,6 +2,7 @@ mod base_node;
 mod chrono_button;
 mod hint;
 mod mining;
+mod wallet;
 
 use crate::component::tabs::{AppTabs, TabGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input};
@@ -13,6 +14,7 @@ use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::Color;
+use wallet::WalletScene;
 
 #[derive(Debug, EnumCount, EnumIter, FromRepr, Clone, Copy, Display)]
 pub enum NormalTabs {
@@ -48,6 +50,7 @@ pub struct NormalScene {
     normal_tabs: AppTabs<NormalTabs>,
     mining_scene: MiningScene,
     base_node_scene: BaseNodeScene,
+    wallet_scene: WalletScene,
 }
 
 impl NormalScene {
@@ -56,6 +59,7 @@ impl NormalScene {
             normal_tabs: AppTabs::new(),
             mining_scene: MiningScene::new(),
             base_node_scene: BaseNodeScene::new(),
+            wallet_scene: WalletScene::new(),
         }
     }
 }
@@ -70,7 +74,9 @@ impl Input for NormalScene {
             NormalTabs::BaseNode => {
                 self.base_node_scene.on_event(event, state);
             }
-            _ => {}
+            NormalTabs::Wallet => {
+                self.wallet_scene.on_event(event, state);
+            }
         }
     }
 }
@@ -92,7 +98,9 @@ impl<B: Backend> Component<B> for NormalScene {
             NormalTabs::BaseNode => {
                 self.base_node_scene.draw(f, chunks[1], state);
             }
-            NormalTabs::Wallet => {}
+            NormalTabs::Wallet => {
+                self.wallet_scene.draw(f, chunks[1], state);
+            }
         }
     }
 }
