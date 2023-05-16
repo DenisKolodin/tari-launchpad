@@ -22,6 +22,8 @@ pub enum DashboardError {
     NoTerminal,
     #[error("Events thread is not started")]
     NoEvents,
+    #[error("The state is not set")]
+    NoState,
 }
 
 pub struct Dashboard {
@@ -29,7 +31,7 @@ pub struct Dashboard {
     event_handle: Option<EventHandle>,
     main_view: MainView,
     // TODO: Get the state from a bus
-    state: AppState,
+    state: Option<AppState>,
     interval: Option<Interval>,
 }
 
@@ -39,7 +41,7 @@ impl Dashboard {
             terminal: None,
             event_handle: None,
             main_view: MainView::new(),
-            state: AppState::new(),
+            state: None,
             interval: None,
         }
     }
@@ -48,6 +50,7 @@ impl Dashboard {
 #[async_trait]
 impl Actor for Dashboard {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        self.state = Some(AppState::new());
         let notifier = ctx.notifier(Redraw);
         let interval = Interval::spawn(Duration::from_millis(1_000), notifier);
         self.interval = Some(interval);
@@ -96,8 +99,9 @@ impl Do<TermEvent> for Dashboard {
                             .ok_or_else(|| DashboardError::NoEvents)?
                             .interrupt();
                     }
-                    self.main_view.on_event(key.into(), &mut self.state);
-                    let changed = self.state.process_events();
+                    let state = self.state.as_mut().ok_or_else(|| DashboardError::NoState)?;
+                    self.main_view.on_event(key.into(), state);
+                    let changed = state.process_events();
                     if changed {
                         ctx.do_next(Redraw)?;
                     }
@@ -118,12 +122,13 @@ struct Redraw;
 #[async_trait]
 impl Do<Redraw> for Dashboard {
     async fn handle(&mut self, _event: Redraw, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        let state = self.state.as_ref().ok_or_else(|| DashboardError::NoState)?;
         let terminal = self
             .terminal
             .as_mut()
             .ok_or_else(|| DashboardError::NoTerminal)?;
         terminal.draw(|f| {
-            self.main_view.draw(f, f.size(), &self.state);
+            self.main_view.draw(f, f.size(), state);
         })?;
         Ok(())
     }
