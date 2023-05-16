@@ -7,8 +7,7 @@ pub enum Focus {
     Root,
     Mining(MiningFocus),
     BaseNode(BaseNodeFocus),
-
-    Password,
+    Wallet(WalletFocus),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -20,6 +19,11 @@ pub enum MiningFocus {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum BaseNodeFocus {
     BaseNode,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum WalletFocus {
+    Password,
 }
 
 pub enum AppEvent {
