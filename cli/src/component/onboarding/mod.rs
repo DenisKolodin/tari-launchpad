@@ -20,6 +20,7 @@ I have no memory of human faces, so if our paths have already crossed in the Aur
 
 pub struct OnboardingScene {
     messages: Vec<MessageWidget>,
+    wink: bool,
 }
 
 impl OnboardingScene {
@@ -27,12 +28,16 @@ impl OnboardingScene {
         let message = MessageWidget::new(MSG_1);
         Self {
             messages: vec![message],
+            wink: false,
         }
     }
 }
 
 impl Input for OnboardingScene {
-    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {}
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
+        state.redraw();
+        self.wink = !self.wink;
+    }
 }
 
 impl<B: Backend> Component<B> for OnboardingScene {
@@ -75,12 +80,8 @@ impl<B: Backend> Component<B> for OnboardingScene {
             .split(view_chunks[1]);
 
         let style = Style::default().fg(Color::White); //.bg(Color::Magenta);
-        let text = vec![
-            // Spans::from(Span::styled("╓   ╖", style)),
-            Spans::from(Span::styled("[o o]", style)),
-            // Spans::from(Span::styled("[- -]", style)),
-            // Spans::from(Span::styled("╙   ╜", style)),
-        ];
+        let bot_state = if self.wink { "[o o]" } else { "[- -]" };
+        let text = vec![Spans::from(Span::styled(bot_state, style))];
         let bot = Paragraph::new(text);
         f.render_widget(bot, line_chinks[1]);
     }

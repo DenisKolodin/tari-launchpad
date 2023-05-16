@@ -35,6 +35,7 @@ pub enum WalletFocus {
 
 pub enum AppEvent {
     SetFocus(Focus),
+    Redraw,
 }
 
 pub struct AppState {
@@ -68,6 +69,11 @@ impl AppState {
         self.events_queue.push_front(event);
     }
 
+    pub fn redraw(&mut self) {
+        let event = AppEvent::Redraw;
+        self.events_queue.push_front(event);
+    }
+
     pub fn process_events(&mut self) -> bool {
         if self.events_queue.is_empty() {
             false
@@ -77,6 +83,7 @@ impl AppState {
                     AppEvent::SetFocus(value) => {
                         self.focus_on = value;
                     }
+                    AppEvent::Redraw => {}
                 }
             }
             true
