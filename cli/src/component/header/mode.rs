@@ -40,21 +40,22 @@ impl ModeSelector {
 
 impl Input for ModeSelector {
     fn on_event(&mut self, event: ComponentEvent, _state: &mut AppState) {
-        let ComponentEvent(key) = event;
-        if key.modifiers.contains(KeyModifiers::CONTROL) {
-            match key.code {
-                KeyCode::Char('n') => {
-                    self.expert = false;
-                    self.settings = false;
+        if let ComponentEvent::KeyEvent(key) = event {
+            if key.modifiers.contains(KeyModifiers::CONTROL) {
+                match key.code {
+                    KeyCode::Char('n') => {
+                        self.expert = false;
+                        self.settings = false;
+                    }
+                    KeyCode::Char('e') => {
+                        self.expert = !self.expert;
+                        self.settings = false;
+                    }
+                    KeyCode::Char('s') => {
+                        self.settings = !self.settings;
+                    }
+                    _ => {}
                 }
-                KeyCode::Char('e') => {
-                    self.expert = !self.expert;
-                    self.settings = false;
-                }
-                KeyCode::Char('s') => {
-                    self.settings = !self.settings;
-                }
-                _ => {}
             }
         }
     }

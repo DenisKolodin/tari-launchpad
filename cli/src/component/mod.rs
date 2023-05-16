@@ -49,21 +49,27 @@ impl Pass {
     }
 }
 
-#[derive(Debug, Clone, Copy, From, Into)]
-pub struct ComponentEvent(KeyEvent);
+#[derive(Debug, Clone, Copy, From)]
+pub enum ComponentEvent {
+    KeyEvent(KeyEvent),
+    Tick,
+}
 
 impl ComponentEvent {
     pub fn pass(&self) -> Pass {
-        match self.0.code {
-            KeyCode::Up | KeyCode::Char('k') => Pass::Up,
-            KeyCode::Down | KeyCode::Char('j') => Pass::Down,
-            KeyCode::Left | KeyCode::Char('h') => Pass::Left,
-            KeyCode::Right | KeyCode::Char('l') => Pass::Right,
-            KeyCode::Esc => Pass::Leave,
-            KeyCode::Enter => Pass::Enter,
-            KeyCode::Char(' ') => Pass::Space,
-            KeyCode::Tab => Pass::Next,
-            _ => Pass::None,
+        match self {
+            Self::KeyEvent(event) => match event.code {
+                KeyCode::Up | KeyCode::Char('k') => Pass::Up,
+                KeyCode::Down | KeyCode::Char('j') => Pass::Down,
+                KeyCode::Left | KeyCode::Char('h') => Pass::Left,
+                KeyCode::Right | KeyCode::Char('l') => Pass::Right,
+                KeyCode::Esc => Pass::Leave,
+                KeyCode::Enter => Pass::Enter,
+                KeyCode::Char(' ') => Pass::Space,
+                KeyCode::Tab => Pass::Next,
+                _ => Pass::None,
+            },
+            Self::Tick => Pass::None,
         }
     }
 }

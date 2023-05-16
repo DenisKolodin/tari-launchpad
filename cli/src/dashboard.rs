@@ -1,4 +1,4 @@
-use crate::component::{Component, Input, MainView};
+use crate::component::{Component, ComponentEvent, Input, MainView};
 use crate::events::{EventHandle, TermEvent};
 use crate::state::{AppState, StateAction};
 use anyhow::Error;
@@ -52,8 +52,8 @@ impl Actor for Dashboard {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         let recipient = ctx.recipient();
         self.state = Some(AppState::new(recipient));
-        let notifier = ctx.notifier(Redraw);
-        let interval = Interval::spawn(Duration::from_millis(1_000), notifier);
+        let notifier = ctx.notifier(Tick);
+        let interval = Interval::spawn(Duration::from_millis(250), notifier);
         self.interval = Some(interval);
         enable_raw_mode()?;
         let mut stdout = std::io::stdout();
@@ -112,6 +112,22 @@ impl Do<TermEvent> for Dashboard {
             TermEvent::End => {
                 ctx.shutdown();
             }
+        }
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone)]
+struct Tick;
+
+#[async_trait]
+impl Do<Tick> for Dashboard {
+    async fn handle(&mut self, _event: Tick, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        let state = self.state.as_mut().ok_or_else(|| DashboardError::NoState)?;
+        self.main_view.on_event(ComponentEvent::Tick, state);
+        let changed = state.process_events();
+        if changed {
+            ctx.do_next(Redraw)?;
         }
         Ok(())
     }
