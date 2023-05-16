@@ -6,7 +6,7 @@ mod wallet;
 
 use crate::component::tabs::{AppTabs, TabGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input};
-use crate::state::{AppState, Focus};
+use crate::state::{AppState, Focus, MiningFocus};
 
 use base_node::BaseNodeScene;
 use mining::MiningScene;
@@ -39,7 +39,7 @@ impl TabGetter for NormalTabs {
 
     fn focus_to(&self, _: &AppState) -> Focus {
         match self {
-            Self::Mining => Focus::TariMining,
+            Self::Mining => Focus::Mining(MiningFocus::TariMining),
             Self::BaseNode => Focus::BaseNode,
             // TODO: Use the high-level focus
             Self::Wallet => Focus::Password,

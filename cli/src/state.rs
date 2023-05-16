@@ -5,9 +5,7 @@ use std::time::{Duration, Instant};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Focus {
     Root,
-    // TODO: Add a level
-    TariMining,
-    MergedMining,
+    Mining(MiningFocus),
 
     // TODO: Add a level
     BaseNode,
@@ -18,6 +16,18 @@ pub enum Focus {
 impl Default for Focus {
     fn default() -> Self {
         Self::Root
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum MiningFocus {
+    TariMining,
+    MergedMining,
+}
+
+impl Default for MiningFocus {
+    fn default() -> Self {
+        Self::TariMining
     }
 }
 
