@@ -1,20 +1,29 @@
+mod password;
+
+use crate::component::normal::hint::{HintGetter, HintLine};
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 
-use crate::component::normal::hint::{HintGetter, HintLine};
+use password::PasswordWidget;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 
-pub struct WalletScene {}
+pub struct WalletScene {
+    password: PasswordWidget,
+}
 
 impl WalletScene {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            password: PasswordWidget::new(),
+        }
     }
 }
 
 impl Input for WalletScene {
-    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {}
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
+        self.password.on_event(event, state);
+    }
 }
 
 impl<B: Backend> Component<B> for WalletScene {
@@ -37,6 +46,7 @@ impl<B: Backend> Component<B> for WalletScene {
             .direction(Direction::Horizontal)
             .constraints(constraints)
             .split(v_chunks[1]);
+        self.password.draw(f, h_chunks[0], state);
         // self.tari_mining.draw(f, h_chunks[0], state);
         // self.merged_mining.draw(f, h_chunks[1], state);
     }

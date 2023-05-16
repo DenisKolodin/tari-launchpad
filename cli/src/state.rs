@@ -11,6 +11,8 @@ pub enum Focus {
 
     // TODO: Add a level
     BaseNode,
+
+    Password,
 }
 
 impl Default for Focus {

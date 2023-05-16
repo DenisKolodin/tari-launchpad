@@ -41,7 +41,8 @@ impl TabGetter for NormalTabs {
         match self {
             Self::Mining => Focus::TariMining,
             Self::BaseNode => Focus::BaseNode,
-            Self::Wallet => Focus::Root,
+            // TODO: Use the high-level focus
+            Self::Wallet => Focus::Password,
         }
     }
 }
