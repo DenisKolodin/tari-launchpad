@@ -41,6 +41,7 @@ pub enum WalletFocus {
 
 pub enum AppEvent {
     SetFocus(Focus),
+    Redraw,
 }
 
 pub struct AppState {
@@ -48,7 +49,7 @@ pub struct AppState {
     pub tari_mining: TariMiningInfo,
     pub merged_mining: MergedMiningInfo,
     pub events_queue: VecDeque<AppEvent>,
-    pub recipient: Recipient<StateAction>,
+    // pub recipient: Recipient<StateAction>,
 }
 
 impl AppState {
@@ -67,7 +68,7 @@ impl AppState {
             tari_mining,
             merged_mining,
             events_queue: VecDeque::new(),
-            recipient,
+            // recipient,
         }
     }
 
@@ -77,7 +78,8 @@ impl AppState {
     }
 
     pub fn redraw(&mut self) {
-        self.recipient.send(StateAction::Redraw).ok();
+        let event = AppEvent::Redraw;
+        self.events_queue.push_front(event);
     }
 
     pub fn process_events(&mut self) -> bool {
@@ -89,6 +91,7 @@ impl AppState {
                     AppEvent::SetFocus(value) => {
                         self.focus_on = value;
                     }
+                    AppEvent::Redraw => {}
                 }
             }
             true

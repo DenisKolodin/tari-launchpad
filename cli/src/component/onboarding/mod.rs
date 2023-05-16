@@ -6,6 +6,7 @@ use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::{AppState, BaseNodeFocus, Focus, MiningFocus, WalletFocus};
 
 use message::MessageWidget;
+use std::time::{Duration, Instant};
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
@@ -20,7 +21,7 @@ I have no memory of human faces, so if our paths have already crossed in the Aur
 
 pub struct OnboardingScene {
     messages: Vec<MessageWidget>,
-    wink: bool,
+    wink: Option<Instant>,
 }
 
 impl OnboardingScene {
@@ -28,15 +29,22 @@ impl OnboardingScene {
         let message = MessageWidget::new(MSG_1);
         Self {
             messages: vec![message],
-            wink: false,
+            wink: Some(Instant::now()),
         }
     }
 }
 
 impl Input for OnboardingScene {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
-        state.redraw();
-        self.wink = !self.wink;
+        if let Some(wink) = self.wink {
+            if wink.elapsed() >= Duration::from_secs(5) {
+                self.wink.take();
+                state.redraw();
+            }
+        } else {
+            self.wink = Some(Instant::now());
+            state.redraw();
+        }
     }
 }
 
@@ -80,7 +88,11 @@ impl<B: Backend> Component<B> for OnboardingScene {
             .split(view_chunks[1]);
 
         let style = Style::default().fg(Color::White); //.bg(Color::Magenta);
-        let bot_state = if self.wink { "[o o]" } else { "[- -]" };
+        let bot_state = if self.wink.is_some() {
+            "[o o]"
+        } else {
+            "[- -]"
+        };
         let text = vec![Spans::from(Span::styled(bot_state, style))];
         let bot = Paragraph::new(text);
         f.render_widget(bot, line_chinks[1]);
