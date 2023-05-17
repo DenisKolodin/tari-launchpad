@@ -1,6 +1,7 @@
 use rust_decimal::Decimal;
 use std::time::{Duration, Instant};
 
+#[derive(Debug)]
 pub struct TariMiningInfo {
     pub mining_started: Option<Instant>,
     pub tari_amount: Decimal,
@@ -24,6 +25,7 @@ impl TariMiningInfo {
     }
 }
 
+#[derive(Debug)]
 pub struct MergedMiningInfo {
     pub mining_started: Option<Instant>,
     pub tari_amount: Decimal,

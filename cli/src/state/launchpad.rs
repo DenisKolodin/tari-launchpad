@@ -2,6 +2,7 @@ use super::mining::{MergedMiningInfo, TariMiningInfo};
 use super::onboarding::Onboarding;
 use rust_decimal::Decimal;
 
+#[derive(Debug)]
 pub struct LaunchpadState {
     pub onboarding: Onboarding,
     pub tari_mining: TariMiningInfo,
@@ -26,4 +27,12 @@ impl LaunchpadState {
             merged_mining,
         }
     }
+
+    pub fn update(&mut self, delta: LaunchpadDelta) {
+        match delta {}
+    }
 }
+
+pub enum LaunchpadAction {}
+
+pub enum LaunchpadDelta {}

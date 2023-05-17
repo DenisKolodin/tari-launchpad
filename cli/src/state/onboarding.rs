@@ -1,7 +1,9 @@
+#[derive(Debug)]
 pub struct Message {
     pub text: String,
 }
 
+#[derive(Debug)]
 pub struct Onboarding {
     pub messages: Vec<Message>,
 }

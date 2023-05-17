@@ -1,3 +1,4 @@
+pub mod bus;
 pub mod launchpad;
 pub mod mining;
 pub mod onboarding;
