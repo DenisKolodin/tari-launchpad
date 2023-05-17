@@ -1,5 +1,5 @@
 use crate::state::bus::Bus;
-use crate::state::launchpad::LaunchpadAction;
+
 use crate::state::onboarding::{Message, OnboardingAction, OnboardingDelta};
 use anyhow::Error;
 use async_trait::async_trait;
@@ -65,7 +65,7 @@ impl Do<OnboardingAction> for OnboardingWorker {
     async fn handle(
         &mut self,
         event: OnboardingAction,
-        ctx: &mut ActorContext<Self>,
+        _ctx: &mut ActorContext<Self>,
     ) -> Result<(), Error> {
         match event {
             OnboardingAction::Next => {
