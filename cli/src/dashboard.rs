@@ -59,7 +59,8 @@ impl Dashboard {
 #[async_trait]
 impl Actor for Dashboard {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
-        self.state = Some(AppState::new());
+        let bus = self.bus.clone();
+        self.state = Some(AppState::new(bus));
         let notifier = ctx.notifier(Tick);
         let interval = Interval::spawn(Duration::from_millis(250), notifier);
         self.interval = Some(interval);

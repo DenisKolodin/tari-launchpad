@@ -3,6 +3,7 @@ pub mod launchpad;
 pub mod mining;
 pub mod onboarding;
 
+use crate::state::bus::Bus;
 use launchpad::LaunchpadState;
 use std::collections::VecDeque;
 use tact::actors::Recipient;
@@ -51,14 +52,16 @@ pub enum AppEvent {
 pub struct AppState {
     pub focus_on: Focus,
     pub events_queue: VecDeque<AppEvent>,
+    pub bus: Bus,
     pub launchpad: LaunchpadState,
 }
 
 impl AppState {
-    pub fn new() -> Self {
+    pub fn new(bus: Bus) -> Self {
         Self {
             focus_on: Focus::Onboarding,
             events_queue: VecDeque::new(),
+            bus,
             launchpad: LaunchpadState::new(),
         }
     }
