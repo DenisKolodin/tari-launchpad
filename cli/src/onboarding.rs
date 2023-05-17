@@ -5,14 +5,39 @@ use anyhow::Error;
 use async_trait::async_trait;
 use tact::actors::{Actor, ActorContext, Do, Task};
 
+enum State {
+    Empty,
+    Welcome,
+    Description,
+    LetStart,
+    Done,
+}
+
+impl State {
+    fn text(&self) -> &str {
+        match self {
+            Self::Empty => "",
+            Self::Welcome => MSG_1,
+            Self::Description => MSG_2,
+            Self::LetStart => MSG_3,
+            Self::Done => "",
+        }
+    }
+}
+
 pub struct OnboardingWorker {
     bus: Bus,
     actions: Option<Task>,
+    state: State,
 }
 
 impl OnboardingWorker {
     pub fn new(bus: Bus) -> Self {
-        Self { bus, actions: None }
+        Self {
+            bus,
+            actions: None,
+            state: State::Empty,
+        }
     }
 }
 
@@ -32,10 +57,30 @@ impl Do<OnboardingAction> for OnboardingWorker {
         event: OnboardingAction,
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Error> {
-        let msg = Message { text: MSG_1.into() };
+        match event {
+            OnboardingAction::Next => {
+                self.next_step();
+            }
+        }
+        Ok(())
+    }
+}
+
+impl OnboardingWorker {
+    fn next_step(&mut self) {
+        let next = match self.state {
+            State::Empty => State::Welcome,
+            State::Welcome => State::Description,
+            State::Description => State::LetStart,
+            State::LetStart => State::Done,
+            State::Done => State::Done,
+        };
+        self.state = next;
+        let msg = Message {
+            text: self.state.text().into(),
+        };
         let delta = OnboardingDelta::Add(msg);
         self.bus.update(delta);
-        Ok(())
     }
 }
 
