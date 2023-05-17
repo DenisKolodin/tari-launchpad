@@ -39,6 +39,8 @@ impl<B: Backend> Component<B> for Header {
             .constraints(constraints)
             .split(rect);
         self.logo.draw(f, chunks[0], state);
-        self.mode_selector.draw(f, chunks[1], state);
+        if !state.focus_on.is_onboarding() {
+            self.mode_selector.draw(f, chunks[1], state);
+        }
     }
 }
