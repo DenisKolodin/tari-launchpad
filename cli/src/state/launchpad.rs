@@ -33,6 +33,8 @@ impl LaunchpadState {
     }
 }
 
+#[derive(Debug, Clone)]
 pub enum LaunchpadAction {}
 
+#[derive(Debug, Clone)]
 pub enum LaunchpadDelta {}
