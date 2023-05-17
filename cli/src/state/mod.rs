@@ -52,16 +52,14 @@ pub struct AppState {
     pub focus_on: Focus,
     pub events_queue: VecDeque<AppEvent>,
     pub launchpad: LaunchpadState,
-    // pub recipient: Recipient<StateAction>,
 }
 
 impl AppState {
-    pub fn new(_recipient: Recipient<StateAction>) -> Self {
+    pub fn new() -> Self {
         Self {
             focus_on: Focus::Onboarding,
             events_queue: VecDeque::new(),
             launchpad: LaunchpadState::new(),
-            // recipient,
         }
     }
 
