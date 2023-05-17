@@ -23,6 +23,16 @@ impl State {
             Self::Done => "",
         }
     }
+
+    fn progress(&self) -> u8 {
+        match self {
+            Self::Empty => 0,
+            Self::Welcome => 10,
+            Self::Description => 20,
+            Self::LetStart => 30,
+            Self::Done => 100,
+        }
+    }
 }
 
 pub struct OnboardingWorker {
@@ -76,10 +86,12 @@ impl OnboardingWorker {
             State::Done => State::Done,
         };
         self.state = next;
-        let msg = Message {
-            text: self.state.text().into(),
-        };
+        let text = self.state.text();
+        let msg = Message { text: text.into() };
         let delta = OnboardingDelta::Add(msg);
+        self.bus.update(delta);
+        let progress = self.state.progress();
+        let delta = OnboardingDelta::SetProgress(progress);
         self.bus.update(delta);
     }
 }

@@ -35,6 +35,10 @@ impl Input for OnboardingScene {
             state.redraw();
         }
 
+        if state.bus.state().onboarding.is_done() {
+            state.focus_on(Focus::Root);
+        }
+
         match event.pass() {
             Pass::Enter => {
                 state.bus.send(OnboardingAction::Next);
@@ -48,8 +52,8 @@ impl Input for OnboardingScene {
 }
 
 impl OnboardingScene {
-    fn get_progress(&self, _state: &AppState) -> u16 {
-        100
+    fn get_progress(&self, state: &AppState) -> u16 {
+        state.bus.state().onboarding.total_progress.pct as u16
     }
 }
 

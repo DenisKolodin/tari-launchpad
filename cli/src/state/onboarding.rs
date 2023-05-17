@@ -35,7 +35,14 @@ impl Onboarding {
                 }
                 self.message = Some(msg);
             }
+            OnboardingDelta::SetProgress(pct) => {
+                self.total_progress.pct = pct;
+            }
         }
+    }
+
+    pub fn is_done(&self) -> bool {
+        self.total_progress.pct == 100
     }
 }
 
@@ -58,4 +65,5 @@ pub enum OnboardingAction {
 #[derive(Debug, Clone)]
 pub enum OnboardingDelta {
     Add(Message),
+    SetProgress(u8),
 }
