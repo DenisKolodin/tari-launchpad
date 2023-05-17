@@ -1,6 +1,10 @@
+pub mod mining;
+pub mod onboarding;
+
+use mining::{MergedMiningInfo, TariMiningInfo};
+use onboarding::Onboarding;
 use rust_decimal::Decimal;
 use std::collections::VecDeque;
-use std::time::{Duration, Instant};
 use tact::actors::Recipient;
 
 #[derive(Debug, Clone)]
@@ -49,6 +53,7 @@ pub struct AppState {
     pub tari_mining: TariMiningInfo,
     pub merged_mining: MergedMiningInfo,
     pub events_queue: VecDeque<AppEvent>,
+    pub onboarding: Onboarding,
     // pub recipient: Recipient<StateAction>,
 }
 
@@ -68,6 +73,7 @@ impl AppState {
             tari_mining,
             merged_mining,
             events_queue: VecDeque::new(),
+            onboarding: Onboarding::default(),
             // recipient,
         }
     }
@@ -95,53 +101,6 @@ impl AppState {
                 }
             }
             true
-        }
-    }
-}
-
-pub struct TariMiningInfo {
-    pub mining_started: Option<Instant>,
-    pub tari_amount: Decimal,
-}
-
-impl TariMiningInfo {
-    pub fn is_active(&self) -> bool {
-        self.mining_started.is_some()
-    }
-
-    pub fn mining_duration(&self) -> Option<Duration> {
-        self.mining_started.as_ref().map(Instant::elapsed)
-    }
-
-    pub fn toggle(&mut self) {
-        if self.mining_started.is_some() {
-            self.mining_started = None;
-        } else {
-            self.mining_started = Some(Instant::now());
-        }
-    }
-}
-
-pub struct MergedMiningInfo {
-    pub mining_started: Option<Instant>,
-    pub tari_amount: Decimal,
-    pub monero_amount: Decimal,
-}
-
-impl MergedMiningInfo {
-    pub fn is_active(&self) -> bool {
-        self.mining_started.is_some()
-    }
-
-    pub fn mining_duration(&self) -> Option<Duration> {
-        self.mining_started.as_ref().map(Instant::elapsed)
-    }
-
-    pub fn toggle(&mut self) {
-        if self.mining_started.is_some() {
-            self.mining_started = None;
-        } else {
-            self.mining_started = Some(Instant::now());
         }
     }
 }
