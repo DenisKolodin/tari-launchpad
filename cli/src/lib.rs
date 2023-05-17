@@ -1,6 +1,7 @@
-pub mod dashboard;
+mod dashboard;
 mod events;
-pub mod onboarding;
+mod onboarding;
 mod state;
+pub mod supervisor;
 
 mod component;
