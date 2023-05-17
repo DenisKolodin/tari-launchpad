@@ -82,7 +82,7 @@ impl<B: Backend> Component<B> for OnboardingScene {
             .constraints(constraints)
             .split(v_chunks[1]);
 
-        let msg = state.bus.state().onboarding.messages.last().cloned();
+        let msg = state.bus.state().onboarding.message.clone();
         let message = MessageWidget::new(msg);
         message.draw(f, view_chunks[0], state);
 

@@ -1,18 +1,39 @@
 #[derive(Debug, Clone)]
+pub struct Progress {
+    pub activity: Option<String>,
+    pub pct: u8,
+}
+
+impl Progress {
+    pub fn new() -> Self {
+        Self {
+            activity: None,
+            pct: 0,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct Message {
     pub text: String,
 }
 
 #[derive(Debug, Clone)]
 pub struct Onboarding {
-    pub messages: Vec<Message>,
+    pub history: Vec<Message>,
+    pub message: Option<Message>,
+    pub total_progress: Progress,
+    pub local_progress: Option<Progress>,
 }
 
 impl Onboarding {
     pub fn update(&mut self, delta: OnboardingDelta) {
         match delta {
             OnboardingDelta::Add(msg) => {
-                self.messages.push(msg);
+                if let Some(message) = self.message.take() {
+                    self.history.push(message);
+                }
+                self.message = Some(msg);
             }
         }
     }
@@ -21,7 +42,10 @@ impl Onboarding {
 impl Default for Onboarding {
     fn default() -> Self {
         Self {
-            messages: Vec::new(),
+            history: Vec::new(),
+            message: None,
+            total_progress: Progress::new(),
+            local_progress: None,
         }
     }
 }
