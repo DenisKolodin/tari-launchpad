@@ -1,5 +1,5 @@
 use super::mining::{MergedMiningInfo, TariMiningInfo};
-use super::onboarding::Onboarding;
+use super::onboarding::{Onboarding, OnboardingAction};
 use rust_decimal::Decimal;
 
 #[derive(Debug)]
@@ -34,7 +34,19 @@ impl LaunchpadState {
 }
 
 #[derive(Debug, Clone)]
-pub enum LaunchpadAction {}
+pub enum LaunchpadAction {
+    Onboarding(OnboardingAction),
+}
+
+impl From<LaunchpadAction> for Option<OnboardingAction> {
+    fn from(value: LaunchpadAction) -> Self {
+        if let LaunchpadAction::Onboarding(value) = value {
+            Some(value)
+        } else {
+            None
+        }
+    }
+}
 
 #[derive(Debug, Clone)]
 pub enum LaunchpadDelta {}

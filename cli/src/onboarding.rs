@@ -1,5 +1,6 @@
 use crate::state::bus::Bus;
 use crate::state::launchpad::LaunchpadAction;
+use crate::state::onboarding::OnboardingAction;
 use anyhow::Error;
 use async_trait::async_trait;
 use tact::actors::{Actor, ActorContext, Do};
@@ -23,12 +24,13 @@ impl Actor for OnboardingWorker {
 }
 
 #[async_trait]
-impl Do<LaunchpadAction> for OnboardingWorker {
+impl Do<OnboardingAction> for OnboardingWorker {
     async fn handle(
         &mut self,
-        event: LaunchpadAction,
+        event: OnboardingAction,
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Error> {
+        println!("NEXT");
         Ok(())
     }
 }

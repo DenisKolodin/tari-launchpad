@@ -15,3 +15,11 @@ impl Default for Onboarding {
         }
     }
 }
+
+#[derive(Debug, Clone)]
+pub enum OnboardingAction {
+    Next,
+}
+
+#[derive(Debug, Clone)]
+pub enum OnboardingDelta {}
