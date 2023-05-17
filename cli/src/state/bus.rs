@@ -10,6 +10,16 @@ pub struct Bus {
 }
 
 impl Bus {
+    pub fn new() -> Self {
+        let state = LaunchpadState::new();
+        let (state_tx, state_rx) = watch::channel(state);
+        let (actions_tx, actions_rx) = broadcast::channel(64);
+        Self {
+            state: Arc::new(state_tx),
+            actions: actions_tx,
+        }
+    }
+
     pub fn update(&mut self, delta: LaunchpadDelta) {
         self.state.send_modify(move |state| state.update(delta));
     }

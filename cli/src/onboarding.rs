@@ -8,6 +8,12 @@ pub struct OnboardingWorker {
     bus: Bus,
 }
 
+impl OnboardingWorker {
+    pub fn new(bus: Bus) -> Self {
+        Self { bus }
+    }
+}
+
 #[async_trait]
 impl Actor for OnboardingWorker {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
