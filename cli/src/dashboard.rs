@@ -11,7 +11,7 @@ use crossterm::{
 };
 use std::io::Stdout;
 use std::time::Duration;
-use tact::actors::{Actor, ActorContext, Do, Interval, Recipient};
+use tact::actors::{Actor, ActorContext, Do, Interval, Recipient, Task};
 use thiserror::Error;
 use tui::{backend::CrosstermBackend, Terminal};
 
@@ -40,6 +40,7 @@ pub struct Dashboard {
     interval: Option<Interval>,
     supervisor: Recipient<DashboardEvent>,
     bus: Bus,
+    changes: Option<Task>,
 }
 
 impl Dashboard {
@@ -52,6 +53,7 @@ impl Dashboard {
             interval: None,
             supervisor,
             bus,
+            changes: None,
         }
     }
 }
@@ -59,6 +61,9 @@ impl Dashboard {
 #[async_trait]
 impl Actor for Dashboard {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        let notifier = ctx.notifier(Redraw);
+        let task = self.bus.changes(notifier);
+        self.changes = Some(task);
         let bus = self.bus.clone();
         self.state = Some(AppState::new(bus));
         let notifier = ctx.notifier(Tick);

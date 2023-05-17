@@ -1,6 +1,6 @@
 use super::launchpad::{LaunchpadAction, LaunchpadDelta, LaunchpadState};
 use std::sync::Arc;
-use tact::actors::{Recipient, Task};
+use tact::actors::{Notifier, Recipient, Task};
 use tokio::sync::watch::Ref;
 use tokio::sync::{broadcast, watch};
 
@@ -40,7 +40,21 @@ impl Bus {
             .send_modify(move |state| state.update(delta.into()));
     }
 
-    pub fn subscribe<M>(&mut self, recipient: Recipient<M>) -> Task
+    pub fn changes<M>(&mut self, notifier: Notifier<M>) -> Task
+    where
+        M: Clone + Send + 'static,
+    {
+        let mut rx = self.state.subscribe();
+        Task::spawn(async move {
+            while let Ok(_) = rx.changed().await {
+                if let Err(_err) = notifier.notify() {
+                    break;
+                }
+            }
+        })
+    }
+
+    pub fn actions<M>(&mut self, recipient: Recipient<M>) -> Task
     where
         Option<M>: From<LaunchpadAction>,
         M: 'static,

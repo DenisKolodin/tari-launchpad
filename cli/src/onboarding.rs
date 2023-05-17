@@ -19,8 +19,8 @@ impl OnboardingWorker {
 #[async_trait]
 impl Actor for OnboardingWorker {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
-        let actions = self.bus.subscribe(ctx.recipient());
-        self.actions = Some(actions);
+        let task = self.bus.actions(ctx.recipient());
+        self.actions = Some(task);
         Ok(())
     }
 }
