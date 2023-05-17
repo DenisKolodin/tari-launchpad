@@ -1,22 +1,18 @@
 use crate::component::elements::block_with_title;
-
 use crate::component::{Component, ComponentEvent, Frame, Input};
+use crate::state::onboarding::Message;
 use crate::state::AppState;
-
 use tui::backend::Backend;
 use tui::layout::{Constraint, Layout, Rect};
-
 use tui::widgets::{Paragraph, Wrap};
 
 pub struct MessageWidget {
-    text: String,
+    msg: Option<Message>,
 }
 
 impl MessageWidget {
-    pub fn new(text: &str) -> Self {
-        Self {
-            text: text.trim().into(),
-        }
+    pub fn new(msg: Option<Message>) -> Self {
+        Self { msg }
     }
 }
 
@@ -37,7 +33,12 @@ impl<B: Backend> Component<B> for MessageWidget {
             .horizontal_margin(3)
             .vertical_margin(1)
             .split(inner_rect);
-        let paragraph = Paragraph::new(self.text.as_ref()).wrap(Wrap { trim: false });
+        let text = self
+            .msg
+            .as_ref()
+            .map(|msg| msg.text.as_ref())
+            .unwrap_or("...");
+        let paragraph = Paragraph::new(text).wrap(Wrap { trim: false });
         f.render_widget(paragraph, chunks[0]);
     }
 }

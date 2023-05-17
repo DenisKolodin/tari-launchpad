@@ -12,31 +12,13 @@ use tui::style::{Color, Style};
 use tui::text::{Span, Spans};
 use tui::widgets::{Gauge, Paragraph};
 
-const MSG_1: &str = "
-Hi! My name is T-Bot. It is a great pleasure and an honor to meet you!
-I have no memory of human faces, so if our paths have already crossed in the Aurora app, I’m glad to see you again!
-";
-
-const MSG_2: &str = "
-I'm kind of like Gandalf, Dumbledore or Obi-Wan Kenobi. You know, the guy who makes sure the novice gets to a certain destination. Spoiler alert: in this saga the guide will survive. Regardless of whether this is your first contact with cryptocurrencies or you are advanced in it, I will stay with you until the Tari Launchpad setup process is successfully completed.
-";
-
-const MSG_3: &str = "
-So let's get started! 🚀 The setup process usually takes 5 to 10 minutes. A duo like you and me should be able to deal with it quickly, right?
-";
-
 pub struct OnboardingScene {
-    messages: Vec<MessageWidget>,
     wink: Option<Instant>,
 }
 
 impl OnboardingScene {
     pub fn new() -> Self {
-        let msg_1 = MessageWidget::new(MSG_1);
-        let msg_2 = MessageWidget::new(MSG_2);
-        let msg_3 = MessageWidget::new(MSG_3);
         Self {
-            messages: vec![msg_1, msg_2, msg_3],
             wink: Some(Instant::now()),
         }
     }
@@ -98,9 +80,9 @@ impl<B: Backend> Component<B> for OnboardingScene {
             .constraints(constraints)
             .split(v_chunks[1]);
 
-        if let Some(message) = self.messages.last() {
-            message.draw(f, view_chunks[0], state);
-        }
+        let msg = state.launchpad.onboarding.messages.last().cloned();
+        let message = MessageWidget::new(msg);
+        message.draw(f, view_chunks[0], state);
 
         let constraints = [
             Constraint::Min(0),
