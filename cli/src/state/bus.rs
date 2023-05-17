@@ -1,6 +1,7 @@
 use super::launchpad::{LaunchpadAction, LaunchpadDelta, LaunchpadState};
 use std::sync::Arc;
 use tact::actors::{Recipient, Task};
+use tokio::sync::watch::Ref;
 use tokio::sync::{broadcast, watch};
 
 #[derive(Debug, Clone)]
@@ -18,6 +19,10 @@ impl Bus {
             state: Arc::new(state_tx),
             actions: actions_tx,
         }
+    }
+
+    pub fn state(&self) -> Ref<'_, LaunchpadState> {
+        self.state.borrow()
     }
 
     pub fn update(&mut self, delta: LaunchpadDelta) {
