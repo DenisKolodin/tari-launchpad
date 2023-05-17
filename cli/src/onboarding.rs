@@ -3,22 +3,24 @@ use crate::state::launchpad::LaunchpadAction;
 use crate::state::onboarding::OnboardingAction;
 use anyhow::Error;
 use async_trait::async_trait;
-use tact::actors::{Actor, ActorContext, Do};
+use tact::actors::{Actor, ActorContext, Do, Task};
 
 pub struct OnboardingWorker {
     bus: Bus,
+    actions: Option<Task>,
 }
 
 impl OnboardingWorker {
     pub fn new(bus: Bus) -> Self {
-        Self { bus }
+        Self { bus, actions: None }
     }
 }
 
 #[async_trait]
 impl Actor for OnboardingWorker {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
-        self.bus.subscribe(ctx.recipient());
+        let actions = self.bus.subscribe(ctx.recipient());
+        self.actions = Some(actions);
         Ok(())
     }
 }
@@ -30,7 +32,6 @@ impl Do<OnboardingAction> for OnboardingWorker {
         event: OnboardingAction,
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Error> {
-        println!("NEXT");
         Ok(())
     }
 }

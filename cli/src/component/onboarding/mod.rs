@@ -1,11 +1,10 @@
 mod message;
 
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
+use crate::state::onboarding::OnboardingAction;
 use crate::state::{AppState, Focus};
-
 use message::MessageWidget;
 use std::time::{Duration, Instant};
-
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
@@ -37,6 +36,9 @@ impl Input for OnboardingScene {
         }
 
         match event.pass() {
+            Pass::Enter => {
+                state.bus.send(OnboardingAction::Next);
+            }
             Pass::Leave => {
                 state.focus_on(Focus::Root);
             }

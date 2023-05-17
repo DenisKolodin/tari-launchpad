@@ -1,5 +1,6 @@
 use super::mining::{MergedMiningInfo, TariMiningInfo};
 use super::onboarding::{Onboarding, OnboardingAction};
+use derive_more::From;
 use rust_decimal::Decimal;
 
 #[derive(Debug)]
@@ -33,7 +34,7 @@ impl LaunchpadState {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, From)]
 pub enum LaunchpadAction {
     Onboarding(OnboardingAction),
 }
