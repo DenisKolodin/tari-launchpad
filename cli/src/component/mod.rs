@@ -16,6 +16,10 @@ use tui::backend::Backend;
 use tui::layout::Rect;
 use tui::Frame;
 
+pub struct AppContext<'a> {
+    pub app_state: &'a mut AppState,
+}
+
 pub trait Component<B: Backend> {
     type State;
 
@@ -76,4 +80,7 @@ impl ComponentEvent {
 
 pub trait Input {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState);
+    fn on_event_main(&mut self, event: ComponentEvent, ctx: AppContext) {
+        self.on_event(event, ctx.app_state)
+    }
 }
