@@ -10,7 +10,7 @@ use crossterm::{
 };
 use std::io::Stdout;
 use std::time::Duration;
-use tact::actors::{Actor, ActorContext, Do, Interval};
+use tact::actors::{Actor, ActorContext, Do, Interval, Recipient};
 use thiserror::Error;
 use tui::{backend::CrosstermBackend, Terminal};
 
@@ -26,6 +26,10 @@ pub enum DashboardError {
     NoState,
 }
 
+pub enum DashboardEvent {
+    Terminated,
+}
+
 pub struct Dashboard {
     terminal: Option<Term>,
     event_handle: Option<EventHandle>,
@@ -33,16 +37,18 @@ pub struct Dashboard {
     // TODO: Get the state from a bus
     state: Option<AppState>,
     interval: Option<Interval>,
+    supervisor: Recipient<DashboardEvent>,
 }
 
 impl Dashboard {
-    pub fn new() -> Self {
+    pub fn new(supervisor: Recipient<DashboardEvent>) -> Self {
         Self {
             terminal: None,
             event_handle: None,
             main_view: MainView::new(),
             state: None,
             interval: None,
+            supervisor,
         }
     }
 }
@@ -80,6 +86,7 @@ impl Actor for Dashboard {
             DisableMouseCapture
         )?;
         terminal.show_cursor()?;
+        self.supervisor.send(DashboardEvent::Terminated)?;
         Ok(())
     }
 }
