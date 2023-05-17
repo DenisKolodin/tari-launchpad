@@ -1,5 +1,5 @@
-use crate::actors::task::Task;
-use crate::actors::Recipient;
+use crate::recipient::Recipient;
+use crate::task::Task;
 use futures::{Stream, StreamExt};
 
 pub struct Receiver {

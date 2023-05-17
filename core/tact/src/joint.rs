@@ -1,6 +1,6 @@
-use super::actor::Actor;
-use super::address::SendError;
-use super::handler::Envelope;
+use crate::actor::Actor;
+use crate::address::SendError;
+use crate::handler::Envelope;
 use tokio::sync::{mpsc, watch};
 
 #[derive(Debug, Clone, PartialEq, Eq)]

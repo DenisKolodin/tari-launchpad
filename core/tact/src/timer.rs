@@ -1,5 +1,5 @@
-use crate::actors::recipient::Notifier;
-use crate::actors::task::Task;
+use crate::recipient::Notifier;
+use crate::task::Task;
 use std::time::Duration;
 use tokio::time;
 

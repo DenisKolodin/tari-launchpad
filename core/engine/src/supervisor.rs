@@ -1,6 +1,6 @@
 use anyhow::Error;
 use async_trait::async_trait;
-use tact::actors::{Actor, ActorContext, Do};
+use tact::{Actor, ActorContext, Do};
 
 pub struct Supervisor {}
 

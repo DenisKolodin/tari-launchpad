@@ -11,7 +11,7 @@ use crossterm::{
 };
 use std::io::Stdout;
 use std::time::Duration;
-use tact::actors::{Actor, ActorContext, Do, Interval, Recipient, Task};
+use tact::{Actor, ActorContext, Do, Interval, Recipient, Task};
 use thiserror::Error;
 use tui::{backend::CrosstermBackend, Terminal};
 

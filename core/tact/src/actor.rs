@@ -1,6 +1,6 @@
-use super::address::Address;
-use super::context::ActorContext;
-use super::runtime::ActorRuntime;
+use crate::address::Address;
+use crate::context::ActorContext;
+use crate::runtime::ActorRuntime;
 use anyhow::Error;
 use async_trait::async_trait;
 

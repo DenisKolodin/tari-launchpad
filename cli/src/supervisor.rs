@@ -3,7 +3,7 @@ use crate::onboarding::OnboardingWorker;
 use crate::state::bus::Bus;
 use anyhow::Error;
 use async_trait::async_trait;
-use tact::actors::{Actor, ActorContext, Address, Do};
+use tact::{Actor, ActorContext, Address, Do};
 
 pub struct Supervisor {
     dashboard: Option<Address<Dashboard>>,

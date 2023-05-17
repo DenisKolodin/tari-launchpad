@@ -1,7 +1,7 @@
-use super::action::{Do, Interrupt};
-use super::actor::Actor;
-use super::handler::Envelope;
-use super::joint::ActorState;
+use crate::action::{Do, Interrupt};
+use crate::actor::Actor;
+use crate::handler::Envelope;
+use crate::joint::ActorState;
 use thiserror::Error;
 use tokio::sync::{mpsc, watch};
 

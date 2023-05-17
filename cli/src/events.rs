@@ -7,7 +7,7 @@ use std::sync::{
 };
 use std::thread::JoinHandle;
 use std::time::Duration;
-use tact::actors::Address;
+use tact::Address;
 
 pub enum TermEvent {
     Event(Event),

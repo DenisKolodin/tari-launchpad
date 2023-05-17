@@ -1,5 +1,5 @@
-use crate::actors::action::Do;
-use crate::actors::address::{Address, SendError};
+use crate::action::Do;
+use crate::address::{Address, SendError};
 
 pub trait Sender<M>: Send {
     fn send(&self, msg: M) -> Result<(), SendError>;

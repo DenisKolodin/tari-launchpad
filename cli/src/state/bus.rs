@@ -1,6 +1,6 @@
 use super::launchpad::{LaunchpadAction, LaunchpadDelta, LaunchpadState};
 use std::sync::Arc;
-use tact::actors::{Notifier, Recipient, Task};
+use tact::{Notifier, Recipient, Task};
 use tokio::sync::watch::Ref;
 use tokio::sync::{broadcast, watch};
 

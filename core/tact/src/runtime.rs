@@ -1,6 +1,6 @@
-use super::actor::Actor;
-use super::context::ActorContext;
-use super::joint::ActorState;
+use crate::actor::Actor;
+use crate::context::ActorContext;
+use crate::joint::ActorState;
 use std::any::type_name;
 
 pub(super) struct ActorRuntime<A: Actor> {

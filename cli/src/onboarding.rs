@@ -3,7 +3,7 @@ use crate::state::launchpad::LaunchpadAction;
 use crate::state::onboarding::{Message, OnboardingAction, OnboardingDelta};
 use anyhow::Error;
 use async_trait::async_trait;
-use tact::actors::{Actor, ActorContext, Do, Task};
+use tact::{Actor, ActorContext, Do, Task};
 
 enum State {
     Empty,

@@ -1,6 +1,6 @@
 use anyhow::Error;
 use async_trait::async_trait;
-use tact::actors::{Actor, ActorContext};
+use tact::{Actor, ActorContext};
 use tari_lp_bus::LpBusServer;
 
 pub struct LpWorkflow {

@@ -1,8 +1,8 @@
-use super::action::Do;
-use super::actor::Actor;
-use super::address::{Address, SendError};
-use super::joint::{ActorState, AddressJoint};
-use super::recipient::{Notifier, Recipient};
+use crate::action::Do;
+use crate::actor::Actor;
+use crate::address::{Address, SendError};
+use crate::joint::{ActorState, AddressJoint};
+use crate::recipient::{Notifier, Recipient};
 use tokio::sync::{mpsc, watch};
 
 pub struct ActorContext<A: Actor> {

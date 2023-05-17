@@ -6,7 +6,7 @@ pub mod onboarding;
 use crate::state::bus::Bus;
 use launchpad::LaunchpadState;
 use std::collections::VecDeque;
-use tact::actors::Recipient;
+use tact::Recipient;
 
 #[derive(Debug, Clone)]
 pub enum StateAction {
