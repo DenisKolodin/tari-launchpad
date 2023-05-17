@@ -28,7 +28,9 @@ impl TabGetter for NormalTabs {
     fn get_badge(&self, state: &AppState) -> Option<(&str, Color)> {
         match self {
             Self::Mining => {
-                if state.merged_mining.is_active() || state.tari_mining.is_active() {
+                if state.launchpad.merged_mining.is_active()
+                    || state.launchpad.tari_mining.is_active()
+                {
                     return Some(("(running)", Color::Green));
                 }
             }

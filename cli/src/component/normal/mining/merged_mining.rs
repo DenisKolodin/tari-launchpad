@@ -20,7 +20,7 @@ struct MergedMiningGetter;
 
 impl StatusGetter for MergedMiningGetter {
     fn get_status(&self, state: &AppState) -> (&str, Color) {
-        if state.merged_mining.is_active() {
+        if state.launchpad.merged_mining.is_active() {
             ("(Running)", Color::Green)
         } else {
             ("(Ready to set)", Color::Cyan)
@@ -30,11 +30,11 @@ impl StatusGetter for MergedMiningGetter {
 
 impl ChronoGetter for MergedMiningGetter {
     fn get_duration(&self, state: &AppState) -> Option<Duration> {
-        state.merged_mining.mining_duration()
+        state.launchpad.merged_mining.mining_duration()
     }
 
     fn get_label(&self, state: &AppState) -> &str {
-        if state.merged_mining.mining_duration().is_some() {
+        if state.launchpad.merged_mining.mining_duration().is_some() {
             "Pause"
         } else {
             "Start mining"
@@ -46,7 +46,7 @@ struct XtrGetter;
 
 impl AmountGetter for XtrGetter {
     fn get_amount(&self, state: &AppState) -> (Decimal, &str) {
-        let amount = state.merged_mining.tari_amount;
+        let amount = state.launchpad.merged_mining.tari_amount;
         (amount, "XTR")
     }
 }
@@ -55,7 +55,7 @@ struct XmrGetter;
 
 impl AmountGetter for XmrGetter {
     fn get_amount(&self, state: &AppState) -> (Decimal, &str) {
-        let amount = state.merged_mining.monero_amount;
+        let amount = state.launchpad.merged_mining.monero_amount;
         (amount, "XMR")
     }
 }
@@ -89,7 +89,7 @@ impl Input for MergedMiningWidget {
                     state.focus_on(Focus::Root);
                 }
                 Pass::Enter | Pass::Space => {
-                    state.merged_mining.toggle();
+                    state.launchpad.merged_mining.toggle();
                 }
                 _ => {}
             }

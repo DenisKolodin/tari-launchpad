@@ -20,7 +20,7 @@ struct TariMiningGetter;
 
 impl StatusGetter for TariMiningGetter {
     fn get_status(&self, state: &AppState) -> (&str, Color) {
-        if state.tari_mining.is_active() {
+        if state.launchpad.tari_mining.is_active() {
             ("(Running)", Color::Green)
         } else {
             ("(Ready to set)", Color::Cyan)
@@ -30,11 +30,11 @@ impl StatusGetter for TariMiningGetter {
 
 impl ChronoGetter for TariMiningGetter {
     fn get_duration(&self, state: &AppState) -> Option<Duration> {
-        state.tari_mining.mining_duration()
+        state.launchpad.tari_mining.mining_duration()
     }
 
     fn get_label(&self, state: &AppState) -> &str {
-        if state.tari_mining.mining_duration().is_some() {
+        if state.launchpad.tari_mining.mining_duration().is_some() {
             "Pause"
         } else {
             "Start mining"
@@ -46,7 +46,7 @@ struct XtrGetter;
 
 impl AmountGetter for XtrGetter {
     fn get_amount(&self, state: &AppState) -> (Decimal, &str) {
-        let amount = state.tari_mining.tari_amount;
+        let amount = state.launchpad.tari_mining.tari_amount;
         (amount, "XTR")
     }
 }
@@ -78,7 +78,7 @@ impl Input for TariMiningWidget {
                     state.focus_on(Focus::Root);
                 }
                 Pass::Enter | Pass::Space => {
-                    state.tari_mining.toggle();
+                    state.launchpad.tari_mining.toggle();
                 }
                 _ => {}
             }

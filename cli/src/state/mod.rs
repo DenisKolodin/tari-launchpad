@@ -1,9 +1,8 @@
+pub mod launchpad;
 pub mod mining;
 pub mod onboarding;
 
-use mining::{MergedMiningInfo, TariMiningInfo};
-use onboarding::Onboarding;
-use rust_decimal::Decimal;
+use launchpad::LaunchpadState;
 use std::collections::VecDeque;
 use tact::actors::Recipient;
 
@@ -50,30 +49,17 @@ pub enum AppEvent {
 
 pub struct AppState {
     pub focus_on: Focus,
-    pub tari_mining: TariMiningInfo,
-    pub merged_mining: MergedMiningInfo,
     pub events_queue: VecDeque<AppEvent>,
-    pub onboarding: Onboarding,
+    pub launchpad: LaunchpadState,
     // pub recipient: Recipient<StateAction>,
 }
 
 impl AppState {
     pub fn new(recipient: Recipient<StateAction>) -> Self {
-        let tari_mining = TariMiningInfo {
-            mining_started: None,
-            tari_amount: 123_456.into(),
-        };
-        let merged_mining = MergedMiningInfo {
-            mining_started: None,
-            tari_amount: 45_000.into(),
-            monero_amount: Decimal::new(35, 1),
-        };
         Self {
             focus_on: Focus::Onboarding,
-            tari_mining,
-            merged_mining,
             events_queue: VecDeque::new(),
-            onboarding: Onboarding::default(),
+            launchpad: LaunchpadState::new(),
             // recipient,
         }
     }
