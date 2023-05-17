@@ -1,5 +1,6 @@
 use crate::component::{Component, ComponentEvent, Input, MainView};
 use crate::events::{EventHandle, TermEvent};
+use crate::state::bus::Bus;
 use crate::state::{AppState, StateAction};
 use anyhow::Error;
 use async_trait::async_trait;
@@ -38,10 +39,11 @@ pub struct Dashboard {
     state: Option<AppState>,
     interval: Option<Interval>,
     supervisor: Recipient<DashboardEvent>,
+    bus: Bus,
 }
 
 impl Dashboard {
-    pub fn new(supervisor: Recipient<DashboardEvent>) -> Self {
+    pub fn new(bus: Bus, supervisor: Recipient<DashboardEvent>) -> Self {
         Self {
             terminal: None,
             event_handle: None,
@@ -49,6 +51,7 @@ impl Dashboard {
             state: None,
             interval: None,
             supervisor,
+            bus,
         }
     }
 }

@@ -25,7 +25,7 @@ impl Supervisor {
 impl Actor for Supervisor {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         let bus = Bus::new();
-        let dashboard = Dashboard::new(ctx.recipient());
+        let dashboard = Dashboard::new(bus.clone(), ctx.recipient());
         let addr = dashboard.start();
         self.dashboard = Some(addr);
         let onboarding = OnboardingWorker::new(bus.clone());
