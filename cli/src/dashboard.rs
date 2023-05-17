@@ -1,4 +1,4 @@
-use crate::component::{AppContext, Component, ComponentEvent, Input, MainView};
+use crate::component::{Component, ComponentEvent, Input, MainView};
 use crate::events::{EventHandle, TermEvent};
 use crate::state::bus::Bus;
 use crate::state::{AppState, StateAction};
@@ -111,8 +111,7 @@ impl Do<TermEvent> for Dashboard {
                             .interrupt();
                     }
                     let state = self.state.as_mut().ok_or_else(|| DashboardError::NoState)?;
-                    let app_ctx = AppContext { app_state: state };
-                    self.main_view.on_event_main(key.into(), app_ctx);
+                    self.main_view.on_event(key.into(), state);
                     let changed = state.process_events();
                     if changed {
                         ctx.do_next(Redraw)?;
