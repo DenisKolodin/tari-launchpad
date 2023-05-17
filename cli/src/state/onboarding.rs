@@ -8,6 +8,16 @@ pub struct Onboarding {
     pub messages: Vec<Message>,
 }
 
+impl Onboarding {
+    pub fn update(&mut self, delta: OnboardingDelta) {
+        match delta {
+            OnboardingDelta::Add(msg) => {
+                self.messages.push(msg);
+            }
+        }
+    }
+}
+
 impl Default for Onboarding {
     fn default() -> Self {
         Self {
@@ -22,4 +32,6 @@ pub enum OnboardingAction {
 }
 
 #[derive(Debug, Clone)]
-pub enum OnboardingDelta {}
+pub enum OnboardingDelta {
+    Add(Message),
+}

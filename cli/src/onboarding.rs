@@ -1,6 +1,6 @@
 use crate::state::bus::Bus;
 use crate::state::launchpad::LaunchpadAction;
-use crate::state::onboarding::OnboardingAction;
+use crate::state::onboarding::{Message, OnboardingAction, OnboardingDelta};
 use anyhow::Error;
 use async_trait::async_trait;
 use tact::actors::{Actor, ActorContext, Do, Task};
@@ -32,6 +32,9 @@ impl Do<OnboardingAction> for OnboardingWorker {
         event: OnboardingAction,
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Error> {
+        let msg = Message { text: MSG_1.into() };
+        let delta = OnboardingDelta::Add(msg);
+        self.bus.update(delta);
         Ok(())
     }
 }

@@ -1,5 +1,5 @@
 use super::mining::{MergedMiningInfo, TariMiningInfo};
-use super::onboarding::{Onboarding, OnboardingAction};
+use super::onboarding::{Onboarding, OnboardingAction, OnboardingDelta};
 use derive_more::From;
 use rust_decimal::Decimal;
 
@@ -30,7 +30,11 @@ impl LaunchpadState {
     }
 
     pub fn update(&mut self, delta: LaunchpadDelta) {
-        match delta {}
+        match delta {
+            LaunchpadDelta::Onboarding(delta) => {
+                self.onboarding.update(delta);
+            }
+        }
     }
 }
 
@@ -49,5 +53,7 @@ impl From<LaunchpadAction> for Option<OnboardingAction> {
     }
 }
 
-#[derive(Debug, Clone)]
-pub enum LaunchpadDelta {}
+#[derive(Debug, Clone, From)]
+pub enum LaunchpadDelta {
+    Onboarding(OnboardingDelta),
+}
