@@ -15,7 +15,7 @@ use tui::layout::{Constraint, Direction, Layout, Rect};
 struct MiningHint;
 
 impl HintGetter for MiningHint {
-    fn get_hint(&self, state: &AppState) -> String {
+    fn get_hint(&self, _state: &AppState) -> String {
         let mining = false;
         let text = if mining {
             "Awesome! Tari Mining is on."

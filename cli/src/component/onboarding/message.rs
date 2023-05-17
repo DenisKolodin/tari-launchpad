@@ -1,12 +1,11 @@
-use crate::component::elements::{block_with_title, logo};
-use crate::component::tabs::{AppTabs, TabGetter};
-use crate::component::{Component, ComponentEvent, Frame, Input};
-use crate::state::{AppState, BaseNodeFocus, Focus, MiningFocus, WalletFocus};
+use crate::component::elements::block_with_title;
 
-use strum::{Display, EnumCount, EnumIter, FromRepr};
+use crate::component::{Component, ComponentEvent, Frame, Input};
+use crate::state::AppState;
+
 use tui::backend::Backend;
-use tui::layout::{Constraint, Direction, Layout, Rect};
-use tui::style::Color;
+use tui::layout::{Constraint, Layout, Rect};
+
 use tui::widgets::{Paragraph, Wrap};
 
 pub struct MessageWidget {
@@ -22,13 +21,13 @@ impl MessageWidget {
 }
 
 impl Input for MessageWidget {
-    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {}
+    fn on_event(&mut self, _event: ComponentEvent, _state: &mut AppState) {}
 }
 
 impl<B: Backend> Component<B> for MessageWidget {
     type State = AppState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
         let block = block_with_title(None, false);
         let inner_rect = block.inner(rect);
         f.render_widget(block, rect);

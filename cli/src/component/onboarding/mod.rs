@@ -1,13 +1,11 @@
 mod message;
 
-use crate::component::elements::{block_with_title, logo};
-use crate::component::tabs::{AppTabs, TabGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
-use crate::state::{AppState, BaseNodeFocus, Focus, MiningFocus, WalletFocus};
+use crate::state::{AppState, Focus};
 
 use message::MessageWidget;
 use std::time::{Duration, Instant};
-use strum::{Display, EnumCount, EnumIter, FromRepr};
+
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
@@ -66,7 +64,7 @@ impl Input for OnboardingScene {
 }
 
 impl OnboardingScene {
-    fn get_progress(&self, state: &AppState) -> u16 {
+    fn get_progress(&self, _state: &AppState) -> u16 {
         100
     }
 }

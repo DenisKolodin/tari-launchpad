@@ -8,8 +8,8 @@ pub struct LpBusClient {
 
 impl LpBusClient {
     pub fn connect() -> Self {
-        let (action_tx, action_rx) = mpsc::unbounded_channel();
-        let (delta_tx, delta_rx) = mpsc::unbounded_channel();
+        let (action_tx, _action_rx) = mpsc::unbounded_channel();
+        let (_delta_tx, delta_rx) = mpsc::unbounded_channel();
         Self {
             action_tx,
             delta_rx,

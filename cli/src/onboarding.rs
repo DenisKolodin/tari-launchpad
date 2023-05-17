@@ -6,7 +6,7 @@ pub struct OnboardingWorker {}
 
 #[async_trait]
 impl Actor for OnboardingWorker {
-    async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    async fn initialize(&mut self, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         Ok(())
     }
 }

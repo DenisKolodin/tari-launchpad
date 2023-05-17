@@ -10,7 +10,7 @@ mod tabs;
 
 use crate::state::AppState;
 use crossterm::event::{KeyCode, KeyEvent};
-use derive_more::{From, Into};
+use derive_more::From;
 pub use main_view::MainView;
 use tui::backend::Backend;
 use tui::layout::Rect;

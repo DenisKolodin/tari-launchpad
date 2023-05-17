@@ -1,6 +1,5 @@
 mod password;
 
-use crate::component::normal::hint::{HintGetter, HintLine};
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 

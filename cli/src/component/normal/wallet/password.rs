@@ -2,11 +2,10 @@ use crate::component::elements::{block_with_title, logo};
 use crate::component::normal::chrono_button::{ChronoButton, ChronoGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
 use crate::state::{AppState, Focus, WalletFocus};
-use rust_decimal::Decimal;
+
 use std::time::Duration;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
-use tui::style::Color;
 
 const LOGO: &str = r#"
 ╔═╗┌┐┌┌┬┐┌─┐┬─┐  ╔═╗┌─┐┌─┐┌─┐┬ ┬┌─┐┬─┐┌┬┐
@@ -17,11 +16,11 @@ const LOGO: &str = r#"
 struct PasswordWidgetGetter;
 
 impl ChronoGetter for PasswordWidgetGetter {
-    fn get_duration(&self, state: &AppState) -> Option<Duration> {
+    fn get_duration(&self, _state: &AppState) -> Option<Duration> {
         None
     }
 
-    fn get_label(&self, state: &AppState) -> &str {
+    fn get_label(&self, _state: &AppState) -> &str {
         if false {
             "Pause"
         } else {

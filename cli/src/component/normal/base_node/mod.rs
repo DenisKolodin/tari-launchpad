@@ -1,8 +1,8 @@
 mod base_node;
 
 use crate::component::normal::hint::{HintGetter, HintLine};
-use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
-use crate::state::{AppState, Focus};
+use crate::component::{Component, ComponentEvent, Frame, Input};
+use crate::state::AppState;
 
 use base_node::BaseNodeWidget;
 use tui::backend::Backend;
@@ -11,7 +11,7 @@ use tui::layout::{Constraint, Direction, Layout, Rect};
 struct BaseNodeHint;
 
 impl HintGetter for BaseNodeHint {
-    fn get_hint(&self, state: &AppState) -> String {
+    fn get_hint(&self, _state: &AppState) -> String {
         "Base Node is already running!".into()
     }
 }
