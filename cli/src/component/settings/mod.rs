@@ -1,6 +1,9 @@
+mod mining;
+
 use crate::component::tabs::{AppTabs, TabGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::{AppState, Focus};
+use mining::MiningSettings;
 
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
@@ -24,12 +27,14 @@ impl TabGetter for SettingsTabs {
 
 pub struct SettingsScene {
     settings_tabs: AppTabs<SettingsTabs>,
+    mining_settings: MiningSettings,
 }
 
 impl SettingsScene {
     pub fn new() -> Self {
         Self {
             settings_tabs: AppTabs::new(),
+            mining_settings: MiningSettings::new(),
         }
     }
 }
