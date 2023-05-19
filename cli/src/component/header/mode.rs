@@ -1,5 +1,5 @@
 use crate::component::{Component, ComponentEvent, Frame, Input};
-use crate::state::AppState;
+use crate::state::{AppState, Focus};
 use crossterm::event::KeyCode;
 use crossterm::event::KeyModifiers;
 use tui::backend::Backend;
@@ -39,24 +39,31 @@ impl ModeSelector {
 }
 
 impl Input for ModeSelector {
-    fn on_event(&mut self, event: ComponentEvent, _state: &mut AppState) {
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
+        let mut changed = false;
         if let ComponentEvent::KeyEvent(key) = event {
             if key.modifiers.contains(KeyModifiers::CONTROL) {
                 match key.code {
                     KeyCode::Char('n') => {
                         self.expert = false;
                         self.settings = false;
+                        changed = true;
                     }
                     KeyCode::Char('e') => {
                         self.expert = !self.expert;
                         self.settings = false;
+                        changed = true;
                     }
                     KeyCode::Char('s') => {
                         self.settings = !self.settings;
+                        changed = true;
                     }
                     _ => {}
                 }
             }
+        }
+        if changed {
+            state.focus_on(Focus::Root);
         }
     }
 }
