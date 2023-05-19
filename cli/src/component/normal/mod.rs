@@ -69,7 +69,7 @@ impl NormalScene {
 
 impl Input for NormalScene {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
-        let _focus = self.normal_tabs.on_event(event, state);
+        self.normal_tabs.on_event(event, state);
         match self.normal_tabs.selected() {
             NormalTabs::Mining => {
                 self.mining_scene.on_event(event, state);
