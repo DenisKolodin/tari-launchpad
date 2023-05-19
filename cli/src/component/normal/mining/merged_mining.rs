@@ -91,6 +91,11 @@ impl Input for MergedMiningWidget {
                 Pass::Enter | Pass::Space => {
                     state.launchpad.merged_mining.toggle();
                 }
+                Pass::Tick => {
+                    if state.launchpad.merged_mining.is_active() {
+                        state.redraw();
+                    }
+                }
                 _ => {}
             }
         }

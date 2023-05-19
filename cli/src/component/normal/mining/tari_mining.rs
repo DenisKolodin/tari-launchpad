@@ -80,6 +80,11 @@ impl Input for TariMiningWidget {
                 Pass::Enter | Pass::Space => {
                     state.launchpad.tari_mining.toggle();
                 }
+                Pass::Tick => {
+                    if state.launchpad.tari_mining.is_active() {
+                        state.redraw();
+                    }
+                }
                 _ => {}
             }
         }

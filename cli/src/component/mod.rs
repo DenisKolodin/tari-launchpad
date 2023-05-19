@@ -35,7 +35,8 @@ pub enum Pass {
     Space,
     // Tab
     Next,
-    None,
+    Other,
+    Tick,
 }
 
 impl Pass {
@@ -67,9 +68,9 @@ impl ComponentEvent {
                 KeyCode::Enter => Pass::Enter,
                 KeyCode::Char(' ') => Pass::Space,
                 KeyCode::Tab => Pass::Next,
-                _ => Pass::None,
+                _ => Pass::Other,
             },
-            Self::Tick => Pass::None,
+            Self::Tick => Pass::Tick,
         }
     }
 }
