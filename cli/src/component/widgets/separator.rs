@@ -5,13 +5,13 @@ use tui::symbols::line;
 use tui::text::Span;
 use tui::widgets::Widget;
 
-pub struct Separator {
-    title: String,
+pub struct Separator<'a> {
+    title: &'a str,
     line_set: line::Set,
 }
 
-impl Separator {
-    pub fn new(title: &str) -> Self {
+impl<'a> Separator<'a> {
+    pub fn new(title: &'a str) -> Self {
         Self {
             title: title.into(),
             line_set: line::NORMAL,
@@ -19,7 +19,7 @@ impl Separator {
     }
 }
 
-impl Widget for Separator {
+impl<'a> Widget for Separator<'a> {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let style = Style::default()
             .fg(Color::Magenta)
