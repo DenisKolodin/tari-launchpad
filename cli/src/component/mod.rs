@@ -7,6 +7,7 @@ mod onboarding;
 mod scene;
 mod settings;
 mod tabs;
+mod widgets;
 
 use crate::state::AppState;
 use crossterm::event::{KeyCode, KeyEvent};
