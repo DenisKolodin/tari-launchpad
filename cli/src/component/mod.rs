@@ -1,6 +1,7 @@
 mod elements;
 mod expert;
 mod header;
+mod labeled_input;
 mod main_view;
 mod normal;
 mod onboarding;
