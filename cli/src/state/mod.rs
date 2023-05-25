@@ -58,7 +58,7 @@ pub struct AppState {
 impl AppState {
     pub fn new(bus: Bus) -> Self {
         Self {
-            focus_on: Focus::Onboarding,
+            focus_on: Focus::Root,
             events_queue: VecDeque::new(),
             bus,
             launchpad: LaunchpadState::new(),
