@@ -30,7 +30,11 @@ impl<B: Backend> Component<B> for BaseNodeSettings {
         let block = block_with_title(Some("BaseNode Settings"), false);
         let inner_rect = block.inner(rect);
         f.render_widget(block, rect);
-        let constraints = [Constraint::Length(1), Constraint::Min(3)];
+        let constraints = [
+            Constraint::Length(1),
+            Constraint::Length(3),
+            Constraint::Min(0),
+        ];
         let chunks = Layout::default()
             .direction(Direction::Vertical)
             .constraints(constraints)
