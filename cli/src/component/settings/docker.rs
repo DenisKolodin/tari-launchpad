@@ -52,7 +52,7 @@ impl<B: Backend> Component<B> for DockerSettings {
         self.docker_tag.draw(f, chunks[1], state);
         self.docker_registry.draw(f, chunks[2], state);
 
-        let sep = Separator::new("Expert");
+        let sep = Separator::new("Image Statuses");
         f.render_widget(sep, chunks[3]);
     }
 }
