@@ -2,7 +2,7 @@ pub mod logo;
 pub mod mode;
 
 use crate::component::{Component, ComponentEvent, Frame, Input};
-use crate::state::AppState;
+use crate::state::{focus, AppState};
 
 use logo::Logo;
 use mode::ModeSelector;
@@ -39,7 +39,7 @@ impl<B: Backend> Component<B> for Header {
             .constraints(constraints)
             .split(rect);
         self.logo.draw(f, chunks[0], state);
-        if !state.focus_on.is_onboarding() {
+        if state.focus_on != focus::ONBOARDING {
             self.mode_selector.draw(f, chunks[1], state);
         }
     }

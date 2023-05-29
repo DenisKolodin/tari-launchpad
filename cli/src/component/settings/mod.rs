@@ -7,7 +7,7 @@ mod wallet;
 
 use crate::component::tabs::{AppTabs, TabGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input};
-use crate::state::{AppState, Focus};
+use crate::state::{focus, AppState, Focus};
 use base_node::BaseNodeSettings;
 use docker::DockerSettings;
 use logs::LogsSettings;
@@ -31,7 +31,7 @@ pub enum SettingsTabs {
 
 impl TabGetter for SettingsTabs {
     fn focus_to(&self, _: &AppState) -> Focus {
-        Focus::Root
+        focus::ROOT
     }
 }
 

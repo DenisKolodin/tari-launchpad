@@ -3,7 +3,7 @@ use crate::component::normal::chrono_button::{ChronoButton, ChronoGetter};
 use crate::component::normal::mining::amount::{AmountGetter, AmountIndicator};
 use crate::component::normal::mining::status_badge::{StatusBadge, StatusGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
-use crate::state::{AppState, Focus, MiningFocus};
+use crate::state::{focus, AppState, Focus};
 use rust_decimal::Decimal;
 use std::time::Duration;
 use tui::backend::Backend;
@@ -69,13 +69,13 @@ impl TariMiningWidget {
 
 impl Input for TariMiningWidget {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
-        if state.focus_on == Focus::Mining(MiningFocus::TariMining) {
+        if state.focus_on == focus::TARI_MINING {
             match event.pass() {
                 Pass::Right | Pass::Next => {
-                    state.focus_on(Focus::Mining(MiningFocus::MergedMining));
+                    state.focus_on(focus::MERGED_MINING);
                 }
                 Pass::Up | Pass::Leave => {
-                    state.focus_on(Focus::Root);
+                    state.focus_on(focus::ROOT);
                 }
                 Pass::Enter | Pass::Space => {
                     state.launchpad.tari_mining.toggle();
@@ -95,10 +95,7 @@ impl<B: Backend> Component<B> for TariMiningWidget {
     type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
-        let block = block_with_title(
-            Some("Tari Mining"),
-            state.focus_on == Focus::Mining(MiningFocus::TariMining),
-        );
+        let block = block_with_title(Some("Tari Mining"), state.focus_on == focus::TARI_MINING);
         let inner_rect = block.inner(rect);
         f.render_widget(block, rect);
 

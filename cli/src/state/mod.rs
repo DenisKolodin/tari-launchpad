@@ -1,46 +1,17 @@
 pub mod bus;
+pub mod focus;
 pub mod launchpad;
 pub mod mining;
 pub mod onboarding;
 
 use crate::state::bus::Bus;
+pub use focus::Focus;
 use launchpad::LaunchpadState;
 use std::collections::VecDeque;
 
 #[derive(Debug, Clone)]
 pub enum StateAction {
     Redraw,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum Focus {
-    Onboarding,
-    Root,
-    Mining(MiningFocus),
-    BaseNode(BaseNodeFocus),
-    Wallet(WalletFocus),
-}
-
-impl Focus {
-    pub fn is_onboarding(&self) -> bool {
-        matches!(self, Self::Onboarding)
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum MiningFocus {
-    TariMining,
-    MergedMining,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum BaseNodeFocus {
-    BaseNode,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum WalletFocus {
-    Password,
 }
 
 pub enum AppEvent {
@@ -58,7 +29,7 @@ pub struct AppState {
 impl AppState {
     pub fn new(bus: Bus) -> Self {
         Self {
-            focus_on: Focus::Root,
+            focus_on: focus::ROOT,
             events_queue: VecDeque::new(),
             bus,
             launchpad: LaunchpadState::new(),

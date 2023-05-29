@@ -1,6 +1,6 @@
 use crate::component::tabs::{AppTabs, TabGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input};
-use crate::state::{AppState, Focus};
+use crate::state::{focus, AppState, Focus};
 
 use strum::{Display, EnumCount, EnumIter, FromRepr};
 use tui::backend::Backend;
@@ -15,7 +15,7 @@ pub enum ExpertTabs {
 
 impl TabGetter for ExpertTabs {
     fn focus_to(&self, _: &AppState) -> Focus {
-        Focus::Root
+        focus::ROOT
     }
 }
 

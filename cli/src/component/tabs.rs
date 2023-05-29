@@ -1,5 +1,5 @@
 use crate::component::{elements::block_with_title, Component, ComponentEvent, Input, Pass};
-use crate::state::{AppState, Focus};
+use crate::state::{focus, AppState, Focus};
 
 use strum::IntoEnumIterator;
 use tui::{
@@ -31,7 +31,7 @@ where
 {
     pub fn new() -> Self {
         Self {
-            focus_on: Focus::Root,
+            focus_on: focus::ROOT,
             selected: 0,
             items: T::iter().collect(),
         }

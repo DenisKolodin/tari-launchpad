@@ -1,7 +1,7 @@
 use crate::component::elements::{block_with_title, logo};
 use crate::component::normal::chrono_button::{ChronoButton, ChronoGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
-use crate::state::{AppState, Focus, WalletFocus};
+use crate::state::{focus, AppState, Focus};
 
 use std::time::Duration;
 use tui::backend::Backend;
@@ -43,10 +43,10 @@ impl PasswordWidget {
 
 impl Input for PasswordWidget {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
-        if state.focus_on == Focus::Wallet(WalletFocus::Password) {
+        if state.focus_on == focus::PASSWORD {
             match event.pass() {
                 Pass::Up | Pass::Leave => {
-                    state.focus_on(Focus::Root);
+                    state.focus_on(focus::ROOT);
                 }
                 Pass::Enter | Pass::Space => {
                     // TODO: Toggle the base node state
@@ -61,10 +61,7 @@ impl<B: Backend> Component<B> for PasswordWidget {
     type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
-        let block = block_with_title(
-            Some("Wallet"),
-            state.focus_on == Focus::Wallet(WalletFocus::Password),
-        );
+        let block = block_with_title(Some("Wallet"), state.focus_on == focus::PASSWORD);
         let inner_rect = block.inner(rect);
         f.render_widget(block, rect);
 

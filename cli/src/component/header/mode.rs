@@ -1,5 +1,5 @@
 use crate::component::{Component, ComponentEvent, Frame, Input};
-use crate::state::{AppState, Focus};
+use crate::state::{focus, AppState, Focus};
 use crossterm::event::KeyCode;
 use crossterm::event::KeyModifiers;
 use tui::backend::Backend;
@@ -63,7 +63,7 @@ impl Input for ModeSelector {
             }
         }
         if changed {
-            state.focus_on(Focus::Root);
+            state.focus_on(focus::ROOT);
         }
     }
 }

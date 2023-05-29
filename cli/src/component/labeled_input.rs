@@ -1,6 +1,6 @@
 use crate::component::widgets::label::Label;
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
-use crate::state::{AppState, Focus, MiningFocus};
+use crate::state::{AppState, Focus};
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};

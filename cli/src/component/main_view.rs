@@ -6,7 +6,7 @@ use crate::component::scene;
 use crate::component::settings::SettingsScene;
 
 use crate::component::{Component, ComponentEvent, Input};
-use crate::state::AppState;
+use crate::state::{focus, AppState};
 
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
@@ -39,7 +39,7 @@ impl MainView {
 impl Input for MainView {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         self.header.on_event(event, state);
-        if state.focus_on.is_onboarding() {
+        if state.focus_on == focus::ONBOARDING {
             self.onboarding_scene.on_event(event, state);
         } else {
             match self.header.mode_selector.selected() {
@@ -67,7 +67,7 @@ impl<B: Backend> Component<B> for MainView {
             .constraints(constraints)
             .split(rect);
         self.header.draw(f, chunks[0], state);
-        if state.focus_on.is_onboarding() {
+        if state.focus_on == focus::ONBOARDING {
             self.onboarding_scene.draw(f, chunks[1], state);
         } else {
             match self.header.mode_selector.selected() {
