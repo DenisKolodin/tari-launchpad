@@ -36,6 +36,8 @@ impl<B: Backend> Component<B> for BaseNodeSettings {
             Constraint::Min(0),
         ];
         let chunks = Layout::default()
+            .vertical_margin(1)
+            .horizontal_margin(3)
             .direction(Direction::Vertical)
             .constraints(constraints)
             .split(inner_rect);

@@ -18,6 +18,9 @@ impl<'a> Widget for Label<'a> {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let style = Style::default().add_modifier(Modifier::BOLD);
         let span = Span::styled(self.text, style);
-        buf.set_span(area.left(), area.top(), &span, area.width);
+        let top = area.top() + area.height / 2;
+        let left = area.left();
+        let width = area.width;
+        buf.set_span(left, top, &span, width);
     }
 }

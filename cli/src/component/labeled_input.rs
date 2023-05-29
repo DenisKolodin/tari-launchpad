@@ -4,7 +4,7 @@ use crate::state::{AppState, Focus, MiningFocus};
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
-use tui::widgets::Block;
+use tui::widgets::{Block, Borders};
 use tui_textarea::TextArea;
 
 pub struct LabeledInput {
@@ -15,7 +15,9 @@ pub struct LabeledInput {
 impl LabeledInput {
     pub fn new(label: impl ToString) -> Self {
         let mut input = TextArea::default();
-        let block = Block::default().border_style(Style::default().fg(Color::White));
+        let block = Block::default()
+            .border_style(Style::default().fg(Color::White))
+            .borders(Borders::ALL);
         input.set_block(block);
         input.set_cursor_style(Style::default().bg(Color::Reset));
         Self {
