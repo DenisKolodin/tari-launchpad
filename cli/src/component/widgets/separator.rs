@@ -1,3 +1,5 @@
+use crate::state::Focus;
+use std::collections::HashSet;
 use tui::buffer::Buffer;
 use tui::layout::Rect;
 use tui::style::{Color, Modifier, Style};
@@ -6,13 +8,19 @@ use tui::text::Span;
 use tui::widgets::Widget;
 
 pub struct Separator<'a> {
+    focus_on: HashSet<Focus>,
     title: &'a str,
     line_set: line::Set,
 }
 
 impl<'a> Separator<'a> {
     pub fn new(title: &'a str) -> Self {
+        Self::new_with_focus(title, [])
+    }
+
+    pub fn new_with_focus(title: &'a str, focus: impl IntoIterator<Item = Focus>) -> Self {
         Self {
+            focus_on: focus.into_iter().collect(),
             title: title.into(),
             line_set: line::NORMAL,
         }
