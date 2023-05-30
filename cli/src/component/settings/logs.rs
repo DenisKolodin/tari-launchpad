@@ -8,12 +8,14 @@ use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 
 pub struct LogsSettings {
+    expert_sep: Separator,
     max_size: LabeledInput,
 }
 
 impl LogsSettings {
     pub fn new() -> Self {
         Self {
+            expert_sep: Separator::new("Expert"),
             max_size: LabeledInput::new("Max logs file size"),
         }
     }
@@ -43,8 +45,7 @@ impl<B: Backend> Component<B> for LogsSettings {
             .direction(Direction::Vertical)
             .constraints(constraints)
             .split(inner_rect);
-        let sep = Separator::new("Expert");
-        f.render_widget(sep, chunks[0]);
+        self.expert_sep.draw(f, chunks[0], state);
         self.max_size.draw(f, chunks[2], state);
     }
 }

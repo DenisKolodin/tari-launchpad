@@ -8,15 +8,19 @@ use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 
 pub struct DockerSettings {
+    expert_sep: Separator,
     docker_tag: LabeledInput,
     docker_registry: LabeledInput,
+    statuses_sep: Separator,
 }
 
 impl DockerSettings {
     pub fn new() -> Self {
         Self {
+            expert_sep: Separator::new("Expert"),
             docker_tag: LabeledInput::new("Docker Tag"),
             docker_registry: LabeledInput::new("Docker Registry"),
+            statuses_sep: Separator::new("Image Statuses"),
         }
     }
 }
@@ -47,12 +51,10 @@ impl<B: Backend> Component<B> for DockerSettings {
             .direction(Direction::Vertical)
             .constraints(constraints)
             .split(inner_rect);
-        let sep = Separator::new("Expert");
-        f.render_widget(sep, chunks[0]);
+        self.expert_sep.draw(f, chunks[0], state);
         self.docker_tag.draw(f, chunks[1], state);
         self.docker_registry.draw(f, chunks[2], state);
 
-        let sep = Separator::new("Image Statuses");
-        f.render_widget(sep, chunks[3]);
+        self.statuses_sep.draw(f, chunks[3], state);
     }
 }

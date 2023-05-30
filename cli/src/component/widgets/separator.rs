@@ -1,16 +1,18 @@
+use crate::component::{AppState, Component};
 use crate::state::Focus;
 use std::collections::HashSet;
+use tui::backend::Backend;
 use tui::buffer::Buffer;
-use tui::layout::Rect;
+use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Modifier, Style};
 use tui::symbols::line;
 use tui::text::Span;
 use tui::widgets::Widget;
+use tui::Frame;
 
 pub struct Separator {
     focus_on: HashSet<Focus>,
     title: String,
-    line_set: line::Set,
 }
 
 impl Separator {
@@ -22,25 +24,42 @@ impl Separator {
         Self {
             focus_on: focus.into_iter().collect(),
             title: title.into(),
-            line_set: line::NORMAL,
         }
     }
 }
 
-/*
-impl<B: Backend> Component<B> for LabeledInput {
+impl<B: Backend> Component<B> for Separator {
     type State = AppState;
 
     fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
+        let render = Render {
+            focus: self.focus_on.contains(&state.focus_on),
+            title: &self.title,
+            line_set: line::NORMAL,
+        };
+        f.render_widget(render, rect);
     }
 }
-*/
 
-impl Widget for Separator {
+struct Render<'a> {
+    focus: bool,
+    title: &'a str,
+    line_set: line::Set,
+}
+
+impl<'a> Widget for Render<'a> {
     fn render(self, area: Rect, buf: &mut Buffer) {
-        let style = Style::default()
-            .fg(Color::Magenta)
-            .add_modifier(Modifier::BOLD);
+        let color = if self.focus {
+            Color::Magenta
+        } else {
+            Color::White
+        };
+        let modifier = if self.focus {
+            Modifier::BOLD
+        } else {
+            Modifier::empty()
+        };
+        let style = Style::default().fg(color).add_modifier(modifier);
         let span = Span::styled(self.title, style);
         let (col, row) = buf.set_span(area.left(), area.top(), &span, area.width);
         let start = col + 1;

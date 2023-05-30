@@ -6,11 +6,15 @@ use crate::state::AppState;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 
-pub struct MiningSettings {}
+pub struct MiningSettings {
+    expert_sep: Separator,
+}
 
 impl MiningSettings {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            expert_sep: Separator::new("Expert"),
+        }
     }
 }
 
@@ -21,7 +25,7 @@ impl Input for MiningSettings {
 impl<B: Backend> Component<B> for MiningSettings {
     type State = AppState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let block = block_with_title(Some("Mining Settings"), false);
         let inner_rect = block.inner(rect);
         f.render_widget(block, rect);
@@ -30,7 +34,6 @@ impl<B: Backend> Component<B> for MiningSettings {
             .direction(Direction::Vertical)
             .constraints(constraints)
             .split(inner_rect);
-        let sep = Separator::new("Expert");
-        f.render_widget(sep, chunks[0]);
+        self.expert_sep.draw(f, chunks[0], state);
     }
 }

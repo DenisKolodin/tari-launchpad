@@ -8,12 +8,14 @@ use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 
 pub struct BaseNodeSettings {
+    expert_sep: Separator,
     root_folder: LabeledInput,
 }
 
 impl BaseNodeSettings {
     pub fn new() -> Self {
         Self {
+            expert_sep: Separator::new("Expert"),
             root_folder: LabeledInput::new("Root folder"),
         }
     }
@@ -41,8 +43,7 @@ impl<B: Backend> Component<B> for BaseNodeSettings {
             .direction(Direction::Vertical)
             .constraints(constraints)
             .split(inner_rect);
-        let sep = Separator::new("Expert");
-        f.render_widget(sep, chunks[0]);
+        self.expert_sep.draw(f, chunks[0], state);
         self.root_folder.draw(f, chunks[1], state);
     }
 }
