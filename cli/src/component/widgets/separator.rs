@@ -7,18 +7,18 @@ use tui::symbols::line;
 use tui::text::Span;
 use tui::widgets::Widget;
 
-pub struct Separator<'a> {
+pub struct Separator {
     focus_on: HashSet<Focus>,
-    title: &'a str,
+    title: String,
     line_set: line::Set,
 }
 
-impl<'a> Separator<'a> {
-    pub fn new(title: &'a str) -> Self {
+impl Separator {
+    pub fn new(title: &str) -> Self {
         Self::new_with_focus(title, [])
     }
 
-    pub fn new_with_focus(title: &'a str, focus: impl IntoIterator<Item = Focus>) -> Self {
+    pub fn new_with_focus(title: &str, focus: impl IntoIterator<Item = Focus>) -> Self {
         Self {
             focus_on: focus.into_iter().collect(),
             title: title.into(),
@@ -27,7 +27,16 @@ impl<'a> Separator<'a> {
     }
 }
 
-impl<'a> Widget for Separator<'a> {
+/*
+impl<B: Backend> Component<B> for LabeledInput {
+    type State = AppState;
+
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
+    }
+}
+*/
+
+impl Widget for Separator {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let style = Style::default()
             .fg(Color::Magenta)
