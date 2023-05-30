@@ -1,0 +1,34 @@
+use crate::component::{Component, ComponentEvent, Input};
+use crate::state::AppState;
+use tui::backend::Backend;
+use tui::layout::Rect;
+use tui::terminal::Frame;
+
+pub trait Focusable {
+    fn focus(&mut self, focus: bool);
+}
+
+pub struct Motion<T> {
+    inner: T,
+}
+
+impl<T> Input for Motion<T>
+where
+    T: Input,
+{
+    fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
+        // TODO: Check movings, or call inner's `on_event`
+        self.inner.on_event(event, state);
+    }
+}
+
+impl<B: Backend, T> Component<B> for Motion<T>
+where
+    T: Component<B, State = AppState>,
+{
+    type State = AppState;
+
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
+        self.inner.draw(f, rect, state);
+    }
+}

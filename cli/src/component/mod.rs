@@ -2,6 +2,7 @@ mod elements;
 mod expert;
 mod header;
 mod main_view;
+mod motion;
 mod normal;
 mod onboarding;
 mod scene;
