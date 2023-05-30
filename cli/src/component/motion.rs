@@ -1,5 +1,6 @@
-use crate::component::{Component, ComponentEvent, Input};
-use crate::state::AppState;
+use crate::component::{Component, ComponentEvent, Input, Pass};
+use crate::state::{AppState, Focus};
+use std::collections::HashMap;
 use tui::backend::Backend;
 use tui::layout::Rect;
 use tui::terminal::Frame;
@@ -10,6 +11,7 @@ pub trait Focusable {
 
 pub struct Motion<T> {
     inner: T,
+    directions: HashMap<Pass, Focus>,
 }
 
 impl<T> Input for Motion<T>
@@ -17,8 +19,12 @@ where
     T: Input,
 {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
-        // TODO: Check movings, or call inner's `on_event`
-        self.inner.on_event(event, state);
+        let pass = event.pass();
+        if let Some(focus) = self.directions.get(&pass) {
+            state.focus_on(focus.clone());
+        } else {
+            self.inner.on_event(event, state);
+        }
     }
 }
 
