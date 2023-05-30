@@ -17,10 +17,10 @@ pub struct DockerSettings {
 impl DockerSettings {
     pub fn new() -> Self {
         Self {
-            expert_sep: Separator::new("Expert"),
+            expert_sep: Separator::new("Expert", []),
             docker_tag: LabeledInput::new("Docker Tag"),
             docker_registry: LabeledInput::new("Docker Registry"),
-            statuses_sep: Separator::new("Image Statuses"),
+            statuses_sep: Separator::new("Image Statuses", []),
         }
     }
 }

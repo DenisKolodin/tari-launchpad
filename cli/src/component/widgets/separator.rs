@@ -16,11 +16,7 @@ pub struct Separator {
 }
 
 impl Separator {
-    pub fn new(title: &str) -> Self {
-        Self::new_with_focus(title, [])
-    }
-
-    pub fn new_with_focus(title: &str, focus: impl IntoIterator<Item = Focus>) -> Self {
+    pub fn new(title: &str, focus: impl IntoIterator<Item = Focus>) -> Self {
         Self {
             focus_on: focus.into_iter().collect(),
             title: title.into(),

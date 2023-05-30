@@ -15,7 +15,7 @@ pub struct LogsSettings {
 impl LogsSettings {
     pub fn new() -> Self {
         Self {
-            expert_sep: Separator::new("Expert"),
+            expert_sep: Separator::new("Expert", []),
             max_size: LabeledInput::new("Max logs file size"),
         }
     }

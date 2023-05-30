@@ -15,7 +15,7 @@ pub struct BaseNodeSettings {
 impl BaseNodeSettings {
     pub fn new() -> Self {
         Self {
-            expert_sep: Separator::new("Expert"),
+            expert_sep: Separator::new("Expert", []),
             root_folder: LabeledInput::new("Root folder"),
         }
     }

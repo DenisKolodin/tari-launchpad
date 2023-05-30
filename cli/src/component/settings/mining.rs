@@ -13,7 +13,7 @@ pub struct MiningSettings {
 impl MiningSettings {
     pub fn new() -> Self {
         Self {
-            expert_sep: Separator::new("Expert"),
+            expert_sep: Separator::new("Expert", []),
         }
     }
 }
