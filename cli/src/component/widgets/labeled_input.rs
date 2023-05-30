@@ -14,16 +14,27 @@ pub struct LabeledInput {
 
 impl LabeledInput {
     pub fn new(label: impl ToString) -> Self {
-        let mut input = TextArea::default();
-        let block = Block::default()
-            .border_style(Style::default().fg(Color::White))
-            .borders(Borders::ALL);
-        input.set_block(block);
-        input.set_cursor_style(Style::default().bg(Color::Reset));
+        let input = TextArea::default();
         Self {
             label: label.to_string(),
             input,
         }
+    }
+
+    fn set_focus(&mut self, focus: bool) {
+        let (block_color, cursor_color) = {
+            if focus {
+                (Color::Magenta, Color::Magenta)
+            } else {
+                (Color::White, Color::Reset)
+            }
+        };
+        let block = Block::default()
+            .border_style(Style::default().fg(block_color))
+            .borders(Borders::ALL);
+        self.input.set_block(block);
+        self.input
+            .set_cursor_style(Style::default().bg(cursor_color));
     }
 }
 
