@@ -1,5 +1,5 @@
 use crate::component::elements::block_with_title;
-use crate::component::widgets::separator::Separator;
+use crate::component::widgets::Separator;
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 

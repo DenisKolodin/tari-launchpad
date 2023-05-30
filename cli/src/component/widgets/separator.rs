@@ -3,7 +3,7 @@ use crate::state::Focus;
 use std::collections::HashSet;
 use tui::backend::Backend;
 use tui::buffer::Buffer;
-use tui::layout::{Constraint, Direction, Layout, Rect};
+use tui::layout::Rect;
 use tui::style::{Color, Modifier, Style};
 use tui::symbols::line;
 use tui::text::Span;

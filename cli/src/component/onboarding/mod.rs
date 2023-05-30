@@ -2,7 +2,7 @@ mod message;
 
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
 use crate::state::onboarding::OnboardingAction;
-use crate::state::{focus, AppState, Focus};
+use crate::state::{focus, AppState};
 use message::MessageWidget;
 use std::time::{Duration, Instant};
 use tui::backend::Backend;

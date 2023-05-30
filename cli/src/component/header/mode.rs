@@ -1,5 +1,5 @@
 use crate::component::{Component, ComponentEvent, Frame, Input};
-use crate::state::{focus, AppState, Focus};
+use crate::state::{focus, AppState};
 use crossterm::event::KeyCode;
 use crossterm::event::KeyModifiers;
 use tui::backend::Backend;

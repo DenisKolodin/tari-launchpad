@@ -1,7 +1,7 @@
 use crate::component::elements::{block_with_title, logo};
 use crate::component::normal::chrono_button::{ChronoButton, ChronoGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
-use crate::state::{focus, AppState, Focus};
+use crate::state::{focus, AppState};
 
 use std::time::Duration;
 use tui::backend::Backend;

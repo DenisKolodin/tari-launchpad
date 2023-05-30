@@ -1,6 +1,6 @@
-use crate::component::widgets::label::Label;
-use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
-use crate::state::{AppState, Focus};
+use crate::component::widgets::Label;
+use crate::component::{Component, Frame};
+use crate::state::AppState;
 use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
@@ -30,7 +30,7 @@ impl LabeledInput {
 impl<B: Backend> Component<B> for LabeledInput {
     type State = AppState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
         let constraints = [Constraint::Percentage(40), Constraint::Percentage(60)];
         let h_chunks = Layout::default()
             .direction(Direction::Horizontal)

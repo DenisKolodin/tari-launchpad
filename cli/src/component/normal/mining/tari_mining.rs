@@ -3,7 +3,7 @@ use crate::component::normal::chrono_button::{ChronoButton, ChronoGetter};
 use crate::component::normal::mining::amount::{AmountGetter, AmountIndicator};
 use crate::component::normal::mining::status_badge::{StatusBadge, StatusGetter};
 use crate::component::{Component, ComponentEvent, Frame, Input, Pass};
-use crate::state::{focus, AppState, Focus};
+use crate::state::{focus, AppState};
 use rust_decimal::Decimal;
 use std::time::Duration;
 use tui::backend::Backend;
