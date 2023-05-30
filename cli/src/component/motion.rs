@@ -10,13 +10,14 @@ pub trait Focusable {
 }
 
 pub struct Motion<T> {
+    focus: Focus,
     inner: T,
     directions: HashMap<Pass, Focus>,
 }
 
 impl<T> Input for Motion<T>
 where
-    T: Input,
+    T: Focusable + Input,
 {
     fn on_event(&mut self, event: ComponentEvent, state: &mut AppState) {
         let pass = event.pass();
@@ -25,6 +26,7 @@ where
         } else {
             self.inner.on_event(event, state);
         }
+        self.inner.focus(self.focus == state.focus_on);
     }
 }
 
