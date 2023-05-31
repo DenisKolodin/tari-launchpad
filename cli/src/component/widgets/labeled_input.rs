@@ -24,7 +24,7 @@ impl LabeledInput {
     fn set_focus(&mut self, focus: bool) {
         let (block_color, cursor_color) = {
             if focus {
-                (Color::Magenta, Color::Magenta)
+                (Color::Magenta, Color::White)
             } else {
                 (Color::White, Color::Reset)
             }
