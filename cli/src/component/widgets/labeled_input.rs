@@ -15,10 +15,12 @@ pub struct LabeledInput {
 impl LabeledInput {
     pub fn new(label: impl ToString) -> Self {
         let input = TextArea::default();
-        Self {
+        let mut this = Self {
             label: label.to_string(),
             input,
-        }
+        };
+        this.set_focus(false);
+        this
     }
 
     fn set_focus(&mut self, focus: bool) {

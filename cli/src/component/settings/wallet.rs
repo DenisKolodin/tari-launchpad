@@ -1,15 +1,20 @@
 use crate::component::elements::block_with_title;
+use crate::component::widgets::{LabeledInput, Separator};
 use crate::component::{Component, ComponentEvent, Frame, Input};
 use crate::state::AppState;
 
 use tui::backend::Backend;
-use tui::layout::Rect;
+use tui::layout::{Constraint, Direction, Layout, Rect};
 
-pub struct WalletSettings {}
+pub struct WalletSettings {
+    wallet_id: LabeledInput,
+}
 
 impl WalletSettings {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            wallet_id: LabeledInput::new("Tari Wallet ID (address)"),
+        }
     }
 }
 
@@ -20,8 +25,17 @@ impl Input for WalletSettings {
 impl<B: Backend> Component<B> for WalletSettings {
     type State = AppState;
 
-    fn draw(&self, f: &mut Frame<B>, rect: Rect, _state: &Self::State) {
+    fn draw(&self, f: &mut Frame<B>, rect: Rect, state: &Self::State) {
         let block = block_with_title(Some("Wallet Settings"), false);
+        let inner_rect = block.inner(rect);
         f.render_widget(block, rect);
+        let constraints = [Constraint::Length(3), Constraint::Min(0)];
+        let chunks = Layout::default()
+            .vertical_margin(1)
+            .horizontal_margin(3)
+            .direction(Direction::Vertical)
+            .constraints(constraints)
+            .split(inner_rect);
+        self.wallet_id.draw(f, chunks[0], state);
     }
 }
