@@ -1,6 +1,7 @@
 use futures::Future;
 use tokio::task::JoinHandle;
 
+#[derive(Debug)]
 pub struct Task {
     handle: JoinHandle<()>,
 }

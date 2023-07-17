@@ -2,6 +2,7 @@ use crate::recipient::Recipient;
 use crate::task::Task;
 use futures::{Stream, StreamExt};
 
+#[derive(Debug)]
 pub struct Receiver {
     task: Task,
 }
@@ -9,7 +10,7 @@ pub struct Receiver {
 impl Receiver {
     pub fn connect<M, S>(stream: S, recipient: Recipient<M>) -> Self
     where
-        M: Clone + Send + 'static,
+        M: Send + 'static,
         S: Stream<Item = M> + Send + 'static,
     {
         let task = Task::spawn(async move {
