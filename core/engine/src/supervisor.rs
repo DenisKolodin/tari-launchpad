@@ -28,7 +28,13 @@ struct ReadConfig;
 
 #[async_trait]
 impl Do<ReadConfig> for Supervisor {
-    async fn handle(&mut self, _: ReadConfig, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        _: ReadConfig,
+        _ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
         log::info!("Reading configuration...");
         Ok(())
     }
@@ -38,7 +44,13 @@ struct SpawnTasks;
 
 #[async_trait]
 impl Do<SpawnTasks> for Supervisor {
-    async fn handle(&mut self, _: SpawnTasks, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        _: SpawnTasks,
+        _ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
         let docker = Docker::connect_with_local_defaults()?;
         let info = ImageInfo::new(DEFAULT_REGISTRY, "tor", "latest");
         let tor_task = ContainerTask::new(docker.clone(), info);

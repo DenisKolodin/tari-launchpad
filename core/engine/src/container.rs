@@ -1,4 +1,4 @@
-use anyhow::Error;
+use anyhow::{anyhow as err, Error};
 use async_trait::async_trait;
 use bollard::errors::Error as BollardError;
 use bollard::image::CreateImageOptions;
@@ -7,6 +7,7 @@ use bollard::Docker;
 use derive_more::From;
 use futures::StreamExt;
 use tact::{Actor, ActorContext, Do, Receiver, Recipient};
+use thiserror::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ImageInfo {
@@ -41,9 +42,9 @@ enum ContainerState {
 
 pub struct ContainerTask {
     docker: Docker,
-    // image_info: ImageInfo,
     container_info: ContainerInfo,
     state: ContainerState,
+    pull_progress: u8,
 }
 
 impl ContainerTask {
@@ -62,9 +63,9 @@ impl ContainerTask {
 
         Self {
             docker,
-            // image_info,
             container_info,
             state: ContainerState::Idle,
+            pull_progress: 0,
         }
     }
 }
@@ -85,7 +86,13 @@ struct CheckImage;
 
 #[async_trait]
 impl Do<CheckImage> for ContainerTask {
-    async fn handle(&mut self, _: CheckImage, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        _: CheckImage,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
         let exist = self
             .docker
             .inspect_image(&self.container_info.image_name)
@@ -102,7 +109,13 @@ struct PullImage;
 
 #[async_trait]
 impl Do<PullImage> for ContainerTask {
-    async fn handle(&mut self, _: PullImage, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        _: PullImage,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
         log::info!("Pulling the image: {}", self.container_info.image_name);
         let opts = Some(CreateImageOptions {
             from_image: self.container_info.image_name.clone(),
@@ -111,27 +124,60 @@ impl Do<PullImage> for ContainerTask {
         let stream = self
             .docker
             .create_image(opts, None, None)
-            .map(PullingProgress::from);
+            .map(PullProgress::from);
         let receiver = Receiver::connect(stream, ctx.recipient());
         self.state = ContainerState::PullingImage(receiver);
         Ok(())
     }
 }
 
-#[derive(From)]
-struct PullingProgress {
+#[derive(Debug, Error)]
+enum PullError {
+    #[error("Docker error: {0}")]
+    Bollard(#[from] BollardError),
+    #[error("Progress is empty")]
+    ProgressEmpty,
+    #[error("Current is empty")]
+    CurrentEmpty,
+    #[error("Total is empty")]
+    TotalEmpty,
+    #[error("Status is empty")]
+    StatusEmpty,
+}
+
+#[derive(Debug, From)]
+struct PullProgress {
     result: Result<CreateImageInfo, BollardError>,
 }
 
 #[async_trait]
-impl Do<PullingProgress> for ContainerTask {
+impl Do<PullProgress> for ContainerTask {
+    type Error = PullError;
+
     async fn handle(
         &mut self,
-        msg: PullingProgress,
+        msg: PullProgress,
         ctx: &mut ActorContext<Self>,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Self::Error> {
         let info = msg.result?;
         log::info!("Pull: {:?}", info);
+        let details = info.progress_detail.ok_or(PullError::ProgressEmpty)?;
+        let current = details.current.ok_or(PullError::CurrentEmpty)? * 100;
+        let total = details.total.ok_or(PullError::TotalEmpty)?;
+        let pct = current / total;
+        let stage = info.status.ok_or(PullError::StatusEmpty)?;
+        self.pull_progress = pct as u8;
+        // TODO: Report about the progress to the bus
+        Ok(())
+    }
+
+    async fn fallback(
+        &mut self,
+        err: PullError,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Error> {
+        // TODO: Handle pull errors
+        // Restart pulling, etc...
         Ok(())
     }
 }

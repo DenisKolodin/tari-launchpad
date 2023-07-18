@@ -101,11 +101,13 @@ impl Actor for Dashboard {
 
 #[async_trait]
 impl Do<TermEvent> for Dashboard {
+    type Error = Error;
+
     async fn handle(
         &mut self,
         event: TermEvent,
         ctx: &mut ActorContext<Self>,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Self::Error> {
         match event {
             TermEvent::Event(event) => {
                 if let Event::Key(key) = event {
@@ -137,7 +139,13 @@ struct Tick;
 
 #[async_trait]
 impl Do<Tick> for Dashboard {
-    async fn handle(&mut self, _event: Tick, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        _event: Tick,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
         let state = self.state.as_mut().ok_or_else(|| DashboardError::NoState)?;
         self.main_view.on_event(ComponentEvent::Tick, state);
         let changed = state.process_events();
@@ -153,7 +161,13 @@ struct Redraw;
 
 #[async_trait]
 impl Do<Redraw> for Dashboard {
-    async fn handle(&mut self, _event: Redraw, _ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        _event: Redraw,
+        _ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
         let state = self.state.as_ref().ok_or_else(|| DashboardError::NoState)?;
         let terminal = self
             .terminal
@@ -168,11 +182,13 @@ impl Do<Redraw> for Dashboard {
 
 #[async_trait]
 impl Do<StateAction> for Dashboard {
+    type Error = Error;
+
     async fn handle(
         &mut self,
         event: StateAction,
         ctx: &mut ActorContext<Self>,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Self::Error> {
         match event {
             StateAction::Redraw => {
                 /*

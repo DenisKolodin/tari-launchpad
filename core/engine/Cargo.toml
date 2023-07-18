@@ -11,6 +11,7 @@ derive_more = "0.99.17"
 futures = "0.3.28"
 log = "0.4.17"
 tact = { path = "../tact" }
+thiserror = "1.0.43"
 
 tokio = "1.28.1"
 tracing-subscriber = "0.3.17"

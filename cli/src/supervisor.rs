@@ -38,11 +38,13 @@ impl Actor for Supervisor {
 
 #[async_trait]
 impl Do<DashboardEvent> for Supervisor {
+    type Error = Error;
+
     async fn handle(
         &mut self,
         event: DashboardEvent,
         ctx: &mut ActorContext<Self>,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Self::Error> {
         match event {
             DashboardEvent::Terminated => {
                 self.dashboard.take();

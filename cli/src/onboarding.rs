@@ -62,11 +62,13 @@ impl Actor for OnboardingWorker {
 
 #[async_trait]
 impl Do<OnboardingAction> for OnboardingWorker {
+    type Error = Error;
+
     async fn handle(
         &mut self,
         event: OnboardingAction,
         _ctx: &mut ActorContext<Self>,
-    ) -> Result<(), Error> {
+    ) -> Result<(), Self::Error> {
         match event {
             OnboardingAction::Next => {
                 self.next_step();

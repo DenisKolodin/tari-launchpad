@@ -42,6 +42,10 @@ impl<A: Do<E>, E: Send> Handler<A> for HandlerImpl<E> {
         actor: &mut A,
         ctx: &mut ActorContext<A>,
     ) -> Result<(), Error> {
-        actor.handle(self.event, ctx).await
+        if let Err(err) = actor.handle(self.event, ctx).await {
+            actor.fallback(err, ctx).await
+        } else {
+            Ok(())
+        }
     }
 }
