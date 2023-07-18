@@ -15,6 +15,14 @@ pub struct ImageInfo {
     pub tag: String,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ContainerInfo {
+    pub scope: String,
+    /// The full image name
+    pub image_name: String,
+    pub container_name: String,
+}
+
 impl ImageInfo {
     pub fn new(registry: &str, image_name: &str, tag: &str) -> Self {
         Self {
@@ -33,18 +41,29 @@ enum ContainerState {
 
 pub struct ContainerTask {
     docker: Docker,
-    info: ImageInfo,
+    // image_info: ImageInfo,
+    container_info: ContainerInfo,
     state: ContainerState,
 }
 
 impl ContainerTask {
-    pub fn new(docker: Docker, info: ImageInfo) -> Self {
+    pub fn new(docker: Docker, image_info: ImageInfo) -> Self {
         let scope = "tari_scope".to_string();
-        let image_name = format!("{}/{}:{}", info.registry, info.image_name, info.tag);
-        let container_name = format!("{}_{}", scope, info.image_name);
+        let image_name = format!(
+            "{}/{}:{}",
+            image_info.registry, image_info.image_name, image_info.tag
+        );
+        let container_name = format!("{}_{}", scope, image_info.image_name);
+        let container_info = ContainerInfo {
+            scope,
+            image_name,
+            container_name,
+        };
+
         Self {
             docker,
-            info,
+            // image_info,
+            container_info,
             state: ContainerState::Idle,
         }
     }
@@ -53,6 +72,10 @@ impl ContainerTask {
 #[async_trait]
 impl Actor for ContainerTask {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        log::info!(
+            "Spawning a task to control: {}",
+            self.container_info.image_name
+        );
         ctx.do_next(CheckImage)?;
         Ok(())
     }
@@ -65,7 +88,7 @@ impl Do<CheckImage> for ContainerTask {
     async fn handle(&mut self, _: CheckImage, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         let exist = self
             .docker
-            .inspect_image(&self.info.image_name)
+            .inspect_image(&self.container_info.image_name)
             .await
             .is_ok();
         if !exist {
@@ -80,8 +103,9 @@ struct PullImage;
 #[async_trait]
 impl Do<PullImage> for ContainerTask {
     async fn handle(&mut self, _: PullImage, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        log::info!("Pulling the image: {}", self.container_info.image_name);
         let opts = Some(CreateImageOptions {
-            from_image: self.info.image_name.clone(),
+            from_image: self.container_info.image_name.clone(),
             ..Default::default()
         });
         let stream = self
@@ -107,7 +131,7 @@ impl Do<PullingProgress> for ContainerTask {
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Error> {
         let info = msg.result?;
-        println!("INFO: {:?}", info);
+        log::info!("Pull: {:?}", info);
         Ok(())
     }
 }

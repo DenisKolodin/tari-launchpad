@@ -9,6 +9,12 @@ static GRAFANA_REGISTRY: &str = "grafana";
 
 pub struct Supervisor {}
 
+impl Supervisor {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
+
 #[async_trait]
 impl Actor for Supervisor {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
@@ -36,6 +42,7 @@ impl Do<SpawnTasks> for Supervisor {
         let docker = Docker::connect_with_local_defaults()?;
         let info = ImageInfo::new(DEFAULT_REGISTRY, "tor", "latest");
         let tor_task = ContainerTask::new(docker.clone(), info);
+        tor_task.start();
         Ok(())
     }
 }
