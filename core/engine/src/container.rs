@@ -1,12 +1,16 @@
 use anyhow::{anyhow as err, Error};
 use async_trait::async_trait;
+use bollard::container::RemoveContainerOptions;
 use bollard::errors::Error as BollardError;
 use bollard::image::CreateImageOptions;
-use bollard::models::CreateImageInfo;
+use bollard::models::{CreateImageInfo, EventMessage};
+use bollard::system::EventsOptions;
 use bollard::Docker;
 use derive_more::From;
-use futures::StreamExt;
-use tact::{Actor, ActorContext, Do, Receiver, Recipient};
+use futures::{StreamExt, TryStreamExt};
+use std::collections::HashMap;
+use std::time::Duration;
+use tact::{Actor, ActorContext, Do, Receiver, Recipient, Timeout};
 use thiserror::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -38,6 +42,10 @@ impl ImageInfo {
 enum ContainerState {
     Idle,
     PullingImage(Receiver),
+    StartingContainer,
+    WaitContainerStart(Timeout),
+    KillingContainer,
+    WatiContainerKill(Timeout),
 }
 
 pub struct ContainerTask {
@@ -45,6 +53,7 @@ pub struct ContainerTask {
     container_info: ContainerInfo,
     state: ContainerState,
     pull_progress: u8,
+    events: Option<Receiver>,
 }
 
 impl ContainerTask {
@@ -66,7 +75,27 @@ impl ContainerTask {
             container_info,
             state: ContainerState::Idle,
             pull_progress: 0,
+            events: None,
         }
+    }
+}
+
+impl ContainerTask {
+    fn subscribe_to_container_events(&mut self, ctx: &mut ActorContext<Self>) {
+        let mut type_filter = HashMap::new();
+        type_filter.insert("type".to_string(), vec!["container".to_string()]);
+        type_filter.insert(
+            "container".to_string(),
+            vec![self.container_info.container_name.clone()],
+        );
+        let opts = EventsOptions {
+            since: None,
+            until: None,
+            filters: type_filter,
+        };
+        let stream = self.docker.events(Some(opts)).map(DockerEvent::from);
+        let receiver = Receiver::connect(stream, ctx.recipient());
+        self.events = Some(receiver);
     }
 }
 
@@ -77,7 +106,28 @@ impl Actor for ContainerTask {
             "Spawning a task to control: {}",
             self.container_info.image_name
         );
+        self.subscribe_to_container_events(ctx);
         ctx.do_next(CheckImage)?;
+        Ok(())
+    }
+}
+
+#[derive(Debug, From)]
+struct DockerEvent {
+    result: Result<EventMessage, BollardError>,
+}
+
+#[async_trait]
+impl Do<DockerEvent> for ContainerTask {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        msg: DockerEvent,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
+        let name = &self.container_info.container_name;
+        log::debug!("Event from {name}: {msg:?}");
         Ok(())
     }
 }
@@ -100,6 +150,8 @@ impl Do<CheckImage> for ContainerTask {
             .is_ok();
         if !exist {
             ctx.do_next(PullImage)?;
+        } else {
+            log::info!("The image exists: {}", self.container_info.image_name);
         }
         Ok(())
     }
@@ -167,6 +219,7 @@ impl Do<PullProgress> for ContainerTask {
         let pct = current / total;
         let stage = info.status.ok_or(PullError::StatusEmpty)?;
         self.pull_progress = pct as u8;
+        // TODO: Detect pulling is done
         // TODO: Report about the progress to the bus
         Ok(())
     }
@@ -178,6 +231,88 @@ impl Do<PullProgress> for ContainerTask {
     ) -> Result<(), Error> {
         // TODO: Handle pull errors
         // Restart pulling, etc...
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone, From)]
+struct StartContainer;
+
+#[async_trait]
+impl Do<StartContainer> for ContainerTask {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        msg: StartContainer,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
+        let name = &self.container_info.container_name;
+        self.docker.start_container::<String>(name, None).await?;
+        Ok(())
+    }
+
+    async fn fallback(&mut self, err: Error, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        let name = &self.container_info.container_name;
+        log::error!("Can't start the container {name}: err");
+        let duration = Duration::from_secs(5);
+        let notifier = ctx.notifier(StartContainer);
+        let timeout = Timeout::spawn(duration, notifier);
+        self.state = ContainerState::WaitContainerStart(timeout);
+        Ok(())
+    }
+}
+
+#[derive(Debug, From)]
+struct KillContainer;
+
+#[async_trait]
+impl Do<KillContainer> for ContainerTask {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        msg: KillContainer,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
+        let name = &self.container_info.container_name;
+        self.docker.kill_container::<String>(name, None).await?;
+        Ok(())
+    }
+
+    async fn fallback(&mut self, err: Error, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        let name = &self.container_info.container_name;
+        log::error!("Can't stop the container {name}: err");
+        // TODO: Recover after the error
+        Ok(())
+    }
+}
+
+#[derive(Debug, From)]
+struct RemoveContainer;
+
+#[async_trait]
+impl Do<RemoveContainer> for ContainerTask {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        msg: RemoveContainer,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
+        let opts = RemoveContainerOptions {
+            force: true,
+            ..Default::default()
+        };
+        let name = &self.container_info.container_name;
+        self.docker.remove_container(name, Some(opts)).await?;
+        Ok(())
+    }
+
+    async fn fallback(&mut self, err: Error, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
+        let name = &self.container_info.container_name;
+        log::error!("Can't remove the container {name}: err");
+        // TODO: Recover after the error
         Ok(())
     }
 }

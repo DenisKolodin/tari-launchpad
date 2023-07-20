@@ -3,6 +3,7 @@ use crate::task::Task;
 use std::time::Duration;
 use tokio::time;
 
+#[derive(Debug)]
 pub struct Timeout {
     task: Task,
 }
@@ -20,6 +21,7 @@ impl Timeout {
     }
 }
 
+#[derive(Debug)]
 pub struct Interval {
     task: Task,
 }
