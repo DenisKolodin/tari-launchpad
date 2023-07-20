@@ -52,8 +52,10 @@ impl Do<SpawnTasks> for Supervisor {
         _ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
         let docker = Docker::connect_with_local_defaults()?;
+
         let info = ImageInfo::new(DEFAULT_REGISTRY, "tor", "latest");
         let tor_task = ContainerTask::new(docker.clone(), info);
+
         tor_task.start();
         Ok(())
     }

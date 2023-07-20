@@ -1,14 +1,16 @@
+use crate::types::{Args, Envs, ManagedContainer, Mounts, Networks, Ports, Volumes};
 use anyhow::{anyhow as err, Error};
 use async_trait::async_trait;
-use bollard::container::RemoveContainerOptions;
+use bollard::container::{Config, CreateContainerOptions, RemoveContainerOptions};
 use bollard::errors::Error as BollardError;
 use bollard::image::CreateImageOptions;
-use bollard::models::{CreateImageInfo, EventMessage};
+use bollard::models::{CreateImageInfo, EventMessage, HostConfig};
 use bollard::system::EventsOptions;
 use bollard::Docker;
 use derive_more::From;
 use futures::{StreamExt, TryStreamExt};
 use std::collections::HashMap;
+use std::sync::Arc;
 use std::time::Duration;
 use tact::{Actor, ActorContext, Do, Receiver, Recipient, Timeout};
 use thiserror::Error;
@@ -50,6 +52,7 @@ enum ContainerState {
 
 pub struct ContainerTask {
     docker: Docker,
+    managed_container: Box<dyn ManagedContainer>,
     container_info: ContainerInfo,
     state: ContainerState,
     pull_progress: u8,
@@ -57,7 +60,11 @@ pub struct ContainerTask {
 }
 
 impl ContainerTask {
-    pub fn new(docker: Docker, image_info: ImageInfo) -> Self {
+    pub fn new(
+        docker: Docker,
+        managed_container: Box<dyn ManagedContainer>,
+        image_info: ImageInfo,
+    ) -> Self {
         let scope = "tari_scope".to_string();
         let image_name = format!(
             "{}/{}:{}",
@@ -72,6 +79,7 @@ impl ContainerTask {
 
         Self {
             docker,
+            managed_container,
             container_info,
             state: ContainerState::Idle,
             pull_progress: 0,
@@ -231,6 +239,70 @@ impl Do<PullProgress> for ContainerTask {
     ) -> Result<(), Error> {
         // TODO: Handle pull errors
         // Restart pulling, etc...
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone, From)]
+struct CreateContainer;
+
+#[async_trait]
+impl Do<CreateContainer> for ContainerTask {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        msg: CreateContainer,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
+        /*
+        let mut args = Args::default();
+        self.inner.image.args(&mut args);
+        let mut ports = Ports::default();
+        self.inner.image.ports(&mut ports);
+        let mut envs = Envs::default();
+        self.inner.image.envs(&mut envs);
+        let opts = CreateContainerOptions {
+            name: self.inner.container_name.clone(),
+            platform: None,
+        };
+
+        let mut networks = Networks::default();
+        self.inner.image.networks(&mut networks);
+        let networks = self.networks_map(networks)?;
+
+        let mut volumes = Volumes::default();
+        self.inner.image.volumes(&mut volumes);
+        let volumes = volumes_map(volumes.build());
+
+        let mut mounts = Mounts::default();
+        self.inner.image.mounts(&mut mounts);
+        let mounts = self.mounts_map(mounts.build())?;
+        let ports = ports.build();
+        let config = Config {
+            image: Some(self.inner.image_name.clone()),
+            attach_stdin: Some(false),
+            attach_stdout: Some(false),
+            attach_stderr: Some(false),
+            exposed_ports: Some(exposed_ports(&ports)),
+            open_stdin: Some(true),
+            stdin_once: Some(false),
+            tty: Some(true),
+            env: Some(envs.build()),
+            volumes: Some(volumes),
+            cmd: Some(args.build()),
+            host_config: Some(HostConfig {
+                binds: Some(vec![]),
+                network_mode: Some("bridge".to_string()),
+                port_bindings: Some(ports_map(&ports)),
+                mounts: Some(mounts),
+                ..Default::default()
+            }),
+            networking_config: Some(networks),
+            ..Default::default()
+        };
+        self.docker.create_container(Some(opts), config).await?;
+        */
         Ok(())
     }
 }
