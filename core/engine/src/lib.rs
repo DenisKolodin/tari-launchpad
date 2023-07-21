@@ -5,3 +5,4 @@ pub mod supervisor;
 mod types;
 
 mod scope;
+mod settings;

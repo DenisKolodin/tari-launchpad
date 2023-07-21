@@ -1,3 +1,4 @@
+use crate::settings::Settings;
 use crate::types::{Args, Envs, ManagedContainer, ManagedTask, Networks, Ports, TaskId};
 use tor_hash_passwd::EncryptedKey;
 

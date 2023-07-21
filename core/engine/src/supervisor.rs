@@ -50,8 +50,11 @@ impl Do<SpawnScope> for Supervisor {
         _: SpawnScope,
         _ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
+        let scope = "tari_scope".to_string();
+        log::info!("Spawning the scope: {}", scope);
         let docker = Docker::connect_with_local_defaults()?;
-        let scope_task = Scope::new(docker, "tari_scope".into());
+        let scope_task = Scope::new(docker, scope);
+        scope_task.start();
         Ok(())
     }
 }

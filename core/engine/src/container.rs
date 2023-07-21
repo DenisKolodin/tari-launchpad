@@ -83,6 +83,10 @@ impl ContainerTask {
             events: None,
         }
     }
+
+    fn image(&self) -> &str {
+        &self.container_info.image_name
+    }
 }
 
 impl ContainerTask {
@@ -107,10 +111,7 @@ impl ContainerTask {
 #[async_trait]
 impl Actor for ContainerTask {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
-        log::info!(
-            "Spawning a task to control: {}",
-            self.container_info.image_name
-        );
+        log::info!("Spawning a task to control: {}", self.image());
         self.subscribe_to_container_events(ctx);
         ctx.do_next(CheckImage)?;
         Ok(())
@@ -131,8 +132,7 @@ impl Do<DockerEvent> for ContainerTask {
         msg: DockerEvent,
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
-        let name = &self.container_info.container_name;
-        log::debug!("Event from {name}: {msg:?}");
+        log::debug!("Event from {}: {msg:?}", self.image());
         Ok(())
     }
 }
@@ -148,6 +148,7 @@ impl Do<CheckImage> for ContainerTask {
         _: CheckImage,
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
+        log::info!("Checking the image: {}", self.image());
         let exist = self
             .docker
             .inspect_image(&self.container_info.image_name)
@@ -156,7 +157,7 @@ impl Do<CheckImage> for ContainerTask {
         if !exist {
             ctx.do_next(PullImage)?;
         } else {
-            log::info!("The image exists: {}", self.container_info.image_name);
+            log::info!("The image exists: {}", self.image());
         }
         Ok(())
     }
@@ -173,7 +174,7 @@ impl Do<PullImage> for ContainerTask {
         _: PullImage,
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
-        log::info!("Pulling the image: {}", self.container_info.image_name);
+        log::info!("Pulling the image: {}", self.image());
         let opts = Some(CreateImageOptions {
             from_image: self.container_info.image_name.clone(),
             ..Default::default()
@@ -217,7 +218,7 @@ impl Do<PullProgress> for ContainerTask {
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
         let info = msg.result?;
-        log::info!("Pull: {:?}", info);
+        log::info!("Pulling info {}: {:?}", self.image(), info);
         let details = info.progress_detail.ok_or(PullError::ProgressEmpty)?;
         let current = details.current.ok_or(PullError::CurrentEmpty)? * 100;
         let total = details.total.ok_or(PullError::TotalEmpty)?;

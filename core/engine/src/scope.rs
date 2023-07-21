@@ -35,6 +35,7 @@ impl Do<SpawnTasks> for Scope {
         _: SpawnTasks,
         _ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
+        log::debug!("Spawning containers in the scope: {}", self.scope);
         let tor_task = ContainerTask::new(self.scope.clone(), self.docker.clone(), Tor);
         tor_task.start();
         Ok(())
