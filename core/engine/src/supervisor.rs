@@ -1,11 +1,9 @@
-use crate::container::{ContainerTask, ImageInfo};
+use crate::container::ContainerTask;
+use crate::images::{Tor, DEFAULT_REGISTRY};
 use anyhow::Error;
 use async_trait::async_trait;
 use bollard::Docker;
 use tact::{Actor, ActorContext, Do};
-
-static DEFAULT_REGISTRY: &str = "quay.io/tarilabs";
-static GRAFANA_REGISTRY: &str = "grafana";
 
 pub struct Supervisor {}
 
@@ -53,8 +51,7 @@ impl Do<SpawnTasks> for Supervisor {
     ) -> Result<(), Self::Error> {
         let docker = Docker::connect_with_local_defaults()?;
 
-        let info = ImageInfo::new(DEFAULT_REGISTRY, "tor", "latest");
-        let tor_task = ContainerTask::new(docker.clone(), info);
+        let tor_task = ContainerTask::new(docker.clone(), Tor);
 
         tor_task.start();
         Ok(())

@@ -2,6 +2,14 @@ use derive_more::{Display, From, Into};
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
+pub trait ManagedTask {
+    fn id() -> TaskId;
+
+    fn deps() -> Vec<TaskId> {
+        Vec::default()
+    }
+}
+
 #[derive(
     Debug, Clone, From, Into, PartialOrd, Ord, PartialEq, Eq, Hash, Display, Serialize, Deserialize,
 )]
@@ -34,6 +42,7 @@ pub trait ManagedContainer: fmt::Debug + Send + 'static {
     }
 
     fn on_event(&mut self, _event: <Self::Protocol as ManagedProtocol>::Inner) {}
+    */
 
     fn registry(&self) -> &str;
 
@@ -42,7 +51,6 @@ pub trait ManagedContainer: fmt::Debug + Send + 'static {
     fn tag(&self) -> &str {
         "latest"
     }
-    */
 
     fn args(&self, _args: &mut Args) {}
 

@@ -16,10 +16,10 @@ use tact::{Actor, ActorContext, Do, Receiver, Recipient, Timeout};
 use thiserror::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ImageInfo {
-    pub registry: String,
-    pub image_name: String,
-    pub tag: String,
+struct ImageInfo {
+    registry: String,
+    image_name: String,
+    tag: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -52,7 +52,7 @@ enum ContainerState {
 
 pub struct ContainerTask {
     docker: Docker,
-    managed_container: Box<dyn ManagedContainer>,
+    mc: Box<dyn ManagedContainer>,
     container_info: ContainerInfo,
     state: ContainerState,
     pull_progress: u8,
@@ -62,10 +62,15 @@ pub struct ContainerTask {
 impl ContainerTask {
     pub fn new(
         docker: Docker,
-        managed_container: Box<dyn ManagedContainer>,
-        image_info: ImageInfo,
+        // TODO: Add the scope
+        mc: impl ManagedContainer,
     ) -> Self {
         let scope = "tari_scope".to_string();
+        let image_info = ImageInfo {
+            registry: mc.registry().to_string(),
+            image_name: mc.image_name().to_string(),
+            tag: mc.tag().to_string(),
+        };
         let image_name = format!(
             "{}/{}:{}",
             image_info.registry, image_info.image_name, image_info.tag
@@ -79,7 +84,7 @@ impl ContainerTask {
 
         Self {
             docker,
-            managed_container,
+            mc: Box::new(mc),
             container_info,
             state: ContainerState::Idle,
             pull_progress: 0,
