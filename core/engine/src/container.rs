@@ -17,6 +17,7 @@ use thiserror::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct ImageInfo {
+    scope: String,
     registry: String,
     image_name: String,
     tag: String,
@@ -24,18 +25,23 @@ struct ImageInfo {
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ContainerInfo {
-    pub scope: String,
+    image_info: ImageInfo,
     /// The full image name
-    pub image_name: String,
-    pub container_name: String,
+    image_name: String,
+    container_name: String,
 }
 
-impl ImageInfo {
-    pub fn new(registry: &str, image_name: &str, tag: &str) -> Self {
+impl From<ImageInfo> for ContainerInfo {
+    fn from(image_info: ImageInfo) -> ContainerInfo {
+        let image_name = format!(
+            "{}/{}:{}",
+            image_info.registry, image_info.image_name, image_info.tag
+        );
+        let container_name = format!("{}_{}", image_info.scope, image_info.image_name);
         Self {
-            registry: registry.to_string(),
-            image_name: image_name.to_string(),
-            tag: tag.to_string(),
+            image_info,
+            image_name,
+            container_name,
         }
     }
 }
@@ -62,21 +68,12 @@ pub struct ContainerTask {
 impl ContainerTask {
     pub fn new(scope: String, docker: Docker, mc: impl ManagedContainer) -> Self {
         let image_info = ImageInfo {
+            scope,
             registry: mc.registry().to_string(),
             image_name: mc.image_name().to_string(),
             tag: mc.tag().to_string(),
         };
-        let image_name = format!(
-            "{}/{}:{}",
-            image_info.registry, image_info.image_name, image_info.tag
-        );
-        let container_name = format!("{}_{}", scope, image_info.image_name);
-        let container_info = ContainerInfo {
-            scope,
-            image_name,
-            container_name,
-        };
-
+        let container_info = ContainerInfo::from(image_info);
         Self {
             docker,
             mc: Box::new(mc),
@@ -255,13 +252,13 @@ impl Do<CreateContainer> for ContainerTask {
         msg: CreateContainer,
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
-        /*
         let mut args = Args::default();
-        self.inner.image.args(&mut args);
+        self.mc.args(&mut args);
         let mut ports = Ports::default();
-        self.inner.image.ports(&mut ports);
+        self.mc.ports(&mut ports);
         let mut envs = Envs::default();
-        self.inner.image.envs(&mut envs);
+        self.mc.envs(&mut envs);
+        /*
         let opts = CreateContainerOptions {
             name: self.inner.container_name.clone(),
             platform: None,
