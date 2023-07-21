@@ -60,12 +60,7 @@ pub struct ContainerTask {
 }
 
 impl ContainerTask {
-    pub fn new(
-        docker: Docker,
-        // TODO: Add the scope
-        mc: impl ManagedContainer,
-    ) -> Self {
-        let scope = "tari_scope".to_string();
+    pub fn new(scope: String, docker: Docker, mc: impl ManagedContainer) -> Self {
         let image_info = ImageInfo {
             registry: mc.registry().to_string(),
             image_name: mc.image_name().to_string(),

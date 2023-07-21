@@ -1,5 +1,6 @@
 use crate::container::ContainerTask;
 use crate::images::{Tor, DEFAULT_REGISTRY};
+use crate::scope::Scope;
 use anyhow::Error;
 use async_trait::async_trait;
 use bollard::Docker;
@@ -17,7 +18,7 @@ impl Supervisor {
 impl Actor for Supervisor {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         ctx.do_next(ReadConfig)?;
-        ctx.do_next(SpawnTasks)?;
+        ctx.do_next(SpawnScope)?;
         Ok(())
     }
 }
@@ -38,22 +39,19 @@ impl Do<ReadConfig> for Supervisor {
     }
 }
 
-struct SpawnTasks;
+struct SpawnScope;
 
 #[async_trait]
-impl Do<SpawnTasks> for Supervisor {
+impl Do<SpawnScope> for Supervisor {
     type Error = Error;
 
     async fn handle(
         &mut self,
-        _: SpawnTasks,
+        _: SpawnScope,
         _ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
         let docker = Docker::connect_with_local_defaults()?;
-
-        let tor_task = ContainerTask::new(docker.clone(), Tor);
-
-        tor_task.start();
+        let scope_task = Scope::new(docker, "tari_scope".into());
         Ok(())
     }
 }
