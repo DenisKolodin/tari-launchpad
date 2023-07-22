@@ -1,3 +1,6 @@
+mod docker;
+mod update;
+
 use crate::types::{Args, Envs, ManagedContainer, Mounts, Networks, Ports, Volumes};
 use anyhow::{anyhow as err, Error};
 use async_trait::async_trait;
@@ -56,13 +59,44 @@ enum ContainerState {
     WatiContainerKill(Timeout),
 }
 
+#[derive(Debug)]
+enum Status {
+    InitialState,
+
+    PullingImage {
+        // progress: Task,
+    },
+
+    CleanDangling,
+    WaitContainerKilled,
+    WaitContainerRemoved,
+
+    CreateContainer,
+    WaitContainerCreated,
+
+    StartContainer,
+    WaitContainerStarted,
+
+    /// Check the `active` flag
+    Idle,
+
+    Active {
+        // checker: Task,
+        ready: bool,
+    },
+
+    DropImage,
+}
+
 pub struct ContainerTask {
     docker: Docker,
     mc: Box<dyn ManagedContainer>,
     container_info: ContainerInfo,
+    // TODO: Remove this state
     state: ContainerState,
     pull_progress: u8,
     events: Option<Receiver>,
+    status: Status,
 }
 
 impl ContainerTask {
@@ -81,6 +115,7 @@ impl ContainerTask {
             state: ContainerState::Idle,
             pull_progress: 0,
             events: None,
+            status: Status::InitialState,
         }
     }
 
@@ -89,30 +124,11 @@ impl ContainerTask {
     }
 }
 
-impl ContainerTask {
-    fn subscribe_to_container_events(&mut self, ctx: &mut ActorContext<Self>) {
-        let mut type_filter = HashMap::new();
-        type_filter.insert("type".to_string(), vec!["container".to_string()]);
-        type_filter.insert(
-            "container".to_string(),
-            vec![self.container_info.container_name.clone()],
-        );
-        let opts = EventsOptions {
-            since: None,
-            until: None,
-            filters: type_filter,
-        };
-        let stream = self.docker.events(Some(opts)).map(DockerEvent::from);
-        let receiver = Receiver::connect(stream, ctx.recipient());
-        self.events = Some(receiver);
-    }
-}
-
 #[async_trait]
 impl Actor for ContainerTask {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         log::info!("Spawning a task to control: {}", self.image());
-        self.subscribe_to_container_events(ctx);
+        self.subscribe_to_events(ctx);
         ctx.do_next(CheckImage)?;
         Ok(())
     }
@@ -125,6 +141,7 @@ struct DockerEvent {
 
 #[async_trait]
 impl Do<DockerEvent> for ContainerTask {
+    // TODO: Add custom error and the `fallback` method
     type Error = Error;
 
     async fn handle(
@@ -133,7 +150,35 @@ impl Do<DockerEvent> for ContainerTask {
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
         log::debug!("Event from {}: {msg:?}", self.image());
-        Ok(())
+        let mut event = None;
+        let result = msg.result?;
+        if let EventMessage {
+            typ: Some(typ),
+            action: Some(action),
+            actor: Some(actor),
+            ..
+        } = msg.result
+        {
+            if let Some(attributes) = actor.attributes {
+                if let Some(name) = attributes.get("name") {
+                    // TODO: Check images as well
+                    if self.name == *name {
+                        // TODO: Check the name
+                        if let EventMessageTypeEnum::CONTAINER = typ {
+                            event = Some(action.try_into()?);
+                        }
+                    } else {
+                        log::error!(
+                            "Message for other container {}, but expected {}",
+                            name,
+                            self.name
+                        );
+                    }
+                }
+            }
+        } else {
+            Err(Error::msg("Not enough data from Docker"))
+        }
     }
 }
 
