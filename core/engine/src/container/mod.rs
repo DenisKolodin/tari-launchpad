@@ -172,6 +172,16 @@ impl Actor for ContainerTask {
     }
 }
 
+#[derive(Debug, Error)]
+enum EventError {
+    #[error("Type is empty")]
+    TypeEmpty,
+    #[error("Action is empty")]
+    ActionEmpty,
+    #[error("Actor is empty")]
+    ActorEmpty,
+}
+
 #[derive(Debug, From)]
 struct DockerEvent {
     result: Result<EventMessage, BollardError>,
@@ -180,7 +190,7 @@ struct DockerEvent {
 #[async_trait]
 impl Do<DockerEvent> for ContainerTask {
     // TODO: Add custom error and the `fallback` method
-    type Error = Error;
+    type Error = EventError;
 
     async fn handle(
         &mut self,
@@ -191,35 +201,28 @@ impl Do<DockerEvent> for ContainerTask {
         let image_name = self.image();
         let mut event: Option<Event> = None;
         let result = msg.result?;
-        if let EventMessage {
-            typ: Some(typ),
-            action: Some(action),
-            actor: Some(actor),
-            ..
-        } = result
-        {
-            if let Some(attributes) = actor.attributes {
-                if let Some(name) = attributes.get("name") {
-                    // TODO: Check images as well
-                    if image_name == *name {
-                        // TODO: Check the name
-                        if let EventMessageTypeEnum::CONTAINER = typ {
-                            event = Some(action.try_into()?);
-                        }
-                    } else {
-                        return Err(err!(
-                            "Message for other container {name}, but expected {image_name}",
-                        ));
+        let typ = result.typ.ok_or_else(|| EventError::TypeEmpty)?;
+        let action = result.action.ok_or_else(|| EventError::ActionEmpty)?;
+        let actor = result.actor.ok_or_else(|| EventError::ActorEmpty)?;
+        if let Some(attributes) = actor.attributes {
+            if let Some(name) = attributes.get("name") {
+                // TODO: Check images as well
+                if image_name == *name {
+                    // TODO: Check the name
+                    if let EventMessageTypeEnum::CONTAINER = typ {
+                        event = Some(action.try_into()?);
                     }
+                } else {
+                    return Err(err!(
+                        "Message for other container {name}, but expected {image_name}",
+                    ));
                 }
             }
-            if let Some(event) = event {
-                self.process_event(event)?;
-            }
-            Ok(())
-        } else {
-            Err(err!("Not enough data from Docker"))
         }
+        if let Some(event) = event {
+            self.process_event(event)?;
+        }
+        Ok(())
     }
 }
 
