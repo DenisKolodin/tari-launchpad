@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use tact::{ActorContext, Receiver};
 
 impl ContainerTask {
-    pub fn subscribe_to_events(&mut self, ctx: &mut ActorContext<Self>) {
+    pub(super) fn subscribe_to_events(&mut self, ctx: &mut ActorContext<Self>) {
         let mut type_filter = HashMap::new();
         type_filter.insert("type".to_string(), vec!["container".to_string()]);
         type_filter.insert(

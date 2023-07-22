@@ -2,6 +2,21 @@ use derive_more::{Display, From, Into};
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TaskProgress {
+    pub pct: u8,
+    pub stage: String,
+}
+
+impl TaskProgress {
+    pub fn new(stage: &dyn ToString) -> Self {
+        Self {
+            pct: 0,
+            stage: stage.to_string(),
+        }
+    }
+}
+
 pub trait ManagedTask {
     fn id() -> TaskId;
 

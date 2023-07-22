@@ -2,7 +2,7 @@ use super::{ContainerTask, Status};
 use anyhow::Error;
 
 impl ContainerTask {
-    pub async fn process_update(&mut self) -> Result<(), Error> {
+    pub(super) async fn process_update(&mut self) -> Result<(), Error> {
         match &self.status {
             Status::InitialState => self.do_initial_state().await,
             Status::PullingImage { .. } => self.do_pulling().await,

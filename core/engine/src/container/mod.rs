@@ -1,13 +1,14 @@
 mod docker;
+mod events;
 mod update;
 
-use crate::types::{Args, Envs, ManagedContainer, Mounts, Networks, Ports, Volumes};
+use crate::types::{Args, Envs, ManagedContainer, Mounts, Networks, Ports, TaskProgress, Volumes};
 use anyhow::{anyhow as err, Error};
 use async_trait::async_trait;
 use bollard::container::{Config, CreateContainerOptions, RemoveContainerOptions};
 use bollard::errors::Error as BollardError;
 use bollard::image::CreateImageOptions;
-use bollard::models::{CreateImageInfo, EventMessage, HostConfig};
+use bollard::models::{CreateImageInfo, EventMessage, EventMessageTypeEnum, HostConfig};
 use bollard::system::EventsOptions;
 use bollard::Docker;
 use derive_more::From;
@@ -88,6 +89,43 @@ enum Status {
     DropImage,
 }
 
+#[derive(Debug)]
+pub enum CheckerEvent {
+    Progress(TaskProgress),
+    Ready,
+}
+
+#[derive(Debug, Error)]
+#[error("Can't parse value: {0}")]
+pub struct ParseError(pub String);
+
+#[derive(Debug)]
+enum Event {
+    Destroyed,
+    PullingProgress(TaskProgress),
+    Created,
+    Started,
+    Killed,
+    Terminated,
+    CheckerEvent(CheckerEvent),
+}
+
+impl TryFrom<String> for Event {
+    type Error = ParseError;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        // Docker values!
+        match value.as_ref() {
+            "destroy" => Ok(Self::Destroyed),
+            "create" => Ok(Self::Created),
+            "start" => Ok(Self::Started),
+            "kill" => Ok(Self::Killed),
+            "die" => Ok(Self::Terminated),
+            _ => Err(ParseError(value)),
+        }
+    }
+}
+
 pub struct ContainerTask {
     docker: Docker,
     mc: Box<dyn ManagedContainer>,
@@ -150,34 +188,37 @@ impl Do<DockerEvent> for ContainerTask {
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
         log::debug!("Event from {}: {msg:?}", self.image());
-        let mut event = None;
+        let image_name = self.image();
+        let mut event: Option<Event> = None;
         let result = msg.result?;
         if let EventMessage {
             typ: Some(typ),
             action: Some(action),
             actor: Some(actor),
             ..
-        } = msg.result
+        } = result
         {
             if let Some(attributes) = actor.attributes {
                 if let Some(name) = attributes.get("name") {
                     // TODO: Check images as well
-                    if self.name == *name {
+                    if image_name == *name {
                         // TODO: Check the name
                         if let EventMessageTypeEnum::CONTAINER = typ {
                             event = Some(action.try_into()?);
                         }
                     } else {
-                        log::error!(
-                            "Message for other container {}, but expected {}",
-                            name,
-                            self.name
-                        );
+                        return Err(err!(
+                            "Message for other container {name}, but expected {image_name}",
+                        ));
                     }
                 }
             }
+            if let Some(event) = event {
+                self.process_event(event)?;
+            }
+            Ok(())
         } else {
-            Err(Error::msg("Not enough data from Docker"))
+            Err(err!("Not enough data from Docker"))
         }
     }
 }
