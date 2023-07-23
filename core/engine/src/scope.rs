@@ -1,5 +1,5 @@
 use crate::container::ContainerTask;
-use crate::images::{Tor, DEFAULT_REGISTRY};
+use crate::images::Tor;
 use anyhow::Error;
 use async_trait::async_trait;
 use bollard::Docker;

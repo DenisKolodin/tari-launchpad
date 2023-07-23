@@ -1,6 +1,4 @@
-use crate::settings::Settings;
 use crate::types::{Args, Envs, ManagedContainer, ManagedTask, Networks, Ports, TaskId};
-use tor_hash_passwd::EncryptedKey;
 
 pub static DEFAULT_REGISTRY: &str = "quay.io/tarilabs";
 pub static GRAFANA_REGISTRY: &str = "grafana";

@@ -9,7 +9,7 @@ use derive_more::{Deref, DerefMut};
 use tact::ActorContext;
 
 #[derive(Deref, DerefMut)]
-pub struct ContainerTaskFsm<'a> {
+pub(super) struct ContainerTaskFsm<'a> {
     #[deref]
     #[deref_mut]
     task: &'a mut ContainerTask,

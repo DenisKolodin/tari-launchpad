@@ -1,6 +1,5 @@
 use crate::container::{
-    Config, ContainerTask, ContainerTaskFsm, CreateContainerOptions, CreateImageOptions,
-    DockerEvent, PullProgress,
+    Config, ContainerTaskFsm, CreateContainerOptions, CreateImageOptions, DockerEvent, PullProgress,
 };
 use crate::types::{Args, ContainerState, Envs, Mount, Mounts, Networks, Ports, TaskId, Volumes};
 use anyhow::{anyhow as err, Error};
@@ -11,10 +10,10 @@ use bollard::models::{
     PortBinding, PortMap,
 };
 use bollard::system::EventsOptions;
-use futures::{StreamExt, TryStreamExt};
+use futures::StreamExt;
 use std::collections::HashMap;
 use std::path::Path;
-use tact::{ActorContext, Receiver};
+use tact::Receiver;
 
 impl<'a> ContainerTaskFsm<'a> {
     pub fn subscribe_to_events(&mut self) {

@@ -126,16 +126,14 @@ impl<'a> ContainerTaskFsm<'a> {
     }
 
     async fn do_start_container(&mut self) -> Result<(), Error> {
-        /*
         if let Err(err) = self.try_start_container().await {
-            self.sender().send_error(err.to_string())?;
+            // self.sender().send_error(err.to_string())?;
             self.try_remove_container().await?;
-            self.status.set(Status::WaitContainerRemoved);
+            self.set_status(Status::WaitContainerRemoved)?;
         } else {
-            self.status.set(Status::WaitContainerStarted);
+            self.set_status(Status::WaitContainerStarted)?;
             self.update_task_status(TaskStatus::Pending)?;
         }
-        */
         Ok(())
     }
 
@@ -153,7 +151,6 @@ impl<'a> ContainerTaskFsm<'a> {
     }
 
     async fn do_drop_image(&mut self) -> Result<(), Error> {
-        // self.try_remove_image().await
-        Ok(())
+        self.try_remove_image().await
     }
 }

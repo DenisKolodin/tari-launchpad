@@ -1,23 +1,16 @@
 mod fsm;
 
-use crate::types::{
-    Args, Envs, ManagedContainer, Mounts, Networks, Ports, TaskProgress, TaskStatus, Volumes,
-};
-use anyhow::{anyhow as err, Error};
+use crate::types::{ManagedContainer, TaskProgress, TaskStatus};
+use anyhow::Error;
 use async_trait::async_trait;
-use bollard::container::{Config, CreateContainerOptions, RemoveContainerOptions};
+use bollard::container::{Config, CreateContainerOptions};
 use bollard::errors::Error as BollardError;
 use bollard::image::CreateImageOptions;
-use bollard::models::{CreateImageInfo, EventMessage, EventMessageTypeEnum, HostConfig};
-use bollard::system::EventsOptions;
+use bollard::models::{CreateImageInfo, EventMessage, EventMessageTypeEnum};
 use bollard::Docker;
 use derive_more::From;
 use fsm::ContainerTaskFsm;
-use futures::{StreamExt, TryStreamExt};
-use std::collections::HashMap;
-use std::sync::Arc;
-use std::time::Duration;
-use tact::{Actor, ActorContext, Do, Receiver, Recipient, Timeout};
+use tact::{Actor, ActorContext, Do, Receiver};
 use thiserror::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -49,17 +42,6 @@ impl From<ImageInfo> for ContainerInfo {
             container_name,
         }
     }
-}
-
-// TODO: Remove it
-#[derive(Debug)]
-enum ContainerState {
-    Idle,
-    PullingImage(Receiver),
-    StartingContainer,
-    WaitContainerStart(Timeout),
-    KillingContainer,
-    WatiContainerKill(Timeout),
 }
 
 #[derive(Debug)]
@@ -297,7 +279,7 @@ impl Do<PullProgress> for ContainerTask {
     async fn handle(
         &mut self,
         msg: PullProgress,
-        ctx: &mut ActorContext<Self>,
+        _ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
         let info = msg.result?;
         log::info!("Pulling info {}: {:?}", self.image(), info);
@@ -305,7 +287,7 @@ impl Do<PullProgress> for ContainerTask {
         let current = details.current.ok_or(PullError::CurrentEmpty)? * 100;
         let total = details.total.ok_or(PullError::TotalEmpty)?;
         let pct = current / total;
-        let stage = info.status.ok_or(PullError::StatusEmpty)?;
+        let _stage = info.status.ok_or(PullError::StatusEmpty)?;
         self.pull_progress = pct as u8;
         // TODO: Detect pulling is done
         // TODO: Report about the progress to the bus
@@ -315,8 +297,9 @@ impl Do<PullProgress> for ContainerTask {
     async fn fallback(
         &mut self,
         err: PullError,
-        ctx: &mut ActorContext<Self>,
+        _ctx: &mut ActorContext<Self>,
     ) -> Result<(), Error> {
+        log::error!("Can't pull image: {err}");
         // TODO: Handle pull errors
         // Restart pulling, etc...
         Ok(())

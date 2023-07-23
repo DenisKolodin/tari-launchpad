@@ -1,4 +1,4 @@
-use crate::container::{CheckerEvent, ContainerTask, ContainerTaskFsm, Event, Status};
+use crate::container::{CheckerEvent, ContainerTaskFsm, Event, Status};
 use crate::types::{TaskProgress, TaskStatus};
 use anyhow::Error;
 

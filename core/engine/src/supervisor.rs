@@ -1,5 +1,3 @@
-use crate::container::ContainerTask;
-use crate::images::{Tor, DEFAULT_REGISTRY};
 use crate::scope::Scope;
 use anyhow::Error;
 use async_trait::async_trait;
