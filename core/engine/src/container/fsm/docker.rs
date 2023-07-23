@@ -1,4 +1,4 @@
-use crate::container::{ContainerTask, ContainerTaskFsm, DockerEvent};
+use crate::container::{ContainerTask, ContainerTaskFsm, DockerEvent, PullProgress, CreateImageOptions};
 use crate::types::ContainerState;
 use bollard::system::EventsOptions;
 use bollard::models::ContainerInspectResponse;
@@ -45,15 +45,16 @@ impl<'a> ContainerTaskFsm<'a> {
         }
     }
 
-    /*
-    pub fn pull(&mut self) -> Task {
+    pub fn pull(&mut self) -> Receiver {
+        let from_image = self.image().to_string();
         let opts = Some(CreateImageOptions {
-            from_image: self.inner.image_name.clone(),
+            from_image,
             ..Default::default()
         });
-        let stream = self.driver.create_image(opts, None, None).map_err(Error::from);
-        let sender = self.sender().get_direct().clone();
-        Forwarder::start(stream, ProgressConv, sender)
+        let stream = self
+            .docker
+            .create_image(opts, None, None)
+            .map(PullProgress::from);
+        Receiver::connect(stream, self.ctx.recipient())
     }
-    */
 }

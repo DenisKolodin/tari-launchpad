@@ -67,7 +67,7 @@ enum Status {
     InitialState,
 
     PullingImage {
-        // progress: Task,
+        progress_rx: Receiver,
     },
 
     CleanDangling,
@@ -299,9 +299,10 @@ impl Do<PullImage> for ContainerTask {
         _: PullImage,
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
-        log::info!("Pulling the image: {}", self.image());
+        let from_image = self.image().to_string();
+        log::info!("Pulling the image: {from_image}");
         let opts = Some(CreateImageOptions {
-            from_image: self.container_info.image_name.clone(),
+            from_image,
             ..Default::default()
         });
         let stream = self

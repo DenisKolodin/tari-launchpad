@@ -41,24 +41,20 @@ impl<'a> ContainerTaskFsm<'a> {
     }
 
     fn start_pulling(&mut self) -> Result<(), Error> {
-        /*
-        log::debug!("Image {} doesn't exist. Pulling.", self.inner.image_name);
+        log::debug!("Image {} doesn't exist. Pulling.", self.image());
         let progress = TaskProgress::new("Pulling...");
         self.update_task_status(TaskStatus::Progress(progress))?;
-        let progress = self.pull();
-        self.status.set(Status::PullingImage { progress });
-        */
+        let progress_rx = self.pull();
+        self.set_status(Status::PullingImage { progress_rx })?;
         Ok(())
     }
 
     async fn do_pulling(&mut self) -> Result<(), Error> {
-        /*
         if self.image_exists().await {
             // Just loaded, container can't be exist
-            self.status.set(Status::Idle);
+            self.set_status(Status::Idle)?;
             self.update_task_status(TaskStatus::Inactive)?;
         }
-        */
         Ok(())
     }
 
