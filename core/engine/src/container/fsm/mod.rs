@@ -3,11 +3,15 @@ mod events;
 mod update;
 
 use anyhow::Error;
+use derive_more::{Deref, DerefMut};
 use crate::container::{ContainerTask, Status, ProcessChanges};
 use crate::types::TaskStatus;
 use tact::ActorContext;
 
+#[derive(Deref, DerefMut)]
 pub struct ContainerTaskFsm<'a> {
+    #[deref]
+    #[deref_mut]
     task: &'a mut ContainerTask,
     ctx: &'a mut ActorContext<ContainerTask>,
 }
@@ -17,8 +21,7 @@ impl<'a> ContainerTaskFsm<'a> {
         Self { task, ctx }
     }
 
-    // TODO: it shouldn't be mutable
-    fn get_status(&mut self) -> &Status {
+    fn get_status(&self) -> &Status {
         &self.task.status
     }
 

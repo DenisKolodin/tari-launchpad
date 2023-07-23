@@ -1,5 +1,5 @@
 use crate::container::{CheckerEvent, ContainerTask, ContainerTaskFsm, Event, Status};
-use crate::types::TaskProgress;
+use crate::types::{TaskProgress, TaskStatus};
 use anyhow::Error;
 
 impl<'a> ContainerTaskFsm<'a> {
@@ -25,8 +25,7 @@ impl<'a> ContainerTaskFsm<'a> {
 
     fn on_pulling_progress(&mut self, value: TaskProgress) -> Result<(), Error> {
         if let Status::PullingImage { .. } = self.get_status() {
-            // TODO: Report about the progress
-            // self.update_task_status(TaskStatus::Progress(value))?;
+            self.update_task_status(TaskStatus::Progress(value))?;
         }
         Ok(())
     }
@@ -39,8 +38,8 @@ impl<'a> ContainerTaskFsm<'a> {
     }
 
     fn on_started(&mut self) -> Result<(), Error> {
-        /*
-        if let Status::WaitContainerStarted { .. } = self.status.get() {
+        if let Status::WaitContainerStarted { .. } = self.get_status() {
+            /*
             let checker = self.inner.image.checker();
             let logs = self.logs_stream();
             let stats = self.stats_stream();
@@ -49,8 +48,8 @@ impl<'a> ContainerTaskFsm<'a> {
             let fur = checker.entrypoint(context);
             let checker = tokio::spawn(fur).into();
             self.status.set(Status::Active { checker, ready: false });
+            */
         }
-        */
         Ok(())
     }
 
@@ -59,39 +58,33 @@ impl<'a> ContainerTaskFsm<'a> {
     }
 
     fn on_checker_event(&mut self, event: CheckerEvent) -> Result<(), Error> {
-        /*
-        if let Status::Active { .. } = self.status.get() {
+        if let Status::Active { .. } = self.get_status() {
             match event {
                 CheckerEvent::Progress(progress) => {
                     self.update_task_status(TaskStatus::Progress(progress))?;
                 },
                 CheckerEvent::Ready => {
-                    self.status.update(|status| {
-                        if let Status::Active { ready, .. } = status {
-                            *ready = true;
-                        }
-                    });
+                    if let Status::Active { ready, .. } = &mut self.task.status {
+                        *ready = true;
+                    }
                     self.update_task_status(TaskStatus::Active)?;
                 },
             }
         }
-        */
         Ok(())
     }
 
     fn on_terminated(&mut self) -> Result<(), Error> {
-        /*
-        match self.status.get() {
+        match self.get_status() {
             Status::WaitContainerKilled => {
-                self.status.set(Status::CleanDangling);
+                self.set_status(Status::CleanDangling)?;
             },
             Status::Active { .. } => {
                 // TODO: Add waiting interval + fallback
-                // self.status.set(Status::CleanDangling);
+                // self.set_status(Status::CleanDangling)?;
             },
             _ => {},
         }
-        */
         Ok(())
     }
 }

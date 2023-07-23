@@ -51,6 +51,7 @@ impl From<ImageInfo> for ContainerInfo {
     }
 }
 
+// TODO: Remove it
 #[derive(Debug)]
 enum ContainerState {
     Idle,
@@ -162,6 +163,10 @@ impl ContainerTask {
 
     fn image(&self) -> &str {
         &self.container_info.image_name
+    }
+
+    fn container(&self) -> &str {
+        &self.container_info.container_name
     }
 }
 

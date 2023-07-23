@@ -2,6 +2,13 @@ use derive_more::{Display, From, Into};
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
+#[derive(Debug, PartialEq, Eq)]
+pub enum ContainerState {
+    Running,
+    NotRunning,
+    NotFound,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TaskProgress {
     pub pct: u8,
@@ -9,7 +16,7 @@ pub struct TaskProgress {
 }
 
 impl TaskProgress {
-    pub fn new(stage: &dyn ToString) -> Self {
+    pub fn new(stage: &str) -> Self {
         Self {
             pct: 0,
             stage: stage.to_string(),
@@ -77,7 +84,7 @@ impl AsRef<str> for TaskId {
     }
 }
 
-pub trait ManagedContainer: fmt::Debug + Send + 'static {
+pub trait ManagedContainer: fmt::Debug + Sync + Send + 'static {
     /*
     type Protocol: ManagedProtocol;
 

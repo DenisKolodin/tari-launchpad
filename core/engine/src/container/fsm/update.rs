@@ -1,5 +1,5 @@
 use crate::container::{ContainerTaskFsm, Status};
-use crate::types::TaskStatus;
+use crate::types::{TaskStatus, TaskProgress};
 use anyhow::Error;
 
 impl<'a> ContainerTaskFsm<'a> {
@@ -23,24 +23,20 @@ impl<'a> ContainerTaskFsm<'a> {
     async fn do_initial_state(&mut self) -> Result<(), Error> {
         self.update_task_status(TaskStatus::Inactive)?;
 
-        /*
-        log::debug!("Cheking image {} ...", self.inner.image_name);
+        log::debug!("Cheking image {} ...", self.task.image());
         if self.image_exists().await {
             self.clean_dangling()?;
         } else {
             self.start_pulling()?;
         }
-        */
         Ok(())
     }
 
     fn clean_dangling(&mut self) -> Result<(), Error> {
-        /*
-        log::debug!("Image {} exists. Skip pulling.", self.inner.image_name);
+        log::debug!("Image {} exists. Skip pulling.", self.task.image());
         let progress = TaskProgress::new("Cleaning...");
         self.update_task_status(TaskStatus::Progress(progress))?;
-        self.status.set(Status::CleanDangling);
-        */
+        self.set_status(Status::CleanDangling)?;
         Ok(())
     }
 
