@@ -1,6 +1,9 @@
 use crate::container::{ContainerTask, ContainerTaskFsm, DockerEvent, PullProgress, CreateImageOptions};
 use crate::types::ContainerState;
+use anyhow::Error;
 use bollard::system::EventsOptions;
+use bollard::container::{RemoveContainerOptions};
+use bollard::image::{RemoveImageOptions};
 use bollard::models::ContainerInspectResponse;
 use futures::{StreamExt, TryStreamExt};
 use std::collections::HashMap;
@@ -57,4 +60,40 @@ impl<'a> ContainerTaskFsm<'a> {
             .map(PullProgress::from);
         Receiver::connect(stream, self.ctx.recipient())
     }
+
+    pub async fn try_start_container(&mut self) -> Result<(), Error> {
+        self.docker
+            .start_container::<String>(self.container(), None)
+            .await?;
+        Ok(())
+    }
+
+    pub async fn try_kill_container(&mut self) -> Result<(), Error> {
+        self.docker
+            .kill_container::<String>(self.container(), None)
+            .await?;
+        Ok(())
+    }
+
+    pub async fn try_remove_container(&mut self) -> Result<(), Error> {
+        let opts = RemoveContainerOptions {
+            force: true,
+            ..Default::default()
+        };
+        self.docker
+            .remove_container(self.container(), Some(opts))
+            .await?;
+        Ok(())
+    }
+
+    pub async fn try_remove_image(&mut self) -> Result<(), Error> {
+        let image_name = self.image();
+        let opts = Some(RemoveImageOptions {
+            force: true,
+            ..Default::default()
+        });
+        self.docker.remove_image(image_name, opts, None).await?;
+        Ok(())
+    }
+
 }

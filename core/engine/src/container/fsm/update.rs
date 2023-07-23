@@ -1,5 +1,5 @@
 use crate::container::{ContainerTaskFsm, Status};
-use crate::types::{TaskStatus, TaskProgress};
+use crate::types::{TaskStatus, TaskProgress, ContainerState};
 use anyhow::Error;
 
 impl<'a> ContainerTaskFsm<'a> {
@@ -59,27 +59,25 @@ impl<'a> ContainerTaskFsm<'a> {
     }
 
     async fn do_clean_dangling(&mut self) -> Result<(), Error> {
-        /*
-        log::debug!("Cheking container {} ...", self.inner.container_name);
+        log::debug!("Cheking container {} ...", self.container());
         let state = self.container_state().await;
         match state {
             ContainerState::Running => {
-                log::debug!("Container {} is running. Terminating it.", self.inner.container_name);
+                log::debug!("Container {} is running. Terminating it.", self.container());
                 self.try_kill_container().await?;
-                self.status.set(Status::WaitContainerKilled);
+                self.set_status(Status::WaitContainerKilled)?;
             },
             ContainerState::NotRunning => {
-                log::debug!("Container {} is not running. Removing it.", self.inner.container_name);
+                log::debug!("Container {} is not running. Removing it.", self.container());
                 self.try_remove_container().await?;
-                self.status.set(Status::WaitContainerRemoved);
+                self.set_status(Status::WaitContainerRemoved)?;
             },
             ContainerState::NotFound => {
-                log::debug!("Container {} doesn't exist.", self.inner.container_name);
-                self.status.set(Status::Idle);
+                log::debug!("Container {} doesn't exist.", self.container());
+                self.set_status(Status::Idle)?;
                 self.update_task_status(TaskStatus::Inactive)?;
             },
         }
-        */
         Ok(())
     }
 
