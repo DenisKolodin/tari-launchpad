@@ -138,6 +138,11 @@ pub struct ContainerTask {
     events: Option<Receiver>,
     status: Status,
     task_status: TaskStatus,
+
+    /// A flag to ask to restart a container
+    force_restart: bool,
+    /// A flag to drop and pull image again
+    force_pull: bool,
 }
 
 impl ContainerTask {
@@ -158,6 +163,8 @@ impl ContainerTask {
             events: None,
             status: Status::InitialState,
             task_status: TaskStatus::Inactive,
+            force_restart: false,
+            force_pull: false,
         }
     }
 
@@ -167,6 +174,11 @@ impl ContainerTask {
 
     fn container(&self) -> &str {
         &self.container_info.container_name
+    }
+
+    fn should_be_active(&self) -> bool {
+        // TODO: Check dependencies
+        true
     }
 }
 

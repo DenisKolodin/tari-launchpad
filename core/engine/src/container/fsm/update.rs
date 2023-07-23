@@ -92,33 +92,28 @@ impl<'a> ContainerTaskFsm<'a> {
     }
 
     async fn do_idle(&mut self) -> Result<(), Error> {
-        /*
         if self.force_pull {
             self.force_pull = false;
-            self.status.set(Status::DropImage);
+            self.set_status(Status::DropImage)?;
             let progress = TaskProgress::new("Removing image...");
             self.update_task_status(TaskStatus::Progress(progress))?;
             Ok(())
         } else if self.should_be_active() {
             self.force_restart = false;
-            log::debug!("Preparing a container {} to start...", self.inner.container_name);
-            self.status.set(Status::CreateContainer);
+            log::debug!("Preparing a container {} to start...", self.container());
+            self.set_status(Status::CreateContainer)?;
             self.update_task_status(TaskStatus::Pending)?;
             Ok(())
         } else {
             Ok(())
         }
-        */
-        Ok(())
     }
 
     async fn do_create_container(&mut self) -> Result<(), Error> {
-        /*
-        log::debug!("Trying to create container {} ...", self.inner.container_name);
+        log::debug!("Trying to create container {} ...", self.container());
         // TODO: Process the result as well
         self.try_create_container().await?;
-        self.status.set(Status::WaitContainerCreated);
-        */
+        self.set_status(Status::WaitContainerCreated)?;
         Ok(())
     }
 
