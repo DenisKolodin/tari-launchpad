@@ -62,13 +62,13 @@ impl<'a> ContainerTaskFsm<'a> {
             match event {
                 CheckerEvent::Progress(progress) => {
                     self.update_task_status(TaskStatus::Progress(progress))?;
-                },
+                }
                 CheckerEvent::Ready => {
                     if let Status::Active { ready, .. } = &mut self.task.status {
                         *ready = true;
                     }
                     self.update_task_status(TaskStatus::Active)?;
-                },
+                }
             }
         }
         Ok(())
@@ -78,12 +78,12 @@ impl<'a> ContainerTaskFsm<'a> {
         match self.get_status() {
             Status::WaitContainerKilled => {
                 self.set_status(Status::CleanDangling)?;
-            },
+            }
             Status::Active { .. } => {
                 // TODO: Add waiting interval + fallback
                 // self.set_status(Status::CleanDangling)?;
-            },
-            _ => {},
+            }
+            _ => {}
         }
         Ok(())
     }

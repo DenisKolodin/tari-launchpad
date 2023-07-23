@@ -1,5 +1,5 @@
 use crate::container::{ContainerTaskFsm, Status};
-use crate::types::{TaskStatus, TaskProgress, ContainerState};
+use crate::types::{ContainerState, TaskProgress, TaskStatus};
 use anyhow::Error;
 
 impl<'a> ContainerTaskFsm<'a> {
@@ -66,17 +66,20 @@ impl<'a> ContainerTaskFsm<'a> {
                 log::debug!("Container {} is running. Terminating it.", self.container());
                 self.try_kill_container().await?;
                 self.set_status(Status::WaitContainerKilled)?;
-            },
+            }
             ContainerState::NotRunning => {
-                log::debug!("Container {} is not running. Removing it.", self.container());
+                log::debug!(
+                    "Container {} is not running. Removing it.",
+                    self.container()
+                );
                 self.try_remove_container().await?;
                 self.set_status(Status::WaitContainerRemoved)?;
-            },
+            }
             ContainerState::NotFound => {
                 log::debug!("Container {} doesn't exist.", self.container());
                 self.set_status(Status::Idle)?;
                 self.update_task_status(TaskStatus::Inactive)?;
-            },
+            }
         }
         Ok(())
     }

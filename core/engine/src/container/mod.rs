@@ -3,7 +3,6 @@ mod fsm;
 use crate::types::{
     Args, Envs, ManagedContainer, Mounts, Networks, Ports, TaskProgress, TaskStatus, Volumes,
 };
-use fsm::ContainerTaskFsm;
 use anyhow::{anyhow as err, Error};
 use async_trait::async_trait;
 use bollard::container::{Config, CreateContainerOptions, RemoveContainerOptions};
@@ -13,6 +12,7 @@ use bollard::models::{CreateImageInfo, EventMessage, EventMessageTypeEnum, HostC
 use bollard::system::EventsOptions;
 use bollard::Docker;
 use derive_more::From;
+use fsm::ContainerTaskFsm;
 use futures::{StreamExt, TryStreamExt};
 use std::collections::HashMap;
 use std::sync::Arc;

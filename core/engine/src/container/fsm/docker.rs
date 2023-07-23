@@ -1,12 +1,16 @@
-use crate::container::{CreateContainerOptions, ContainerTask, ContainerTaskFsm, DockerEvent, PullProgress, CreateImageOptions, Config};
-use crate::types::{ContainerState, Mount, Networks, Volumes, Mounts, Args, Envs, Ports};
-use anyhow::{anyhow as err, Error};
-use bollard::system::EventsOptions;
-use bollard::container::{RemoveContainerOptions, NetworkingConfig};
-use bollard::image::{RemoveImageOptions};
-use bollard::models::{ContainerInspectResponse, PortMap, PortBinding, MountTypeEnum,
-    EndpointSettings, HostConfig, Mount as BollardMount,
+use crate::container::{
+    Config, ContainerTask, ContainerTaskFsm, CreateContainerOptions, CreateImageOptions,
+    DockerEvent, PullProgress,
 };
+use crate::types::{Args, ContainerState, Envs, Mount, Mounts, Networks, Ports, TaskId, Volumes};
+use anyhow::{anyhow as err, Error};
+use bollard::container::{NetworkingConfig, RemoveContainerOptions};
+use bollard::image::RemoveImageOptions;
+use bollard::models::{
+    ContainerInspectResponse, EndpointSettings, HostConfig, Mount as BollardMount, MountTypeEnum,
+    PortBinding, PortMap,
+};
+use bollard::system::EventsOptions;
 use futures::{StreamExt, TryStreamExt};
 use std::collections::HashMap;
 use std::path::Path;
@@ -32,20 +36,30 @@ impl<'a> ContainerTaskFsm<'a> {
     }
 
     pub async fn image_exists(&mut self) -> bool {
-        self.task.docker.inspect_image(self.task.image()).await.is_ok()
+        self.task
+            .docker
+            .inspect_image(self.task.image())
+            .await
+            .is_ok()
     }
 
     pub async fn container_state(&mut self) -> ContainerState {
-        let res = self.task.docker.inspect_container(self.task.container(), None).await;
+        let res = self
+            .task
+            .docker
+            .inspect_container(self.task.container(), None)
+            .await;
         // log::trace!("State of container {}: {:?}", self.inner.container_name, res);
         match res {
-            Ok(ContainerInspectResponse { state: Some(state), .. }) => {
+            Ok(ContainerInspectResponse {
+                state: Some(state), ..
+            }) => {
                 if state.running.unwrap_or_default() {
                     ContainerState::Running
                 } else {
                     ContainerState::NotRunning
                 }
-            },
+            }
             Ok(_) => ContainerState::NotRunning,
             Err(_) => ContainerState::NotFound,
         }
@@ -90,7 +104,7 @@ impl<'a> ContainerTaskFsm<'a> {
         let mounts = self.mounts_map(mounts.build())?;
         let ports = ports.build();
         let config = Config {
-            image: Some(self.mc.image_name()),
+            image: Some(self.image().to_string()),
             attach_stdin: Some(false),
             attach_stdout: Some(false),
             attach_stderr: Some(false),
@@ -114,7 +128,6 @@ impl<'a> ContainerTaskFsm<'a> {
         self.docker.create_container(Some(opts), config).await?;
         Ok(())
     }
-
 
     pub async fn try_start_container(&mut self) -> Result<(), Error> {
         self.docker
@@ -151,13 +164,17 @@ impl<'a> ContainerTaskFsm<'a> {
         Ok(())
     }
 
-
     fn networks_map(&self, networks: Networks) -> Result<NetworkingConfig<String>, Error> {
         let mut endpoints = HashMap::new();
         for (alias, resource) in networks.build() {
             let net_name = self
                 .resource(&resource)
-                .ok_or_else(|| err!("Network {:?} not available in resources. Check dependencies.", resource))?
+                .ok_or_else(|| {
+                    err!(
+                        "Network {:?} not available in resources. Check dependencies.",
+                        resource
+                    )
+                })?
                 .to_string();
             let endpoint = EndpointSettings {
                 aliases: Some(vec![alias]),
@@ -185,7 +202,7 @@ impl<'a> ContainerTaskFsm<'a> {
                     ..Default::default()
                 };
                 Ok(mount)
-            },
+            }
             Mount::BindTo { source, target } => {
                 let source = canonicalize(source);
                 let mount = BollardMount {
@@ -196,7 +213,7 @@ impl<'a> ContainerTaskFsm<'a> {
                     ..Default::default()
                 };
                 Ok(mount)
-            },
+            }
         }
     }
 
@@ -206,6 +223,12 @@ impl<'a> ContainerTaskFsm<'a> {
             result.push(self.make_mount(mount)?);
         }
         Ok(result)
+    }
+
+    pub fn resource(&self, id: &TaskId) -> Option<&str> {
+        // TODO: Implement it
+        // self.resources_map.get(id).map(String::as_ref)
+        None
     }
 }
 

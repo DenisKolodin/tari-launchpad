@@ -2,10 +2,10 @@ mod docker;
 mod events;
 mod update;
 
+use crate::container::{ContainerTask, ProcessChanges, Status};
+use crate::types::TaskStatus;
 use anyhow::Error;
 use derive_more::{Deref, DerefMut};
-use crate::container::{ContainerTask, Status, ProcessChanges};
-use crate::types::TaskStatus;
 use tact::ActorContext;
 
 #[derive(Deref, DerefMut)]
@@ -37,4 +37,3 @@ impl<'a> ContainerTaskFsm<'a> {
         Ok(())
     }
 }
-
