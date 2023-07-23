@@ -1,9 +1,9 @@
-use super::{ContainerTask, Status};
+use super::{ContainerTaskFsm, Status};
 use anyhow::Error;
 
-impl ContainerTask {
-    pub(super) async fn process_update(&mut self) -> Result<(), Error> {
-        match &self.status {
+impl<'a> ContainerTaskFsm<'a> {
+    pub(super) async fn process_changes(&mut self) -> Result<(), Error> {
+        match self.get_status() {
             Status::InitialState => self.do_initial_state().await,
             Status::PullingImage { .. } => self.do_pulling().await,
             Status::CleanDangling => self.do_clean_dangling().await,

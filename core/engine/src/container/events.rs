@@ -1,8 +1,8 @@
-use super::{CheckerEvent, ContainerTask, Event};
+use super::{CheckerEvent, ContainerTask, ContainerTaskFsm, Event, Status};
 use crate::types::TaskProgress;
 use anyhow::Error;
 
-impl ContainerTask {
+impl<'a> ContainerTaskFsm<'a> {
     pub(super) fn process_event(&mut self, event: Event) -> Result<(), Error> {
         log::warn!("EVENT: {event:?}");
         match event {
@@ -17,29 +17,24 @@ impl ContainerTask {
     }
 
     fn on_created(&mut self) -> Result<(), Error> {
-        /*
-        if let Status::WaitContainerCreated = self.status.get() {
-            self.status.set(Status::StartContainer);
+        if let Status::WaitContainerCreated = self.get_status() {
+            self.set_status(Status::StartContainer)?;
         }
-        */
         Ok(())
     }
 
     fn on_pulling_progress(&mut self, value: TaskProgress) -> Result<(), Error> {
-        /*
-        if let Status::PullingImage { .. } = self.status.get() {
-            self.update_task_status(TaskStatus::Progress(value))?;
+        if let Status::PullingImage { .. } = self.get_status() {
+            // TODO: Report about the progress
+            // self.update_task_status(TaskStatus::Progress(value))?;
         }
-        */
         Ok(())
     }
 
     fn on_destroyed(&mut self) -> Result<(), Error> {
-        /*
-        if let Status::WaitContainerRemoved = self.status.get() {
-            self.status.set(Status::CleanDangling);
+        if let Status::WaitContainerRemoved = self.get_status() {
+            self.set_status(Status::CleanDangling)?;
         }
-        */
         Ok(())
     }
 

@@ -17,6 +17,41 @@ impl TaskProgress {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum TaskStatus {
+    Inactive,
+    /// Waiting for dependencies.
+    Pending,
+    Progress(TaskProgress),
+    Active,
+    // TODO: Add failed with a reason?
+}
+
+impl TaskStatus {
+    pub fn is_active(&self) -> bool {
+        matches!(self, Self::Active)
+    }
+
+    pub fn is_started(&self) -> bool {
+        !matches!(self, Self::Inactive)
+    }
+
+    pub fn is_inactive(&self) -> bool {
+        matches!(self, Self::Inactive)
+    }
+}
+
+impl fmt::Display for TaskStatus {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Inactive => write!(f, "Inactive"),
+            Self::Pending => write!(f, "Pending"),
+            Self::Progress(value) => write!(f, "Progress({} - {}%)", value.stage, value.pct),
+            Self::Active => write!(f, "Active"),
+        }
+    }
+}
+
 pub trait ManagedTask {
     fn id() -> TaskId;
 

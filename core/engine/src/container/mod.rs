@@ -2,7 +2,9 @@ mod docker;
 mod events;
 mod update;
 
-use crate::types::{Args, Envs, ManagedContainer, Mounts, Networks, Ports, TaskProgress, Volumes};
+use crate::types::{
+    Args, Envs, ManagedContainer, Mounts, Networks, Ports, TaskProgress, TaskStatus, Volumes,
+};
 use anyhow::{anyhow as err, Error};
 use async_trait::async_trait;
 use bollard::container::{Config, CreateContainerOptions, RemoveContainerOptions};
@@ -135,6 +137,7 @@ pub struct ContainerTask {
     pull_progress: u8,
     events: Option<Receiver>,
     status: Status,
+    task_status: TaskStatus,
 }
 
 impl ContainerTask {
@@ -154,6 +157,7 @@ impl ContainerTask {
             pull_progress: 0,
             events: None,
             status: Status::InitialState,
+            task_status: TaskStatus::Inactive,
         }
     }
 
@@ -166,20 +170,29 @@ impl ContainerTask {
 impl Actor for ContainerTask {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
         log::info!("Spawning a task to control: {}", self.image());
-        self.subscribe_to_events(ctx);
-        ctx.do_next(CheckImage)?;
+        let mut fsm = ContainerTaskFsm::new(self, ctx);
+        fsm.subscribe_to_events();
+        ctx.do_next(ProcessChanges)?;
         Ok(())
     }
 }
 
 #[derive(Debug, Error)]
 enum EventError {
+    #[error("Docker error: {0}")]
+    DockerError(#[from] BollardError),
     #[error("Type is empty")]
     TypeEmpty,
     #[error("Action is empty")]
     ActionEmpty,
     #[error("Actor is empty")]
     ActorEmpty,
+    #[error("Can't parse the message: {0}")]
+    ParseError(#[from] ParseError),
+    #[error("Message for other container {actual}, but expected {expected}")]
+    WrongImage { expected: String, actual: String },
+    #[error("Process event error: {0}")]
+    ProcessEventError(#[from] Error),
 }
 
 #[derive(Debug, From)]
@@ -213,15 +226,55 @@ impl Do<DockerEvent> for ContainerTask {
                         event = Some(action.try_into()?);
                     }
                 } else {
-                    return Err(err!(
-                        "Message for other container {name}, but expected {image_name}",
-                    ));
+                    return Err(EventError::WrongImage {
+                        expected: image_name.to_string(),
+                        actual: name.to_string(),
+                    });
                 }
             }
         }
         if let Some(event) = event {
-            self.process_event(event)?;
+            let mut fsm = ContainerTaskFsm::new(self, ctx);
+            fsm.process_event(event)?;
         }
+        Ok(())
+    }
+}
+
+struct ContainerTaskFsm<'a> {
+    task: &'a mut ContainerTask,
+    ctx: &'a mut ActorContext<ContainerTask>,
+}
+
+impl<'a> ContainerTaskFsm<'a> {
+    fn new(task: &'a mut ContainerTask, ctx: &'a mut ActorContext<ContainerTask>) -> Self {
+        Self { task, ctx }
+    }
+
+    fn get_status(&self) -> &Status {
+        &self.task.status
+    }
+
+    fn set_status(&mut self, status: Status) -> Result<(), Error> {
+        self.task.status = status;
+        self.ctx.do_next(ProcessChanges)?;
+        Ok(())
+    }
+}
+
+struct ProcessChanges;
+
+#[async_trait]
+impl Do<ProcessChanges> for ContainerTask {
+    type Error = Error;
+
+    async fn handle(
+        &mut self,
+        _: ProcessChanges,
+        ctx: &mut ActorContext<Self>,
+    ) -> Result<(), Self::Error> {
+        let mut fsm = ContainerTaskFsm::new(self, ctx);
+        fsm.process_changes();
         Ok(())
     }
 }
