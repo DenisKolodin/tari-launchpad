@@ -1,10 +1,9 @@
-mod docker;
-mod events;
-mod update;
+mod fsm;
 
 use crate::types::{
     Args, Envs, ManagedContainer, Mounts, Networks, Ports, TaskProgress, TaskStatus, Volumes,
 };
+use fsm::ContainerTaskFsm;
 use anyhow::{anyhow as err, Error};
 use async_trait::async_trait;
 use bollard::container::{Config, CreateContainerOptions, RemoveContainerOptions};
@@ -241,27 +240,6 @@ impl Do<DockerEvent> for ContainerTask {
     }
 }
 
-struct ContainerTaskFsm<'a> {
-    task: &'a mut ContainerTask,
-    ctx: &'a mut ActorContext<ContainerTask>,
-}
-
-impl<'a> ContainerTaskFsm<'a> {
-    fn new(task: &'a mut ContainerTask, ctx: &'a mut ActorContext<ContainerTask>) -> Self {
-        Self { task, ctx }
-    }
-
-    fn get_status(&self) -> &Status {
-        &self.task.status
-    }
-
-    fn set_status(&mut self, status: Status) -> Result<(), Error> {
-        self.task.status = status;
-        self.ctx.do_next(ProcessChanges)?;
-        Ok(())
-    }
-}
-
 struct ProcessChanges;
 
 #[async_trait]
@@ -274,7 +252,7 @@ impl Do<ProcessChanges> for ContainerTask {
         ctx: &mut ActorContext<Self>,
     ) -> Result<(), Self::Error> {
         let mut fsm = ContainerTaskFsm::new(self, ctx);
-        fsm.process_changes();
+        fsm.process_changes().await?;
         Ok(())
     }
 }

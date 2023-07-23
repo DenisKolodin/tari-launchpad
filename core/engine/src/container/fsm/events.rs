@@ -1,9 +1,9 @@
-use super::{CheckerEvent, ContainerTask, ContainerTaskFsm, Event, Status};
+use crate::container::{CheckerEvent, ContainerTask, ContainerTaskFsm, Event, Status};
 use crate::types::TaskProgress;
 use anyhow::Error;
 
 impl<'a> ContainerTaskFsm<'a> {
-    pub(super) fn process_event(&mut self, event: Event) -> Result<(), Error> {
+    pub fn process_event(&mut self, event: Event) -> Result<(), Error> {
         log::warn!("EVENT: {event:?}");
         match event {
             Event::Created => self.on_created(),

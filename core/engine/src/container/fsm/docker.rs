@@ -1,11 +1,11 @@
-use super::{ContainerTask, ContainerTaskFsm, DockerEvent};
+use crate::container::{ContainerTask, ContainerTaskFsm, DockerEvent};
 use bollard::system::EventsOptions;
 use futures::{StreamExt, TryStreamExt};
 use std::collections::HashMap;
 use tact::{ActorContext, Receiver};
 
 impl<'a> ContainerTaskFsm<'a> {
-    pub(super) fn subscribe_to_events(&mut self) {
+    pub fn subscribe_to_events(&mut self) {
         let mut type_filter = HashMap::new();
         type_filter.insert("type".to_string(), vec!["container".to_string()]);
         type_filter.insert(

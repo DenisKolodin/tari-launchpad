@@ -1,8 +1,9 @@
-use super::{ContainerTaskFsm, Status};
+use crate::container::{ContainerTaskFsm, Status};
+use crate::types::TaskStatus;
 use anyhow::Error;
 
 impl<'a> ContainerTaskFsm<'a> {
-    pub(super) async fn process_changes(&mut self) -> Result<(), Error> {
+    pub async fn process_changes(&mut self) -> Result<(), Error> {
         match self.get_status() {
             Status::InitialState => self.do_initial_state().await,
             Status::PullingImage { .. } => self.do_pulling().await,
@@ -20,9 +21,9 @@ impl<'a> ContainerTaskFsm<'a> {
     }
 
     async fn do_initial_state(&mut self) -> Result<(), Error> {
-        /*
         self.update_task_status(TaskStatus::Inactive)?;
 
+        /*
         log::debug!("Cheking image {} ...", self.inner.image_name);
         if self.image_exists().await {
             self.clean_dangling()?;
