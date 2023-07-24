@@ -1,14 +1,13 @@
 mod fsm;
 
+use crate::docker::{DockerEvent, PullProgress};
 use crate::types::{ManagedContainer, TaskProgress, TaskStatus};
 use anyhow::Error;
 use async_trait::async_trait;
 use bollard::container::{Config, CreateContainerOptions};
-use bollard::errors::Error as BollardError;
 use bollard::image::CreateImageOptions;
 use bollard::models::{CreateImageInfo, EventMessage, EventMessageTypeEnum};
 use bollard::Docker;
-use derive_more::From;
 use fsm::ContainerTaskFsm;
 use tact::{Actor, ActorContext, Do, Receiver};
 use thiserror::Error;
@@ -174,9 +173,9 @@ impl Actor for ContainerTask {
 }
 
 #[derive(Debug, Error)]
-enum EventError {
+pub enum EventError {
     #[error("Docker error: {0}")]
-    DockerError(#[from] BollardError),
+    DockerError(#[from] bollard::errors::Error),
     #[error("Type is empty")]
     TypeEmpty,
     #[error("Action is empty")]
@@ -189,11 +188,6 @@ enum EventError {
     WrongImage { expected: String, actual: String },
     #[error("Process event error: {0}")]
     ProcessEventError(#[from] Error),
-}
-
-#[derive(Debug, From)]
-struct DockerEvent {
-    result: Result<EventMessage, BollardError>,
 }
 
 #[async_trait]
@@ -260,9 +254,9 @@ impl Do<ProcessChanges> for ContainerTask {
 }
 
 #[derive(Debug, Error)]
-enum PullError {
+pub enum PullError {
     #[error("Docker error: {0}")]
-    Bollard(#[from] BollardError),
+    Bollard(#[from] bollard::errors::Error),
     #[error("Progress is empty")]
     ProgressEmpty,
     #[error("Current is empty")]
@@ -271,11 +265,6 @@ enum PullError {
     TotalEmpty,
     #[error("Status is empty")]
     StatusEmpty,
-}
-
-#[derive(Debug, From)]
-struct PullProgress {
-    result: Result<CreateImageInfo, BollardError>,
 }
 
 #[async_trait]
