@@ -1,6 +1,7 @@
 pub mod config;
 pub mod container;
 mod images;
+pub mod network;
 pub mod supervisor;
 mod types;
 

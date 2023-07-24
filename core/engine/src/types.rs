@@ -233,3 +233,7 @@ impl Mounts {
         self.0
     }
 }
+
+pub trait ManagedNetwork: fmt::Debug + Sync + Send + 'static {
+    fn network_name(&self) -> &str;
+}

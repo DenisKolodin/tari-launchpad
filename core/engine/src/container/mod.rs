@@ -21,6 +21,7 @@ struct ImageInfo {
     tag: String,
 }
 
+/// A task that maintains a container and pulls an image
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ContainerInfo {
     image_info: ImageInfo,
@@ -164,7 +165,7 @@ impl ContainerTask {
 #[async_trait]
 impl Actor for ContainerTask {
     async fn initialize(&mut self, ctx: &mut ActorContext<Self>) -> Result<(), Error> {
-        log::info!("Spawning a task to control: {}", self.image());
+        log::info!("Spawning a task to control the container: {}", self.image());
         let mut fsm = ContainerTaskFsm::new(self, ctx);
         fsm.subscribe_to_events();
         ctx.do_next(ProcessChanges)?;
@@ -209,22 +210,27 @@ impl Do<DockerEvent> for ContainerTask {
         let image_name = self.image();
         let mut event: Option<Event> = None;
         let result = msg.result?;
-        let typ = result.typ.ok_or_else(|| EventError::TypeEmpty)?;
-        let action = result.action.ok_or_else(|| EventError::ActionEmpty)?;
-        let actor = result.actor.ok_or_else(|| EventError::ActorEmpty)?;
-        if let Some(attributes) = actor.attributes {
-            if let Some(name) = attributes.get("name") {
-                // TODO: Check images as well
-                if image_name == *name {
-                    // TODO: Check the name
-                    if let EventMessageTypeEnum::CONTAINER = typ {
-                        event = Some(action.try_into()?);
+        if let EventMessage {
+            typ: Some(typ),
+            action: Some(action),
+            actor: Some(actor),
+            ..
+        } = result
+        {
+            if let Some(attributes) = actor.attributes {
+                if let Some(name) = attributes.get("name") {
+                    // TODO: Check images as well
+                    if image_name == *name {
+                        // TODO: Check the name
+                        if let EventMessageTypeEnum::CONTAINER = typ {
+                            event = Some(action.try_into()?);
+                        }
+                    } else {
+                        return Err(EventError::WrongImage {
+                            expected: image_name.to_string(),
+                            actual: name.to_string(),
+                        });
                     }
-                } else {
-                    return Err(EventError::WrongImage {
-                        expected: image_name.to_string(),
-                        actual: name.to_string(),
-                    });
                 }
             }
         }
