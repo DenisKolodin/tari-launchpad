@@ -51,7 +51,6 @@ impl<'a> ContainerTaskFsm<'a> {
 
     async fn do_pulling(&mut self) -> Result<(), Error> {
         if self.image_exists().await {
-            // Just loaded, container can't be exist
             self.set_status(Status::Idle)?;
             self.update_task_status(TaskStatus::Inactive)?;
         }
