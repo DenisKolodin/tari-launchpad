@@ -1,7 +1,6 @@
 mod docker;
 
 use crate::network::NetworkTask;
-use anyhow::Error;
 use derive_more::{Deref, DerefMut};
 use tact::ActorContext;
 

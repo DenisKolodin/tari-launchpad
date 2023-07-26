@@ -6,7 +6,7 @@ use anyhow::Error;
 use async_trait::async_trait;
 use bollard::container::{Config, CreateContainerOptions};
 use bollard::image::CreateImageOptions;
-use bollard::models::{CreateImageInfo, EventMessage, EventMessageTypeEnum};
+use bollard::models::{EventMessage, EventMessageTypeEnum};
 use bollard::Docker;
 use fsm::ContainerTaskFsm;
 use tact::{Actor, ActorContext, Do, Receiver};

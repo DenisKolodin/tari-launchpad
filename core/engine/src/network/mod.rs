@@ -4,9 +4,7 @@ use crate::docker::DockerEvent;
 use crate::types::ManagedNetwork;
 use anyhow::Error;
 use async_trait::async_trait;
-use bollard::models::EventMessage;
 use bollard::Docker;
-use derive_more::From;
 use fsm::NetworkTaskFsm;
 use tact::{Actor, ActorContext, Do, Receiver};
 
