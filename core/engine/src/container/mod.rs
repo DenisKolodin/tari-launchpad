@@ -1,6 +1,7 @@
 mod fsm;
 
 use crate::docker::{DockerEvent, PullProgress};
+use crate::error::ParseError;
 use crate::types::{ManagedContainer, TaskProgress, TaskStatus};
 use anyhow::Error;
 use async_trait::async_trait;
@@ -78,10 +79,6 @@ pub enum CheckerEvent {
     Progress(TaskProgress),
     Ready,
 }
-
-#[derive(Debug, Error)]
-#[error("Can't parse value: {0}")]
-pub struct ParseError(pub String);
 
 #[derive(Debug)]
 enum Event {
@@ -202,8 +199,9 @@ impl Do<DockerEvent> for ContainerTask {
     ) -> Result<(), Self::Error> {
         log::debug!("Event from {}: {msg:?}", self.image());
         let image_name = self.image();
-        let mut event: Option<Event> = None;
+        let mut event = None;
         let result = msg.result?;
+        // TODO: Use a converter here
         if let EventMessage {
             typ: Some(typ),
             action: Some(action),
@@ -217,7 +215,8 @@ impl Do<DockerEvent> for ContainerTask {
                     if image_name == *name {
                         // TODO: Check the name
                         if let EventMessageTypeEnum::CONTAINER = typ {
-                            event = Some(action.try_into()?);
+                            let evt = Event::try_from(action)?;
+                            event = Some(evt);
                         }
                     } else {
                         return Err(EventError::WrongImage {
