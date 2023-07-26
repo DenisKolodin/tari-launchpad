@@ -2,6 +2,7 @@ mod fsm;
 
 use crate::docker::{DockerEvent, PullProgress};
 use crate::error::ParseError;
+use crate::status::{SdmStatus, WorkerStatus};
 use crate::types::{ManagedContainer, TaskProgress, TaskStatus};
 use anyhow::Error;
 use async_trait::async_trait;
@@ -74,6 +75,18 @@ enum Status {
     DropImage,
 }
 
+impl Default for Status {
+    fn default() -> Self {
+        Self::InitialState
+    }
+}
+
+impl WorkerStatus for Status {
+    fn is_ready(&self) -> bool {
+        matches!(self, Self::Active { ready: true, .. })
+    }
+}
+
 #[derive(Debug)]
 pub enum CheckerEvent {
     Progress(TaskProgress),
@@ -113,7 +126,7 @@ pub struct ContainerTask {
     container_info: ContainerInfo,
     pull_progress: u8,
     events: Option<Receiver>,
-    status: Status,
+    status: SdmStatus<Status>,
     task_status: TaskStatus,
 
     /// A flag to ask to restart a container
@@ -130,6 +143,7 @@ impl ContainerTask {
             image_name: mc.image_name().to_string(),
             tag: mc.tag().to_string(),
         };
+        let name = image_info.image_name.clone();
         let container_info = ContainerInfo::from(image_info);
         Self {
             docker,
@@ -137,7 +151,7 @@ impl ContainerTask {
             container_info,
             pull_progress: 0,
             events: None,
-            status: Status::InitialState,
+            status: SdmStatus::new(name),
             task_status: TaskStatus::Inactive,
             force_restart: false,
             force_pull: false,

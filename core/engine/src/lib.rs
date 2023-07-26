@@ -4,6 +4,7 @@ mod docker;
 pub mod error;
 mod images;
 pub mod network;
+mod status;
 pub mod supervisor;
 mod types;
 

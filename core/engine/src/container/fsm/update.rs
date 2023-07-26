@@ -4,7 +4,7 @@ use anyhow::Error;
 
 impl<'a> ContainerTaskFsm<'a> {
     pub async fn process_changes(&mut self) -> Result<(), Error> {
-        match self.get_status() {
+        match self.status.get() {
             Status::InitialState => self.do_initial_state().await,
             Status::PullingImage { .. } => self.do_pulling().await,
             Status::CleanDangling => self.do_clean_dangling().await,
@@ -36,7 +36,7 @@ impl<'a> ContainerTaskFsm<'a> {
         log::debug!("Image {} exists. Skip pulling.", self.task.image());
         let progress = TaskProgress::new("Cleaning...");
         self.update_task_status(TaskStatus::Progress(progress))?;
-        self.set_status(Status::CleanDangling)?;
+        self.status.set(Status::CleanDangling);
         Ok(())
     }
 
@@ -45,13 +45,13 @@ impl<'a> ContainerTaskFsm<'a> {
         let progress = TaskProgress::new("Pulling...");
         self.update_task_status(TaskStatus::Progress(progress))?;
         let progress_rx = self.pull();
-        self.set_status(Status::PullingImage { progress_rx })?;
+        self.status.set(Status::PullingImage { progress_rx });
         Ok(())
     }
 
     async fn do_pulling(&mut self) -> Result<(), Error> {
         if self.image_exists().await {
-            self.set_status(Status::Idle)?;
+            self.status.set(Status::Idle);
             self.update_task_status(TaskStatus::Inactive)?;
         }
         Ok(())
@@ -64,7 +64,7 @@ impl<'a> ContainerTaskFsm<'a> {
             ContainerState::Running => {
                 log::debug!("Container {} is running. Terminating it.", self.container());
                 self.try_kill_container().await?;
-                self.set_status(Status::WaitContainerKilled)?;
+                self.status.set(Status::WaitContainerKilled);
             }
             ContainerState::NotRunning => {
                 log::debug!(
@@ -72,12 +72,12 @@ impl<'a> ContainerTaskFsm<'a> {
                     self.container()
                 );
                 self.try_remove_container().await?;
-                self.set_status(Status::WaitContainerRemoved)?;
+                self.status.set(Status::WaitContainerRemoved);
             }
             ContainerState::NotFound => {
                 log::debug!("Container {} doesn't exist.", self.container());
-                self.set_status(Status::Idle)?;
-                self.update_task_status(TaskStatus::Inactive)?;
+                self.status.set(Status::Idle);
+                self.update_task_status(TaskStatus::Inactive);
             }
         }
         Ok(())
@@ -96,14 +96,14 @@ impl<'a> ContainerTaskFsm<'a> {
     async fn do_idle(&mut self) -> Result<(), Error> {
         if self.force_pull {
             self.force_pull = false;
-            self.set_status(Status::DropImage)?;
+            self.status.set(Status::DropImage);
             let progress = TaskProgress::new("Removing image...");
             self.update_task_status(TaskStatus::Progress(progress))?;
             Ok(())
         } else if self.should_be_active() {
             self.force_restart = false;
             log::debug!("Preparing a container {} to start...", self.container());
-            self.set_status(Status::CreateContainer)?;
+            self.status.set(Status::CreateContainer);
             self.update_task_status(TaskStatus::Pending)?;
             Ok(())
         } else {
@@ -115,7 +115,7 @@ impl<'a> ContainerTaskFsm<'a> {
         log::debug!("Trying to create container {} ...", self.container());
         // TODO: Process the result as well
         self.try_create_container().await?;
-        self.set_status(Status::WaitContainerCreated)?;
+        self.status.set(Status::WaitContainerCreated);
         Ok(())
     }
 
@@ -128,9 +128,9 @@ impl<'a> ContainerTaskFsm<'a> {
         if let Err(err) = self.try_start_container().await {
             // self.sender().send_error(err.to_string())?;
             self.try_remove_container().await?;
-            self.set_status(Status::WaitContainerRemoved)?;
+            self.status.set(Status::WaitContainerRemoved);
         } else {
-            self.set_status(Status::WaitContainerStarted)?;
+            self.status.set(Status::WaitContainerStarted);
             self.update_task_status(TaskStatus::Pending)?;
         }
         Ok(())

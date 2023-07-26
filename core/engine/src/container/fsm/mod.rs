@@ -21,6 +21,7 @@ impl<'a> ContainerTaskFsm<'a> {
         Self { task, ctx }
     }
 
+    /*
     fn get_status(&self) -> &Status {
         &self.task.status
     }
@@ -30,6 +31,7 @@ impl<'a> ContainerTaskFsm<'a> {
         self.ctx.do_next(ProcessChanges)?;
         Ok(())
     }
+    */
 
     fn update_task_status(&mut self, task_status: TaskStatus) -> Result<(), Error> {
         self.task.task_status = task_status;
